@@ -3,7 +3,7 @@
 [![GitHub license](https://img.shields.io/badge/License-Apache%202-blue.svg)](https://raw.githubusercontent.com/corvus-dotnet/Corvus.Extensions.Newtonsoft.Json/master/LICENSE)
 [![IMM](https://endimmfuncdev.azurewebsites.net/api/imm/github/corvus-dotnet/Corvus.Extensions.Newtonsoft.Json/total?cache=false)](https://endimmfuncdev.azurewebsites.net/api/imm/github/corvus-dotnet/Corvus.Extensions.Newtonsoft.Json/total?cache=false)
 
-This provides a opinionated configuration and DI support for Newtonsoft.Json serialization.
+This provides opinionated configuration and DI support for Newtonsoft.Json serialization.
 
 It is built for netstandard2.0.
 
