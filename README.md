@@ -10,11 +10,24 @@ It is built for netstandard2.0.
 ## Features
 
 ### IJsonSerializationSettingsProvider
-A DI-friendly JSON serialization settings provider 
+A DI-friendly JSON serialization settings provider
+
+### DefaultJsonSerializationSettingsProvider
+A default implementation of the above configured for enum serialization as strings, `camelCase` property names, and that resolves `JsonConverter`s from the container
+
+### Standard `JsonConverter`s
+Standard converters for 
+
+(Nullable) DateTimeOffset (which converts to/from json of the form `{"dateTimeOffset":"<Roundtrippable string format>", "unixTime": <long of unix 
+milliseconds>}`, and from standard JSON date strings.
+
+CultureInfo which converts to/from the culture name string e.g. `en-GB`, `fr-FR`
+
+
 
 ### PropertyBag
 
-A handy serializable property bag which converts to/from strongly typed key value pairs, internally stored in a JSON representation. 
+A handy serializable property bag which converts to/from strongly typed key value pairs, internally stored in a JSON representation. It also includes a standard `JsonConverter` for this.
 
 ## Licenses
 
