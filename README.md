@@ -3,18 +3,31 @@
 [![GitHub license](https://img.shields.io/badge/License-Apache%202-blue.svg)](https://raw.githubusercontent.com/corvus-dotnet/Corvus.Extensions.Newtonsoft.Json/master/LICENSE)
 [![IMM](https://endimmfuncdev.azurewebsites.net/api/imm/github/corvus-dotnet/Corvus.Extensions.Newtonsoft.Json/total?cache=false)](https://endimmfuncdev.azurewebsites.net/api/imm/github/corvus-dotnet/Corvus.Extensions.Newtonsoft.Json/total?cache=false)
 
-This provides a opinionated configuration and DI support for Newtonsoft.Json serialization.
+This provides opinionated configuration and DI support for Newtonsoft.Json serialization.
 
 It is built for netstandard2.0.
 
 ## Features
 
 ### IJsonSerializationSettingsProvider
-A DI-friendly JSON serialization settings provider 
+A DI-friendly JSON serialization settings provider
+
+### DefaultJsonSerializationSettingsProvider
+A default implementation of the above configured for enum serialization as strings, `camelCase` property names, and that resolves `JsonConverter`s from the container
+
+### Standard `JsonConverter`s
+Standard converters for 
+
+(Nullable) DateTimeOffset (which converts to/from json of the form `{"dateTimeOffset":"<Roundtrippable string format>", "unixTime": <long of unix 
+milliseconds>}`, and from standard JSON date strings.
+
+CultureInfo which converts to/from the culture name string e.g. `en-GB`, `fr-FR`
+
+
 
 ### PropertyBag
 
-A handy serializable property bag which converts to/from strongly typed key value pairs, internally stored in a JSON representation. 
+A handy serializable property bag which converts to/from strongly typed key value pairs, internally stored in a JSON representation. It also includes a standard `JsonConverter` for this.
 
 ## Licenses
 
