@@ -12,7 +12,7 @@ It is built for netstandard2.0.
 ### IJsonSerializationSettingsProvider
 A DI-friendly JSON serialization settings provider
 
-### DefaultJsonSerializationSettingsProvider
+### JsonSerializationSettingsProvider
 A default implementation of the above configured for enum serialization as strings, `camelCase` property names, and that resolves `JsonConverter`s from the container
 
 ### Standard `JsonConverter`s
