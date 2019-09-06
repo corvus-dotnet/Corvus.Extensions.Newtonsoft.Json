@@ -1,4 +1,4 @@
-﻿// <copyright file="DefaultJsonSerializerSettingsProvider.cs" company="Endjin Limited">
+﻿// <copyright file="JsonSerializerSettingsProvider.cs" company="Endjin Limited">
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
@@ -9,18 +9,18 @@ namespace Corvus.Extensions.Json.Internal
     using Newtonsoft.Json;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DefaultJsonSerializerSettingsProvider"/> class.
+    /// Initializes a new instance of the <see cref="JsonSerializerSettingsProvider"/> class.
     /// </summary>
-    public class DefaultJsonSerializerSettingsProvider : IJsonSerializerSettingsProvider
+    public class JsonSerializerSettingsProvider : IJsonSerializerSettingsProvider
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultJsonSerializerSettingsProvider"/> class.
+        /// Initializes a new instance of the <see cref="JsonSerializerSettingsProvider"/> class.
         /// </summary>
         /// <param name="converters">The list of JsonConverters to add.</param>
         /// <remarks>
         /// You should not modify these settings directly. They are shared by all users.
         /// </remarks>
-        public DefaultJsonSerializerSettingsProvider(IEnumerable<JsonConverter> converters)
+        public JsonSerializerSettingsProvider(IEnumerable<JsonConverter> converters)
         {
             this.Instance = new JsonSerializerSettings
             {

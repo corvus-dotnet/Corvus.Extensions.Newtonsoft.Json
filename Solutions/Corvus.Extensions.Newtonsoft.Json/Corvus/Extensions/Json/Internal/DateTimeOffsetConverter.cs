@@ -16,12 +16,22 @@ namespace Corvus.Extensions.Json.Internal
         /// <inheritdoc/>
         public override bool CanConvert(Type objectType)
         {
+            if (objectType is null)
+            {
+                throw new ArgumentNullException(nameof(objectType));
+            }
+
             return typeof(DateTimeOffset) == objectType || typeof(DateTimeOffset?) == objectType;
         }
 
         /// <inheritdoc/>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
+            if (reader is null)
+            {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
             if (reader.TokenType == JsonToken.Null)
             {
                 return null;
@@ -48,14 +58,26 @@ namespace Corvus.Extensions.Json.Internal
         /// </remarks>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            var dto = (DateTimeOffset)value;
+            if (writer is null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
 
-            writer.WriteStartObject();
-            writer.WritePropertyName("dateTimeOffset");
-            writer.WriteRawValue($"\"{dto.ToString("O")}\"");
-            writer.WritePropertyName("unixTime");
-            writer.WriteValue(dto.ToUnixTimeMilliseconds());
-            writer.WriteEndObject();
+            if (value is null)
+            {
+                writer.WriteNull();
+            }
+            else
+            {
+                var dto = (DateTimeOffset)value;
+
+                writer.WriteStartObject();
+                writer.WritePropertyName("dateTimeOffset");
+                writer.WriteRawValue($"\"{dto.ToString("O")}\"");
+                writer.WritePropertyName("unixTime");
+                writer.WriteValue(dto.ToUnixTimeMilliseconds());
+                writer.WriteEndObject();
+            }
         }
     }
 }

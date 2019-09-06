@@ -19,13 +19,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services">The target service collection.</param>
         /// <returns>The service collection.</returns>
-        public static IServiceCollection AddDefaultJsonSerializerSettings(this IServiceCollection services)
+        public static IServiceCollection AddJsonSerializerSettings(this IServiceCollection services)
         {
             services.AddSingleton<JsonConverter, CultureInfoConverter>();
             services.AddSingleton<JsonConverter, DateTimeOffsetConverter>();
             services.AddSingleton<JsonConverter, PropertyBagConverter>();
             services.AddSingleton<JsonConverter>(new StringEnumConverter(true));
-            services.AddSingleton<IJsonSerializerSettingsProvider, DefaultJsonSerializerSettingsProvider>();
+            services.AddSingleton<IJsonSerializerSettingsProvider, JsonSerializerSettingsProvider>();
             return services;
         }
     }

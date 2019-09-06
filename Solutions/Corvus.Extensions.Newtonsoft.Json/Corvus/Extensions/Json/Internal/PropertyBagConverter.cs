@@ -9,7 +9,6 @@ namespace Corvus.Extensions.Json.Internal
     using Corvus.Extensions.Json;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
     using Newtonsoft.Json.Linq;
 
     /// <summary>
@@ -26,7 +25,7 @@ namespace Corvus.Extensions.Json.Internal
         /// <param name="serviceProvider">The service provider for the context.</param>
         public PropertyBagConverter(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider;
+            this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             this.jsonSerializerSettings = new Lazy<IJsonSerializerSettingsProvider>(() => this.serviceProvider.GetService<IJsonSerializerSettingsProvider>(), LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
@@ -39,6 +38,11 @@ namespace Corvus.Extensions.Json.Internal
         /// <inheritdoc/>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
+            if (reader is null)
+            {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
             var value = JToken.ReadFrom(reader) as JObject;
             return new PropertyBag(this.jsonSerializerSettings.Value.Instance) { Properties = value };
         }
@@ -46,8 +50,25 @@ namespace Corvus.Extensions.Json.Internal
         /// <inheritdoc/>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            var propertyBag = value as PropertyBag;
-            serializer.Serialize(writer, propertyBag.Properties);
+            if (writer is null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (serializer is null)
+            {
+                throw new ArgumentNullException(nameof(serializer));
+            }
+
+            if (value is null)
+            {
+                writer.WriteNull();
+            }
+            else
+            {
+                var propertyBag = value as PropertyBag;
+                serializer.Serialize(writer, propertyBag.Properties);
+            }
         }
     }
 }

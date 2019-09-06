@@ -11,7 +11,6 @@ namespace Corvus.Extensions.Json.Specs
     using System;
     using System.Collections.Generic;
     using System.Globalization;
-    using System.Reflection.Metadata.Ecma335;
     using Corvus.Extensions.Json.Specs.Samples;
     using Corvus.SpecFlow.Extensions;
     using Microsoft.Extensions.DependencyInjection;
@@ -245,7 +244,7 @@ namespace Corvus.Extensions.Json.Specs
         public void ThenTheResultShouldHaveTheDefaultSerializerSettings()
         {
             PropertyBag propertyBag = this.scenarioContext.Get<PropertyBag>("Result");
-            Assert.AreEqual(JsonConvert.DefaultSettings?.Invoke(), propertyBag.SerializerSettings);
+            Assert.AreEqual(JsonConvert.DefaultSettings?.Invoke() ?? PropertyBag.DefaultJsonSerializerSettings, propertyBag.SerializerSettings);
         }
 
         private static JObject CreateJObjectFromTable(Table table)

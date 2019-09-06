@@ -26,7 +26,7 @@ namespace Corvus.Extensions.Json.Specs
                 featureContext,
                 serviceCollection =>
                 {
-                    serviceCollection.AddDefaultJsonSerializerSettings();
+                    serviceCollection.AddJsonSerializerSettings();
                 });
         }
     }

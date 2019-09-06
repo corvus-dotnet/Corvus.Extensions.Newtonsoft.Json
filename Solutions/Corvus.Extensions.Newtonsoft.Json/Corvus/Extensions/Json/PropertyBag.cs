@@ -13,6 +13,11 @@ namespace Corvus.Extensions.Json
     /// </summary>
     public class PropertyBag
     {
+        /// <summary>
+        /// Gets the fallback default JsonSerializerSettings.
+        /// </summary>
+        public static readonly JsonSerializerSettings DefaultJsonSerializerSettings = new JsonSerializerSettings();
+
         private JObject properties;
 
         /// <summary>
@@ -30,8 +35,8 @@ namespace Corvus.Extensions.Json
         /// <param name="serializerSettings">The serializer settings to use for the property bag.</param>
         public PropertyBag(JObject jobject, JsonSerializerSettings serializerSettings = null)
         {
-            this.Properties = jobject;
-            this.SerializerSettings = serializerSettings ?? JsonConvert.DefaultSettings?.Invoke();
+            this.Properties = jobject ?? throw new System.ArgumentNullException(nameof(jobject));
+            this.SerializerSettings = serializerSettings ?? JsonConvert.DefaultSettings?.Invoke() ?? DefaultJsonSerializerSettings;
         }
 
         /// <summary>
@@ -41,12 +46,17 @@ namespace Corvus.Extensions.Json
         /// <param name="serializerSettings">The serializer settings to use for the property bag.</param>
         public PropertyBag(IDictionary<string, object> dictionary, JsonSerializerSettings serializerSettings = null)
         {
+            if (dictionary is null)
+            {
+                throw new System.ArgumentNullException(nameof(dictionary));
+            }
+
             foreach (KeyValuePair<string, object> kvp in dictionary)
             {
                 this.Set(kvp.Key, kvp.Value);
             }
 
-            this.SerializerSettings = serializerSettings ?? JsonConvert.DefaultSettings?.Invoke();
+            this.SerializerSettings = serializerSettings ?? JsonConvert.DefaultSettings?.Invoke() ?? DefaultJsonSerializerSettings;
         }
 
         /// <summary>
@@ -56,7 +66,7 @@ namespace Corvus.Extensions.Json
         public PropertyBag(JsonSerializerSettings serializerSettings)
         {
             this.Properties = new JObject();
-            this.SerializerSettings = serializerSettings ?? JsonConvert.DefaultSettings?.Invoke();
+            this.SerializerSettings = serializerSettings ?? JsonConvert.DefaultSettings?.Invoke() ?? DefaultJsonSerializerSettings;
         }
 
         /// <summary>
@@ -86,6 +96,11 @@ namespace Corvus.Extensions.Json
         /// <param name="bag">The property bag to cast.</param>
         public static implicit operator JObject(PropertyBag bag)
         {
+            if (bag is null)
+            {
+                throw new System.ArgumentNullException(nameof(bag));
+            }
+
             return bag.Properties;
         }
 
