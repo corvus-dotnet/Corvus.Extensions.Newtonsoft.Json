@@ -4,6 +4,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    using System.Linq;
     using Corvus.Extensions.Json;
     using Corvus.Extensions.Json.Internal;
     using Newtonsoft.Json;
@@ -21,6 +22,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>The service collection.</returns>
         public static IServiceCollection AddJsonSerializerSettings(this IServiceCollection services)
         {
+            if (services.Any(s => typeof(IJsonSerializerSettingsProvider).IsAssignableFrom(s.ServiceType)))
+            {
+                // Already configured
+                return services;
+            }
+
             services.AddSingleton<JsonConverter, CultureInfoConverter>();
             services.AddSingleton<JsonConverter, DateTimeOffsetConverter>();
             services.AddSingleton<JsonConverter, PropertyBagConverter>();
