@@ -22,6 +22,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>The service collection.</returns>
         public static IServiceCollection AddJsonSerializerSettings(this IServiceCollection services)
         {
+            if (services is null)
+            {
+                throw new System.ArgumentNullException(nameof(services));
+            }
+
             if (services.Any(s => typeof(IJsonSerializerSettingsProvider).IsAssignableFrom(s.ServiceType)))
             {
                 // Already configured
