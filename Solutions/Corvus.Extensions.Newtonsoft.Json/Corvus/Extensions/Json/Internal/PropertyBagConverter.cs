@@ -66,8 +66,8 @@ namespace Corvus.Extensions.Json.Internal
             }
             else
             {
-                var propertyBag = value as PropertyBag;
-                serializer.Serialize(writer, propertyBag.Properties);
+                var propertyBag = (JObject)(value as PropertyBag);
+                propertyBag.WriteTo(writer);
             }
         }
     }
