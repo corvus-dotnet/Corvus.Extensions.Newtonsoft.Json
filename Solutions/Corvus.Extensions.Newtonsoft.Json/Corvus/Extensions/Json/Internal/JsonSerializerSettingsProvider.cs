@@ -27,7 +27,7 @@ namespace Corvus.Extensions.Json.Internal
                 ContractResolver = StandardContractResolver.Instance,
                 MissingMemberHandling = MissingMemberHandling.Ignore,
                 ReferenceLoopHandling = ReferenceLoopHandling.Error,
-                NullValueHandling = NullValueHandling.Include,
+                NullValueHandling = NullValueHandling.Ignore,
                 ObjectCreationHandling = ObjectCreationHandling.Auto,
                 PreserveReferencesHandling = PreserveReferencesHandling.None,
                 ConstructorHandling = ConstructorHandling.Default,
