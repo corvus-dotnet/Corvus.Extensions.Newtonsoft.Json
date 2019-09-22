@@ -20,7 +20,7 @@ namespace Corvus.Extensions.Json
         /// <returns>The property bag as a dictionary of objects (which can be cast to <see cref="JToken"/>).</returns>
         public static IDictionary<string, object> AsDictionary(this PropertyBag propertyBag)
         {
-            return propertyBag.Properties.Properties().ToDictionary(k => k.Name, v => (object)v.Value);
+            return propertyBag.Properties.ToObject<Dictionary<string, object>>();
         }
     }
 }
