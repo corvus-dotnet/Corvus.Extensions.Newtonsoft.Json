@@ -39,7 +39,7 @@ services.AddSingleton<JsonConverter>(new StringEnumConverter(true));
 #### `CultureInfoConverter`
 which converts to/from the culture name string e.g. `en-GB`, `fr-FR`
 
-### PropertyBag
+### `PropertyBag`
 
 A handy serializable property bag which converts to/from strongly typed key value pairs, internally stored in a JSON representation.
 
@@ -53,7 +53,14 @@ Or from a `JObject`
 
 ```
 JObject someJObject;
-var propertyBag = new Property(someJObject);
+var propertyBag = new PropertyBag(someJObject);
+```
+
+Or from an `IDictionary<string,object>`
+
+```
+IDictionary<string,object> someDictionary;
+var propertyBag = new PropertyBag(someDictionary);
 ```
 
 You can then set or retrieve strongly typed values from the property bag.
@@ -116,9 +123,12 @@ propertyBag.TryGet("key1", out SomeSemanticallySimilarType myRetrievedObject); /
 
 You can implicitly convert the PropertyBag to and from a `JObject` (which can also be used for `dynamic` scenarios), and there is an `AsDictionary()` method which returns a `Dictionary<string,object>`. This can also be used to enumerate the underlying JToken values.
 
+##### `JsonSerializerSettings`
+Internally, all the property values are stored as properties on a` JObject`, which requires serializion/deserialization. There are overloads for each constructor that allow you to set the` JsonSerializerSettings` to be used for conversions. It also has a constructor which takes the `IJsonSerializerSettingsProvider` described above.
+
 #### Microsoft.Extensions.DependencyInjection
 
-While you can create instances of this type by hand, it is recommended that you use the container to obtain instances instead. If you use the `AddJsonSerializerSettings()` extension method, then `PropertyBag` is registered as a transient and will retrieve its serializer settings from the `IJsonSerializerSettingsProvider`.
+While you can create instances of this type by hand, it is recommended that you use the container to obtain instances instead. If you use the `AddJsonSerializerSettings()` extension method, then `PropertyBag` is registered as a transient and will typically retrieve its serializer settings from the `IJsonSerializerSettingsProvider`.
 
 ## Licenses
 
