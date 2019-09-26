@@ -24,7 +24,7 @@ namespace Corvus.Extensions.Json
         /// Initializes a new instance of the <see cref="PropertyBag"/> class.
         /// </summary>
         public PropertyBag()
-            : this(null)
+            : this(default(JsonSerializerSettings))
         {
         }
 
@@ -57,6 +57,21 @@ namespace Corvus.Extensions.Json
             }
 
             this.SerializerSettings = serializerSettings ?? JsonConvert.DefaultSettings?.Invoke() ?? DefaultJsonSerializerSettings;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PropertyBag"/> class.
+        /// </summary>
+        /// <param name="serializerSettingsProvider">The serializer settings provider.</param>
+        public PropertyBag(IJsonSerializerSettingsProvider serializerSettingsProvider)
+        {
+            if (serializerSettingsProvider is null)
+            {
+                throw new System.ArgumentNullException(nameof(serializerSettingsProvider));
+            }
+
+            this.Properties = new JObject();
+            this.SerializerSettings = serializerSettingsProvider.Instance;
         }
 
         /// <summary>
@@ -118,6 +133,21 @@ namespace Corvus.Extensions.Json
             {
                 result = default;
                 return false;
+            }
+
+            if (jtoken.Type == JTokenType.Null)
+            {
+                result = default;
+                return true;
+            }
+
+            // We do this weird double check to avoid the deepclone of a potentially deep jtoken
+            // if it isn't a JToken, but such that we can still get the conversion-to-T efficiently, without
+            // having to add a dependency on Corvus.Extensions CastTo for this single line.
+            if (typeof(JToken).IsAssignableFrom(typeof(T)) && jtoken.DeepClone() is T tToken)
+            {
+                result = tToken;
+                return true;
             }
 
             using (JsonReader reader = jtoken.CreateReader())
@@ -182,6 +212,11 @@ namespace Corvus.Extensions.Json
 
         private JToken ConvertToJToken<T>(T value)
         {
+            if (value is JToken jt)
+            {
+                return jt.DeepClone();
+            }
+
             return JToken.FromObject(value, JsonSerializer.Create(this.SerializerSettings));
         }
     }
