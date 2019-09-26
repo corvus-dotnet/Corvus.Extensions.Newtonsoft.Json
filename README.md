@@ -9,25 +9,116 @@ It is built for netstandard2.0.
 
 ## Features
 
-### IJsonSerializationSettingsProvider
-A DI-friendly JSON serialization settings provider
+### `IJsonSerializationSettingsProvider`
+It is common to need to configure and manage a consistent set of JsonSerializerSettings across multiple components, to ensure succesful interop between services, both within and between hosts.
 
-### JsonSerializationSettingsProvider
-A default implementation of the above configured for enum serialization as strings, `camelCase` property names, and that resolves `JsonConverter`s from the container
+In order to support this, we have an `IJsonSerializerSettingsProvider` service which has a single `Instance` property which (as the naming implies) gives you an instance of Newtonsoft's `JsonSerializerSettings`, in a known configuration.
 
-### Standard `JsonConverter`s
-Standard converters for 
+We also supply a standard implementation of this service called `JsonSerializationSettingsProvider`.
 
-(Nullable) DateTimeOffset (which converts to/from json of the form `{"dateTimeOffset":"<Roundtrippable string format>", "unixTime": <long of unix 
-milliseconds>}`, and from standard JSON date strings.
+This is configured for enum serialization as strings, `camelCase` property names, no dictionary key mapping, and ignored null values. 
 
-CultureInfo which converts to/from the culture name string e.g. `en-GB`, `fr-FR`
+[You can see the current defaults here.](https://github.com/corvus-dotnet/Corvus.Extensions.Newtonsoft.Json/blob/master/Solutions/Corvus.Extensions.Newtonsoft.Json/Corvus/Extensions/Json/Internal/JsonSerializerSettingsProvider.cs)
 
+One feature of this implementation is that it takes an enumerable of `JsonConverter` objects in its constructor. If you register it in the `Microsoft.Extensions.DependencyInjection` container using the `IServiceCollection` extension method called `AddJsonSerializerSettings()`, then you get the powerful feature that it will then have its converters configured from the container too. Components that wish to add their converters to the standard settings need only add them to the container.
 
+The default implementation adds the following converters
+
+```
+services.AddSingleton<JsonConverter, CultureInfoConverter>();
+services.AddSingleton<JsonConverter, DateTimeOffsetConverter>();
+services.AddSingleton<JsonConverter, PropertyBagConverter>();
+services.AddSingleton<JsonConverter>(new StringEnumConverter(true));
+```
+
+### Standard `JsonConverter`
+ 
+#### `DateTimeOffsetConverter`
+(Nullable) DateTimeOffset (which converts to/from json of the form `{"dateTimeOffset":"<Roundtrippable string format>", "unixTime": <long of unix milliseconds>}`, and from standard JSON date strings.
+
+#### `CultureInfoConverter`
+which converts to/from the culture name string e.g. `en-GB`, `fr-FR`
 
 ### PropertyBag
 
-A handy serializable property bag which converts to/from strongly typed key value pairs, internally stored in a JSON representation. It also includes a standard `JsonConverter` for this.
+A handy serializable property bag which converts to/from strongly typed key value pairs, internally stored in a JSON representation.
+
+You can construct an empty `PropertyBag`
+
+```
+var propertyBag = new PropertyBag();
+```
+
+Or from a `JObject`
+
+```
+JObject someJObject;
+var propertyBag = new Property(someJObject);
+```
+
+You can then set or retrieve strongly typed values from the property bag.
+
+```
+
+int myValue = 3;
+var myObject = new SomeType("Hello world", 134.6);
+
+propertyBag.Set("property1", myValue);
+propertyBag.Set("property2", myObject);
+
+propertyBag.TryGet("property1", out int myRetrievedValue); // returns true
+propertyBag.TryGet("property2", out SomeType myRetrievedObject); // returns true
+propertyBag.TryGet("property3", out double wontWork); // returns false 
+```
+
+Internally, it stores the values using a JSON representation. This means that you can happily set as one type, and retrieve
+as another, as long as your serializer supports that conversion.
+
+```
+public class SomeType
+{
+  public SomeType()
+  {
+  }
+  
+  public SomeType(string property1, int property2)
+  {
+    this.Property1 = property1;
+    this.Property2 = property2;
+  }
+  
+  public string Property1 { get; set; }
+  public int Property2 { get; set; }
+}
+
+public class SomeSemanticallySimilarType
+{
+  public SomeSemanticallySimilarType()
+  {
+  }
+  
+  public SomeSemanticallySimilarType(string property1, int property2)
+  {
+    this.Property1 = property1;
+    this.Property2 = property2;
+  }
+  
+  public string Property1 { get; set; }
+  public int Property2 { get; set; }
+  public bool? Property3 { get; set; }
+}
+
+propertyBag.Set("key1", new SomeType("Hello", 3));
+propertyBag.TryGet("key1", out SomeSemanticallySimilarType myRetrievedObject); // returns true
+```
+
+#### Conversions
+
+You can implicitly convert the PropertyBag to and from a `JObject` (which can also be used for `dynamic` scenarios), and there is an `AsDictionary()` method which returns a `Dictionary<string,object>`. This can also be used to enumerate the underlying JToken values.
+
+#### Microsoft.Extensions.DependencyInjection
+
+While you can create instances of this type by hand, it is recommended that you use the container to obtain instances instead. If you use the `AddJsonSerializerSettings()` extension method, then `PropertyBag` is registered as a transient and will retrieve its serializer settings from the `IJsonSerializerSettingsProvider`.
 
 ## Licenses
 
