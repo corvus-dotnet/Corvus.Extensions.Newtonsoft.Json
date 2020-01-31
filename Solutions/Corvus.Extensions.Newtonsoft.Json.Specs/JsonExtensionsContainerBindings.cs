@@ -24,10 +24,7 @@ namespace Corvus.Extensions.Json.Specs
         {
             ContainerBindings.ConfigureServices(
                 featureContext,
-                serviceCollection =>
-                {
-                    serviceCollection.AddJsonSerializerSettings();
-                });
+                serviceCollection => serviceCollection.AddJsonSerializerSettings());
         }
     }
 }

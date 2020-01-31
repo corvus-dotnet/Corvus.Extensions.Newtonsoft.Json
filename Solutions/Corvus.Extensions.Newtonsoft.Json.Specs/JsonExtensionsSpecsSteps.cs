@@ -4,7 +4,6 @@
 
 #pragma warning disable SA1600 // Elements should be documented
 #pragma warning disable CS1591 // Elements should be documented
-#pragma warning disable RCS1192 // Don't use verbatim string literals
 
 namespace Corvus.Extensions.Json.Specs
 {
@@ -85,8 +84,7 @@ namespace Corvus.Extensions.Json.Specs
             this.scenarioContext.Set(JsonConvert.DeserializeObject<PropertyBag>(json, settingsProvider.Instance), "Result");
         }
 
-
-        [Given(@"I serialize the property bag")]
+        [Given("I serialize the property bag")]
         public void GivenISerializeThePropertyBag()
         {
             IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
@@ -102,8 +100,8 @@ namespace Corvus.Extensions.Json.Specs
             var poco = new PocObject { SomeCulture = string.IsNullOrEmpty(culture) ? null : CultureInfo.GetCultureInfo(culture), SomeDateTime = DateTimeOffset.Parse(time), SomeNullableDateTime = string.IsNullOrEmpty(nullableTime) ? null : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime), SomeEnum = someEnum, SomeValue = value };
             IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
             this.scenarioContext.Set(JsonConvert.SerializeObject(poco, settingsProvider.Instance), "Result");
-
         }
+
         [Given(@"I deserialize a POCO with the json string ""(.*)""")]
         public void GivenIDeserializeAPOCOWithTheJsonString(string json)
         {
@@ -118,8 +116,6 @@ namespace Corvus.Extensions.Json.Specs
             var expected = new PocObject { SomeCulture = string.IsNullOrEmpty(culture) ? null : CultureInfo.GetCultureInfo(culture), SomeDateTime = DateTimeOffset.Parse(time), SomeNullableDateTime = string.IsNullOrEmpty(nullableTime) ? null : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime), SomeEnum = someEnum, SomeValue = value };
             Assert.AreEqual(expected, poc);
         }
-
-
 
         [Then(@"the result should be ""(.*)""")]
         public void ThenTheResultShouldBe(string expected)
@@ -195,18 +191,17 @@ namespace Corvus.Extensions.Json.Specs
             this.scenarioContext.Set(new PropertyBag(this.scenarioContext.Get<JObject>(), ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>().Instance), "Result");
         }
 
-        [When(@"I construct a PropertyBag with no serializer settings")]
+        [When("I construct a PropertyBag with no serializer settings")]
         public void WhenIConstructAPropertyBagWithNoSerializerSettings()
         {
             this.scenarioContext.Set(new PropertyBag(), "Result");
         }
 
-        [Given(@"I reset default json serializer settings")]
+        [Given("I reset default json serializer settings")]
         public void GivenIResetDefaultJsonSerializerSettings()
         {
             JsonConvert.DefaultSettings = null;
         }
-
 
         [Given("I create a Dictionary")]
         public void GivenICreateADictionary(Table table)
@@ -220,27 +215,26 @@ namespace Corvus.Extensions.Json.Specs
             this.scenarioContext.Set(new PropertyBag(this.scenarioContext.Get<IDictionary<string, object>>(), ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>().Instance), "Result");
         }
 
-        [Given(@"I setup default json serializer settings")]
+        [Given("I setup default json serializer settings")]
         public void GivenISetupDefaultJsonSerializerSettings()
         {
             this.scenarioContext.Set(new JsonSerializerSettings(), "JsonSerializerSettings");
             JsonConvert.DefaultSettings = () => this.scenarioContext.Get<JsonSerializerSettings>("JsonSerializerSettings");
         }
 
-
-        [When(@"I construct a PropertyBag from the JObject with no serializer settings")]
+        [When("I construct a PropertyBag from the JObject with no serializer settings")]
         public void WhenIConstructAPropertyBagFromTheJObjectWithNoSerializerSettings()
         {
             this.scenarioContext.Set(new PropertyBag(this.scenarioContext.Get<JObject>()), "Result");
         }
 
-        [When(@"I construct a PropertyBag from the Dictionary with no serializer settings")]
+        [When("I construct a PropertyBag from the Dictionary with no serializer settings")]
         public void WhenIConstructAPropertyBagFromTheDictionaryWithNoSerializerSettings()
         {
             this.scenarioContext.Set(new PropertyBag(this.scenarioContext.Get<IDictionary<string, object>>()), "Result");
         }
 
-        [Then(@"the result should have the default serializer settings")]
+        [Then("the result should have the default serializer settings")]
         public void ThenTheResultShouldHaveTheDefaultSerializerSettings()
         {
             PropertyBag propertyBag = this.scenarioContext.Get<PropertyBag>("Result");
@@ -255,17 +249,12 @@ namespace Corvus.Extensions.Json.Specs
                 row.TryGetValue("Property", out string name);
                 row.TryGetValue("Value", out string value);
                 row.TryGetValue("Type", out string type);
-                switch (type)
+                expected[name] = type switch
                 {
-                    case "string":
-                        expected[name] = value == "(null)" ? null : value;
-                        break;
-                    case "integer":
-                        expected[name] = int.Parse(value);
-                        break;
-                    default:
-                        throw new InvalidOperationException($"Unknown data type '{type}'");
-                }
+                    "string"  => value == "(null)" ? null : value,
+                    "integer" => int.Parse(value),
+                    _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
+                };
             }
 
             return expected;
@@ -279,17 +268,12 @@ namespace Corvus.Extensions.Json.Specs
                 row.TryGetValue("Property", out string name);
                 row.TryGetValue("Value", out string value);
                 row.TryGetValue("Type", out string type);
-                switch (type)
+                expected[name] = type switch
                 {
-                    case "string":
-                        expected[name] = value == "(null)" ? null : value;
-                        break;
-                    case "integer":
-                        expected[name] = int.Parse(value);
-                        break;
-                    default:
-                        throw new InvalidOperationException($"Unknown data type '{type}'");
-                }
+                    "string"  => value == "(null)" ? null : value,
+                    "integer" => int.Parse(value),
+                    _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
+                };
             }
 
             return expected;
@@ -298,5 +282,4 @@ namespace Corvus.Extensions.Json.Specs
 }
 
 #pragma warning restore SA1600 // Elements should be documented
-#pragma warning restore RCS1192 // Don't use verbatim string literals
 #pragma warning restore CS1591 // Elements should be documented
