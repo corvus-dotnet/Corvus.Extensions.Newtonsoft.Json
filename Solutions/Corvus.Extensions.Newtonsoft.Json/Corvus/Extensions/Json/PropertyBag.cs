@@ -87,7 +87,7 @@ namespace Corvus.Extensions.Json
         /// <summary>
         /// Gets the serializer settings for the property bag.
         /// </summary>
-        public JsonSerializerSettings SerializerSettings { get; private set; }
+        public JsonSerializerSettings SerializerSettings { get; }
 
         /// <summary>
         /// Gets or sets the underlying JObject which captures the extension properties.
@@ -150,18 +150,16 @@ namespace Corvus.Extensions.Json
                 return true;
             }
 
-            using (JsonReader reader = jtoken.CreateReader())
+            using JsonReader reader = jtoken.CreateReader();
+            try
             {
-                try
-                {
-                    result = JsonSerializer.Create(this.SerializerSettings).Deserialize<T>(reader);
-                    return true;
-                }
-                catch (JsonSerializationException)
-                {
-                    result = default;
-                    return false;
-                }
+                result = JsonSerializer.Create(this.SerializerSettings).Deserialize<T>(reader);
+                return true;
+            }
+            catch (JsonSerializationException)
+            {
+                result = default;
+                return false;
             }
         }
 
