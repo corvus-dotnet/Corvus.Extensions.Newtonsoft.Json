@@ -5,6 +5,7 @@
 namespace Corvus.Extensions.Json
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
@@ -18,7 +19,7 @@ namespace Corvus.Extensions.Json
         /// </summary>
         public static readonly JsonSerializerSettings DefaultJsonSerializerSettings = new JsonSerializerSettings();
 
-        private JObject properties;
+        private JObject? properties;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyBag"/> class.
@@ -33,7 +34,7 @@ namespace Corvus.Extensions.Json
         /// </summary>
         /// <param name="jobject">The JObject from which to initialize the property bag.</param>
         /// <param name="serializerSettings">The serializer settings to use for the property bag.</param>
-        public PropertyBag(JObject jobject, JsonSerializerSettings serializerSettings = null)
+        public PropertyBag(JObject jobject, JsonSerializerSettings? serializerSettings = null)
         {
             this.Properties = jobject ?? throw new System.ArgumentNullException(nameof(jobject));
             this.SerializerSettings = serializerSettings ?? JsonConvert.DefaultSettings?.Invoke() ?? DefaultJsonSerializerSettings;
@@ -44,7 +45,7 @@ namespace Corvus.Extensions.Json
         /// </summary>
         /// <param name="dictionary">A dictionary with which to initialize the bag.</param>
         /// <param name="serializerSettings">The serializer settings to use for the property bag.</param>
-        public PropertyBag(IDictionary<string, object> dictionary, JsonSerializerSettings serializerSettings = null)
+        public PropertyBag(IDictionary<string, object> dictionary, JsonSerializerSettings? serializerSettings = null)
         {
             if (dictionary is null)
             {
@@ -78,7 +79,7 @@ namespace Corvus.Extensions.Json
         /// Initializes a new instance of the <see cref="PropertyBag"/> class.
         /// </summary>
         /// <param name="serializerSettings">The serializer settings to use for the property bag.</param>
-        public PropertyBag(JsonSerializerSettings serializerSettings)
+        public PropertyBag(JsonSerializerSettings? serializerSettings)
         {
             this.Properties = new JObject();
             this.SerializerSettings = serializerSettings ?? JsonConvert.DefaultSettings?.Invoke() ?? DefaultJsonSerializerSettings;
@@ -126,18 +127,18 @@ namespace Corvus.Extensions.Json
         /// <param name="key">The property key.</param>
         /// <param name="result">The result.</param>
         /// <returns>True if the object was found.</returns>
-        public bool TryGet<T>(string key, out T result)
+        public bool TryGet<T>(string key, [MaybeNull] out T result)
         {
             JToken jtoken = this.Properties[key];
             if (jtoken == null)
             {
-                result = default;
+                result = default!;
                 return false;
             }
 
             if (jtoken.Type == JTokenType.Null)
             {
-                result = default;
+                result = default!;
                 return true;
             }
 
@@ -158,7 +159,7 @@ namespace Corvus.Extensions.Json
             }
             catch (JsonSerializationException)
             {
-                result = default;
+                result = default!;
                 return false;
             }
         }
@@ -181,7 +182,7 @@ namespace Corvus.Extensions.Json
             else
             {
                 // We have to deal with nulls if it is not a value type
-                ReplaceIfExists(this.Properties, key, comparer.Compare(value, default) == 0 ? new JValue((object)null) : this.ConvertToJToken(value));
+                ReplaceIfExists(this.Properties, key, comparer.Compare(value, default!) == 0 ? JValue.CreateNull() : this.ConvertToJToken(value));
             }
         }
 

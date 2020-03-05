@@ -32,7 +32,7 @@ namespace Corvus.Extensions.Json.Specs
         }
 
         [Given(@"I set a property called ""(.*)"" to the value ""(.*)""")]
-        public void GivenISetAPropertyCalledToTheValue(string propertyName, string value)
+        public void GivenISetAPropertyCalledToTheValue(string propertyName, string? value)
         {
             PropertyBag bag = this.scenarioContext.Get<PropertyBag>();
             bag.Set(propertyName, value);
@@ -54,7 +54,7 @@ namespace Corvus.Extensions.Json.Specs
         [When(@"I get the property called ""(.*)""")]
         public void WhenIGetThePropertyCalled(string propertyName)
         {
-            if (this.scenarioContext.Get<PropertyBag>().TryGet(propertyName, out string value))
+            if (this.scenarioContext.Get<PropertyBag>().TryGet(propertyName, out string? value))
             {
                 this.scenarioContext.Set(value ?? "(null)", "Result");
             }
@@ -67,7 +67,7 @@ namespace Corvus.Extensions.Json.Specs
         [When(@"I get the property called ""(.*)"" as a custom object")]
         public void WhenIGetThePropertyCalledAsACustomObject(string propertyName)
         {
-            if (this.scenarioContext.Get<PropertyBag>().TryGet(propertyName, out PocObject value))
+            if (this.scenarioContext.Get<PropertyBag>().TryGet(propertyName, out PocObject? value))
             {
                 this.scenarioContext.Set(value, "Result");
             }
@@ -95,9 +95,9 @@ namespace Corvus.Extensions.Json.Specs
         }
 
         [Given(@"I serialize a POCO with ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)""")]
-        public void GivenISerializeAPOCOWith(string value, string time, string nullableTime, string culture, ExampleEnum someEnum)
+        public void GivenISerializeAPOCOWith(string value, string time, string nullableTime, string? culture, ExampleEnum someEnum)
         {
-            var poco = new PocObject { SomeCulture = string.IsNullOrEmpty(culture) ? null : CultureInfo.GetCultureInfo(culture), SomeDateTime = DateTimeOffset.Parse(time), SomeNullableDateTime = string.IsNullOrEmpty(nullableTime) ? null : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime), SomeEnum = someEnum, SomeValue = value };
+            var poco = new PocObject(value) { SomeCulture = string.IsNullOrEmpty(culture) ? null : CultureInfo.GetCultureInfo(culture), SomeDateTime = DateTimeOffset.Parse(time), SomeNullableDateTime = string.IsNullOrEmpty(nullableTime) ? null : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime), SomeEnum = someEnum };
             IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
             this.scenarioContext.Set(JsonConvert.SerializeObject(poco, settingsProvider.Instance), "Result");
         }
@@ -113,7 +113,7 @@ namespace Corvus.Extensions.Json.Specs
         public void ThenTheResultShouldHaveValues(string value, string time, string nullableTime, string culture, ExampleEnum someEnum)
         {
             PocObject poc = this.scenarioContext.Get<PocObject>("Result");
-            var expected = new PocObject { SomeCulture = string.IsNullOrEmpty(culture) ? null : CultureInfo.GetCultureInfo(culture), SomeDateTime = DateTimeOffset.Parse(time), SomeNullableDateTime = string.IsNullOrEmpty(nullableTime) ? null : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime), SomeEnum = someEnum, SomeValue = value };
+            var expected = new PocObject(value) { SomeCulture = string.IsNullOrEmpty(culture) ? null : CultureInfo.GetCultureInfo(culture), SomeDateTime = DateTimeOffset.Parse(time), SomeNullableDateTime = string.IsNullOrEmpty(nullableTime) ? null : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime), SomeEnum = someEnum };
             Assert.AreEqual(expected, poc);
         }
 
@@ -167,7 +167,7 @@ namespace Corvus.Extensions.Json.Specs
                 {
                     case "string":
                         {
-                            Assert.IsTrue(bag.TryGet(name, out string actual));
+                            Assert.IsTrue(bag.TryGet(name, out string? actual));
                             Assert.AreEqual(expected, actual);
                             break;
                         }
@@ -260,9 +260,9 @@ namespace Corvus.Extensions.Json.Specs
             return expected;
         }
 
-        private static IDictionary<string, object> CreateDictionaryFromTable(Table table)
+        private static IDictionary<string, object?> CreateDictionaryFromTable(Table table)
         {
-            var expected = new Dictionary<string, object>();
+            var expected = new Dictionary<string, object?>();
             foreach (TableRow row in table.Rows)
             {
                 row.TryGetValue("Property", out string name);

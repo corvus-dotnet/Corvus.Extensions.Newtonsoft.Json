@@ -43,7 +43,7 @@ namespace Corvus.Extensions.Json.Internal
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            var value = JToken.ReadFrom(reader) as JObject;
+            var value = (JObject)JToken.ReadFrom(reader);
             return new PropertyBag(this.jsonSerializerSettings.Value.Instance) { Properties = value };
         }
 
@@ -66,7 +66,7 @@ namespace Corvus.Extensions.Json.Internal
             }
             else
             {
-                var propertyBag = (JObject)(value as PropertyBag);
+                var propertyBag = (JObject)(PropertyBag)value;
                 propertyBag.WriteTo(writer);
             }
         }

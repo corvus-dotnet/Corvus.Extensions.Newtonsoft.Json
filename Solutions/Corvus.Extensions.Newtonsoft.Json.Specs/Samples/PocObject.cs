@@ -12,6 +12,12 @@ namespace Corvus.Extensions.Json.Specs.Samples
     /// </summary>
     public class PocObject : IEquatable<PocObject>
     {
+
+        public PocObject(string someValue)
+        {
+            this.SomeValue = someValue;
+        }
+
         /// <summary>
         /// Gets or sets a simple value.
         /// </summary>
@@ -30,7 +36,7 @@ namespace Corvus.Extensions.Json.Specs.Samples
         /// <summary>
         /// Gets or sets a culture info
         /// </summary>
-        public CultureInfo SomeCulture { get; set; }
+        public CultureInfo? SomeCulture { get; set; }
 
         /// <summary>
         /// Gets or sets an enumeration value
@@ -66,7 +72,7 @@ namespace Corvus.Extensions.Json.Specs.Samples
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is PocObject sci)
             {
