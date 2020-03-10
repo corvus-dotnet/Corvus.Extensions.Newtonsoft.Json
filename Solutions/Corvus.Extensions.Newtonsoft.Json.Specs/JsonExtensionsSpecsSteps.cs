@@ -32,7 +32,7 @@ namespace Corvus.Extensions.Json.Specs
         }
 
         [Given(@"I set a property called ""(.*)"" to the value ""(.*)""")]
-        public void GivenISetAPropertyCalledToTheValue(string propertyName, string value)
+        public void GivenISetAPropertyCalledToTheValue(string propertyName, string? value)
         {
             PropertyBag bag = this.scenarioContext.Get<PropertyBag>();
             bag.Set(propertyName, value);
