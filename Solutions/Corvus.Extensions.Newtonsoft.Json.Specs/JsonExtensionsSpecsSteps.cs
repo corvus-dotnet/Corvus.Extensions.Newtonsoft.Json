@@ -32,7 +32,7 @@ namespace Corvus.Extensions.Json.Specs
         }
 
         [Given(@"I set a property called ""(.*)"" to the value ""(.*)""")]
-        public void GivenISetAPropertyCalledToTheValue(string propertyName, string? value)
+        public void GivenISetAPropertyCalledToTheValue(string propertyName, string value)
         {
             PropertyBag bag = this.scenarioContext.Get<PropertyBag>();
             bag.Set(propertyName, value);
@@ -97,7 +97,14 @@ namespace Corvus.Extensions.Json.Specs
         [Given(@"I serialize a POCO with ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)""")]
         public void GivenISerializeAPOCOWith(string value, string time, string nullableTime, string? culture, ExampleEnum someEnum)
         {
-            var poco = new PocObject(value) { SomeCulture = string.IsNullOrEmpty(culture) ? null : CultureInfo.GetCultureInfo(culture), SomeDateTime = DateTimeOffset.Parse(time), SomeNullableDateTime = string.IsNullOrEmpty(nullableTime) ? null : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime), SomeEnum = someEnum };
+            var poco = new PocObject(value) 
+            { 
+                SomeCulture = string.IsNullOrEmpty(culture) ? null : CultureInfo.GetCultureInfo(culture), 
+                SomeDateTime = DateTimeOffset.Parse(time), 
+                SomeNullableDateTime = string.IsNullOrEmpty(nullableTime) ? null : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime), 
+                SomeEnum = someEnum 
+            };
+            
             IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
             this.scenarioContext.Set(JsonConvert.SerializeObject(poco, settingsProvider.Instance), "Result");
         }
@@ -113,7 +120,14 @@ namespace Corvus.Extensions.Json.Specs
         public void ThenTheResultShouldHaveValues(string value, string time, string nullableTime, string culture, ExampleEnum someEnum)
         {
             PocObject poc = this.scenarioContext.Get<PocObject>("Result");
-            var expected = new PocObject(value) { SomeCulture = string.IsNullOrEmpty(culture) ? null : CultureInfo.GetCultureInfo(culture), SomeDateTime = DateTimeOffset.Parse(time), SomeNullableDateTime = string.IsNullOrEmpty(nullableTime) ? null : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime), SomeEnum = someEnum };
+            var expected = new PocObject(value) 
+            { 
+                SomeCulture = string.IsNullOrEmpty(culture) ? null : CultureInfo.GetCultureInfo(culture), 
+                SomeDateTime = DateTimeOffset.Parse(time), 
+                SomeNullableDateTime = string.IsNullOrEmpty(nullableTime) ? null : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime), 
+                SomeEnum = someEnum 
+            };
+
             Assert.AreEqual(expected, poc);
         }
 
