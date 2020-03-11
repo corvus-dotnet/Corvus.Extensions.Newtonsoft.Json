@@ -25,7 +25,7 @@ namespace Corvus.Extensions.Json.Internal
         }
 
         /// <inheritdoc/>
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (reader is null)
             {
