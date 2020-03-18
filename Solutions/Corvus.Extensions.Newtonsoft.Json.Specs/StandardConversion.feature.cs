@@ -19,8 +19,9 @@ namespace Corvus.Extensions.Json.Specs
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.1.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("StandardConversion")]
+    [NUnit.Framework.TestFixtureAttribute(TestName="StandardConversion")]
+    [NUnit.Framework.DescriptionAttribute("\tIn order to ensure common serialization specifications\r\n\tAs a developer\r\n\tI want" +
+        " to be provided with standard serializer settings")]
     [NUnit.Framework.CategoryAttribute("setupContainer")]
     public partial class StandardConversionFeature
     {
@@ -77,12 +78,14 @@ namespace Corvus.Extensions.Json.Specs
             testRunner.CollectScenarioErrors();
         }
         
-        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Serialize an object with convertible properties")]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "2018-04-15T09:09:31.234+01:00", "en-US", "Second", @"{""someValue"":""Hello there"",""someDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someNullableDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someCulture"":""en-US"",""someEnum"":""second""}", null)]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "2018-04-15T09:09:31.234+01:00", "en-US", "Second", @"{""someValue"":""Hello there"",""someDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someNullableDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someCulture"":""en-US"",""someEnum"":""second""}", null)]
+        [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "2018-04-15T09:09:31.234+01:00", "en-US", "Second", @"{""someValue"":""Hello there"",""someDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someNullableDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someCulture"":""en-US"",""someEnum"":""second""}", null, TestName=@"Serialize an object with convertible properties(Hello there,2018-04-15T09:09:31.234+01:00,2018-04-15T09:09:31.234+01:00,en-US,Second,{""someValue"":""Hello there"",""someDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someNullableDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someCulture"":""en-US"",""someEnum"":""second""})")]
+        [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "2018-04-15T09:09:31.234+01:00", "en-US", "Second", @"{""someValue"":""Hello there"",""someDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someNullableDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someCulture"":""en-US"",""someEnum"":""second""}", null, TestName=@"Serialize an object with convertible properties(Hello there,2018-04-15T09:09:31.234+01:00,2018-04-15T09:09:31.234+01:00,en-US,Second,{""someValue"":""Hello there"",""someDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someNullableDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someCulture"":""en-US"",""someEnum"":""second""})")]
         [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "", "", "Second", "{\"someValue\":\"Hello there\",\"someDateTime\":{\"dateTimeOffset\":\"2018-04-15T09:09:31." +
-            "2340000+01:00\",\"unixTime\":1523779771234},\"someEnum\":\"second\"}", null)]
+            "2340000+01:00\",\"unixTime\":1523779771234},\"someEnum\":\"second\"}", null, TestName="Serialize an object with convertible properties(Hello there,2018-04-15T09:09:31.2" +
+            "34+01:00,,,Second,{\"someValue\":\"Hello there\",\"someDateTime\":{\"dateTimeOffset\":\"2" +
+            "018-04-15T09:09:31.2340000+01:00\",\"unixTime\":1523779771234},\"someEnum\":\"second\"}" +
+            ")")]
         public virtual void SerializeAnObjectWithConvertibleProperties(string someValue, string someDateTime, string someNullableDateTime, string someCulture, string someEnum, string content, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
@@ -117,18 +120,17 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Deserialize an object with convertible properties")]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "2018-04-15T09:09:31.234+01:00", "en-US", "Second", @"{""someValue"":""Hello there"",""someDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someNullableDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someCulture"":""en-US"",""someEnum"":""second""}", null)]
+        [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "2018-04-15T09:09:31.234+01:00", "en-US", "Second", @"{""someValue"":""Hello there"",""someDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someNullableDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someCulture"":""en-US"",""someEnum"":""second""}", null, TestName=@"Deserialize an object with convertible properties(Hello there,2018-04-15T09:09:31.234+01:00,2018-04-15T09:09:31.234+01:00,en-US,Second,{""someValue"":""Hello there"",""someDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someNullableDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someCulture"":""en-US"",""someEnum"":""second""})")]
         [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "2018-04-15T09:09:31.234+01:00", "en-US", "Second", "{\"someValue\":\"Hello there\",\"someDateTime\":\"2018-04-15T09:09:31.2340000+01:00\",\"so" +
             "meNullableDateTime\":\"2018-04-15T09:09:31.2340000+01:00\",\"someCulture\":\"en-US\",\"s" +
-            "omeEnum\":\"second\"}", null)]
+            "omeEnum\":\"second\"}", null, TestName=@"Deserialize an object with convertible properties(Hello there,2018-04-15T09:09:31.234+01:00,2018-04-15T09:09:31.234+01:00,en-US,Second,{""someValue"":""Hello there"",""someDateTime"":""2018-04-15T09:09:31.2340000+01:00"",""someNullableDateTime"":""2018-04-15T09:09:31.2340000+01:00"",""someCulture"":""en-US"",""someEnum"":""second""})")]
         [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "", "en-US", "Second", "{\"someValue\":\"Hello there\",\"someDateTime\":{\"dateTimeOffset\":\"2018-04-15T09:09:31." +
             "2340000+01:00\",\"unixTime\":1523779771234},\"someCulture\":\"en-US\",\"someEnum\":\"secon" +
-            "d\"}", null)]
+            "d\"}", null, TestName=@"Deserialize an object with convertible properties(Hello there,2018-04-15T09:09:31.234+01:00,,en-US,Second,{""someValue"":""Hello there"",""someDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someCulture"":""en-US"",""someEnum"":""second""})")]
         [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "", "", "Second", "{\"someValue\":\"Hello there\",\"someDateTime\":{\"dateTimeOffset\":\"2018-04-15T09:09:31." +
             "2340000+01:00\",\"unixTime\":1523779771234},\"someCulture\":null,\"someEnum\":\"second\"}" +
-            "", null)]
+            "", null, TestName=@"Deserialize an object with convertible properties(Hello there,2018-04-15T09:09:31.234+01:00,,,Second,{""someValue"":""Hello there"",""someDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someCulture"":null,""someEnum"":""second""})")]
         public virtual void DeserializeAnObjectWithConvertibleProperties(string someValue, string someDateTime, string someNullableDateTime, string someCulture, string someEnum, string content, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;

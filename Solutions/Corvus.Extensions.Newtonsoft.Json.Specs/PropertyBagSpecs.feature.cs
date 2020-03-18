@@ -19,8 +19,9 @@ namespace Corvus.Extensions.Json.Specs
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.1.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("PropertyBagSpecs")]
+    [NUnit.Framework.TestFixtureAttribute(TestName="PropertyBagSpecs")]
+    [NUnit.Framework.DescriptionAttribute("\tIn order to provide strongly typed, extensible properties for a class\r\n\tAs a dev" +
+        "eloper\r\n\tI want to be able to use a property bag")]
     [NUnit.Framework.CategoryAttribute("setupContainer")]
     public partial class PropertyBagSpecsFeature
     {
@@ -77,7 +78,7 @@ namespace Corvus.Extensions.Json.Specs
             testRunner.CollectScenarioErrors();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Get and set a property")]
         [NUnit.Framework.DescriptionAttribute("Get and set a property")]
         public virtual void GetAndSetAProperty()
         {
@@ -116,7 +117,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Get and set a missing property")]
         [NUnit.Framework.DescriptionAttribute("Get and set a missing property")]
         public virtual void GetAndSetAMissingProperty()
         {
@@ -155,7 +156,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Get and set a null property")]
         [NUnit.Framework.DescriptionAttribute("Get and set a null property")]
         public virtual void GetAndSetANullProperty()
         {
@@ -194,7 +195,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Get and set a property to something, then to null")]
         [NUnit.Framework.DescriptionAttribute("Get and set a property to something, then to null")]
         public virtual void GetAndSetAPropertyToSomethingThenToNull()
         {
@@ -236,7 +237,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Get and set a badly serialized property")]
         [NUnit.Framework.DescriptionAttribute("Get and set a badly serialized property")]
         public virtual void GetAndSetABadlySerializedProperty()
         {
@@ -275,7 +276,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Convert to a JObject")]
         [NUnit.Framework.DescriptionAttribute("Convert to a JObject")]
         public virtual void ConvertToAJObject()
         {
@@ -329,7 +330,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Serialize a property bag")]
         [NUnit.Framework.DescriptionAttribute("Serialize a property bag")]
         public virtual void SerializeAPropertyBag()
         {
@@ -371,7 +372,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Deserialize a property bag")]
         [NUnit.Framework.DescriptionAttribute("Deserialize a property bag")]
         public virtual void DeserializeAPropertyBag()
         {
@@ -419,7 +420,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Construct from a JObject")]
         [NUnit.Framework.DescriptionAttribute("Construct from a JObject")]
         public virtual void ConstructFromAJObject()
         {
@@ -482,7 +483,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Construct from a Dictionary")]
         [NUnit.Framework.DescriptionAttribute("Construct from a Dictionary")]
         public virtual void ConstructFromADictionary()
         {
@@ -545,7 +546,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Construct from a JObject with no serializer settings and configured defaults")]
         [NUnit.Framework.DescriptionAttribute("Construct from a JObject with no serializer settings and configured defaults")]
         public virtual void ConstructFromAJObjectWithNoSerializerSettingsAndConfiguredDefaults()
         {
@@ -614,7 +615,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Construct from a Dictionary with no serializer settings and configured defaults")]
         [NUnit.Framework.DescriptionAttribute("Construct from a Dictionary with no serializer settings and configured defaults")]
         public virtual void ConstructFromADictionaryWithNoSerializerSettingsAndConfiguredDefaults()
         {
@@ -683,7 +684,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Construct from a JObject with no serializer settings")]
         [NUnit.Framework.DescriptionAttribute("Construct from a JObject with no serializer settings")]
         public virtual void ConstructFromAJObjectWithNoSerializerSettings()
         {
@@ -752,7 +753,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Construct from a Dictionary with no serializer settings")]
         [NUnit.Framework.DescriptionAttribute("Construct from a Dictionary with no serializer settings")]
         public virtual void ConstructFromADictionaryWithNoSerializerSettings()
         {
@@ -821,7 +822,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Construct with no serializer settings")]
         [NUnit.Framework.DescriptionAttribute("Construct with no serializer settings")]
         public virtual void ConstructWithNoSerializerSettings()
         {
@@ -867,7 +868,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.TestCaseAttribute(TestName="Construct with no serializer settings and configured defaults")]
         [NUnit.Framework.DescriptionAttribute("Construct with no serializer settings and configured defaults")]
         public virtual void ConstructWithNoSerializerSettingsAndConfiguredDefaults()
         {
