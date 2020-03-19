@@ -38,22 +38,22 @@
     Id: 2a7fc206-d578-41b0-85f6-a28b6b0fec5f
     Measures:
         -
-            Score: 0
-            Description: None
+            Score: 1
+            Description: 'Good quality'
 -
     Name: 'Design & Implementation Documentation'
     Id: f026d5a2-ce1a-4e04-af15-5a35792b164b
     Measures:
         -
-            Score: 0
-            Description: None
+            Score: 1
+            Description: 'Up-to-date architecture & high level conceptual docs & diagrams'
 -
     Name: 'How-to Documentation'
     Id: 145f2e3d-bb05-4ced-989b-7fb218fc6705
     Measures:
         -
-            Score: 0
-            Description: None
+            Score: 1
+            Description: 'Common scenarios'
 -
     Name: 'Date of Last IP Review'
     Id: da4ed776-0365-4d8a-a297-c4e91a14d646
