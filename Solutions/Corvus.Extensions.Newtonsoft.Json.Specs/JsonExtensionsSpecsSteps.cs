@@ -199,6 +199,38 @@ namespace Corvus.Extensions.Json.Specs
             }
         }
 
+        [Then(@"the dictionary should contain the properties")]
+        public void ThenTheDictionaryShouldContainTheProperties(Table table)
+        {
+            IDictionary<string, object> dictionary = this.scenarioContext.Get<IDictionary<string, object>>("Result");
+
+            foreach (TableRow row in table.Rows)
+            {
+                row.TryGetValue("Property", out string name);
+                row.TryGetValue("Value", out string expected);
+                row.TryGetValue("Type", out string type);
+                switch (type)
+                {
+                    case "string":
+                        {
+                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
+                            Assert.AreEqual(expected, actual);
+                            break;
+                        }
+
+                    case "integer":
+                        {
+                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
+                            Assert.AreEqual(int.Parse(expected), actual);
+                            break;
+                        }
+
+                    default:
+                        throw new InvalidOperationException($"Unknown data type '{type}'");
+                }
+            }
+        }
+
         [When("I construct a PropertyBag from the JObject")]
         public void WhenIConstructAPropertyBagFromTheJObject()
         {
@@ -215,6 +247,12 @@ namespace Corvus.Extensions.Json.Specs
         public void GivenIResetDefaultJsonSerializerSettings()
         {
             JsonConvert.DefaultSettings = null;
+        }
+
+        [Given("I create a PropertyBag")]
+        public void GivenICreateAPropertyBag(Table table)
+        {
+            this.scenarioContext.Set(CreatePropertyBagFromTable(table));
         }
 
         [Given("I create a Dictionary")]
@@ -240,6 +278,13 @@ namespace Corvus.Extensions.Json.Specs
         public void WhenIConstructAPropertyBagFromTheJObjectWithNoSerializerSettings()
         {
             this.scenarioContext.Set(new PropertyBag(this.scenarioContext.Get<JObject>()), "Result");
+        }
+
+        [When(@"I convert the PropertyBag to a Dictionary")]
+        public void WhenIConvertThePropertyBagToADictionary()
+        {
+            PropertyBag bag = this.scenarioContext.Get<PropertyBag>();
+            this.scenarioContext.Set(bag.AsDictionary(), "Result");
         }
 
         [When("I construct a PropertyBag from the Dictionary with no serializer settings")]
@@ -288,6 +333,32 @@ namespace Corvus.Extensions.Json.Specs
                     "integer" => int.Parse(value),
                     _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
                 };
+            }
+
+            return expected;
+        }
+
+        private static PropertyBag CreatePropertyBagFromTable(Table table)
+        {
+            var expected = new PropertyBag();
+            foreach (TableRow row in table.Rows)
+            {
+                row.TryGetValue("Property", out string name);
+                row.TryGetValue("Value", out string value);
+                row.TryGetValue("Type", out string type);
+                switch (type)
+                {
+                    case "string":
+                        expected.Set(name, value == "(null)" ? null : value);
+                        break;
+
+                    case "integer":
+                        expected.Set(name, int.Parse(value));
+                        break;
+
+                    default:
+                        throw new InvalidOperationException($"Unknown data type '{type}'");
+                }
             }
 
             return expected;
