@@ -19,9 +19,8 @@ namespace Corvus.Extensions.Json.Specs
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.1.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [NUnit.Framework.TestFixtureAttribute(TestName="PropertyBagSpecs")]
-    [NUnit.Framework.DescriptionAttribute("\tIn order to provide strongly typed, extensible properties for a class\r\n\tAs a dev" +
-        "eloper\r\n\tI want to be able to use a property bag")]
+    [NUnit.Framework.TestFixtureAttribute()]
+    [NUnit.Framework.DescriptionAttribute("PropertyBagSpecs")]
     [NUnit.Framework.CategoryAttribute("setupContainer")]
     public partial class PropertyBagSpecsFeature
     {
@@ -78,7 +77,7 @@ namespace Corvus.Extensions.Json.Specs
             testRunner.CollectScenarioErrors();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Get and set a property")]
+        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Get and set a property")]
         public virtual void GetAndSetAProperty()
         {
@@ -117,7 +116,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Get and set a missing property")]
+        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Get and set a missing property")]
         public virtual void GetAndSetAMissingProperty()
         {
@@ -156,7 +155,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Get and set a null property")]
+        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Get and set a null property")]
         public virtual void GetAndSetANullProperty()
         {
@@ -195,7 +194,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Get and set a property to something, then to null")]
+        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Get and set a property to something, then to null")]
         public virtual void GetAndSetAPropertyToSomethingThenToNull()
         {
@@ -237,7 +236,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Get and set a badly serialized property")]
+        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Get and set a badly serialized property")]
         public virtual void GetAndSetABadlySerializedProperty()
         {
@@ -276,7 +275,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Convert to a JObject")]
+        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Convert to a JObject")]
         public virtual void ConvertToAJObject()
         {
@@ -330,7 +329,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Serialize a property bag")]
+        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Serialize a property bag")]
         public virtual void SerializeAPropertyBag()
         {
@@ -372,7 +371,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Deserialize a property bag")]
+        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Deserialize a property bag")]
         public virtual void DeserializeAPropertyBag()
         {
@@ -420,7 +419,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Construct from a JObject")]
+        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Construct from a JObject")]
         public virtual void ConstructFromAJObject()
         {
@@ -483,7 +482,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Construct from a Dictionary")]
+        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Construct from a Dictionary")]
         public virtual void ConstructFromADictionary()
         {
@@ -546,7 +545,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Construct from a JObject with no serializer settings and configured defaults")]
+        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Construct from a JObject with no serializer settings and configured defaults")]
         public virtual void ConstructFromAJObjectWithNoSerializerSettingsAndConfiguredDefaults()
         {
@@ -615,7 +614,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Construct from a Dictionary with no serializer settings and configured defaults")]
+        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Construct from a Dictionary with no serializer settings and configured defaults")]
         public virtual void ConstructFromADictionaryWithNoSerializerSettingsAndConfiguredDefaults()
         {
@@ -684,7 +683,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Construct from a JObject with no serializer settings")]
+        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Construct from a JObject with no serializer settings")]
         public virtual void ConstructFromAJObjectWithNoSerializerSettings()
         {
@@ -753,7 +752,7 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Construct from a Dictionary with no serializer settings")]
+        [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Construct from a Dictionary with no serializer settings")]
         public virtual void ConstructFromADictionaryWithNoSerializerSettings()
         {
@@ -822,12 +821,12 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Construct with no serializer settings")]
-        [NUnit.Framework.DescriptionAttribute("Construct with no serializer settings")]
-        public virtual void ConstructWithNoSerializerSettings()
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Convert to a Dictionary")]
+        public virtual void ConvertToADictionary()
         {
             string[] tagsOfScenario = ((string[])(null));
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Construct with no serializer settings", null, ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Convert to a Dictionary", null, ((string[])(null)));
 #line 130
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -848,33 +847,50 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 131
- testRunner.Given("I reset default json serializer settings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 132
- testRunner.When("I construct a PropertyBag with no serializer settings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
                 TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
                             "Value",
                             "Type"});
-#line 133
- testRunner.Then("the result should have the properties", ((string)(null)), table15, "Then ");
+                table15.AddRow(new string[] {
+                            "hello",
+                            "world",
+                            "string"});
+                table15.AddRow(new string[] {
+                            "number",
+                            "3",
+                            "integer"});
+#line 131
+ testRunner.Given("I create a PropertyBag", ((string)(null)), table15, "Given ");
 #line hidden
 #line 135
- testRunner.And("the result should have the default serializer settings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.When("I convert the PropertyBag to a Dictionary", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Property",
+                            "Value",
+                            "Type"});
+                table16.AddRow(new string[] {
+                            "hello",
+                            "world",
+                            "string"});
+                table16.AddRow(new string[] {
+                            "number",
+                            "3",
+                            "integer"});
+#line 136
+ testRunner.Then("the dictionary should contain the properties", ((string)(null)), table16, "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
-        [NUnit.Framework.TestCaseAttribute(TestName="Construct with no serializer settings and configured defaults")]
-        [NUnit.Framework.DescriptionAttribute("Construct with no serializer settings and configured defaults")]
-        public virtual void ConstructWithNoSerializerSettingsAndConfiguredDefaults()
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Construct with no serializer settings")]
+        public virtual void ConstructWithNoSerializerSettings()
         {
             string[] tagsOfScenario = ((string[])(null));
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Construct with no serializer settings and configured defaults", null, ((string[])(null)));
-#line 138
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Construct with no serializer settings", null, ((string[])(null)));
+#line 141
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -894,20 +910,66 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 139
- testRunner.Given("I setup default json serializer settings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 142
+ testRunner.Given("I reset default json serializer settings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 140
+#line 143
  testRunner.When("I construct a PropertyBag with no serializer settings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-                TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
                             "Value",
                             "Type"});
-#line 141
- testRunner.Then("the result should have the properties", ((string)(null)), table16, "Then ");
+#line 144
+ testRunner.Then("the result should have the properties", ((string)(null)), table17, "Then ");
 #line hidden
-#line 143
+#line 146
+ testRunner.And("the result should have the default serializer settings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Construct with no serializer settings and configured defaults")]
+        public virtual void ConstructWithNoSerializerSettingsAndConfiguredDefaults()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Construct with no serializer settings and configured defaults", null, ((string[])(null)));
+#line 149
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 150
+ testRunner.Given("I setup default json serializer settings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 151
+ testRunner.When("I construct a PropertyBag with no serializer settings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Property",
+                            "Value",
+                            "Type"});
+#line 152
+ testRunner.Then("the result should have the properties", ((string)(null)), table18, "Then ");
+#line hidden
+#line 154
  testRunner.And("the result should have the default serializer settings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }

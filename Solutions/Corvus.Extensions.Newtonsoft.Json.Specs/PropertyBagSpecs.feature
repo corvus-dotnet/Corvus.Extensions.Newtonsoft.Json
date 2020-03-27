@@ -127,6 +127,17 @@ Scenario: Construct from a Dictionary with no serializer settings
 	| number   | 3     | integer |
 	And the result should have the default serializer settings
 
+Scenario: Convert to a Dictionary
+	Given I create a PropertyBag
+	| Property | Value | Type    |
+	| hello    | world | string  |
+	| number   | 3     | integer |
+	When I convert the PropertyBag to a Dictionary
+	Then the dictionary should contain the properties
+	| Property | Value | Type    |
+	| hello    | world | string  |
+	| number   | 3     | integer |
+
 Scenario: Construct with no serializer settings
 	Given I reset default json serializer settings
 	When I construct a PropertyBag with no serializer settings
