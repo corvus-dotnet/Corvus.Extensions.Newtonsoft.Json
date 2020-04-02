@@ -65,9 +65,9 @@ namespace Corvus.Extensions.Json.Specs.Samples
         }
 
         /// <inheritdoc />
-        public bool Equals(PocObject other)
+        public bool Equals(PocObject? other)
         {
-            return (this.SomeValue, this.SomeDateTime, this.SomeNullableDateTime, this.SomeCulture?.Name, this.SomeEnum) == (other.SomeValue, other.SomeDateTime, other.SomeNullableDateTime, other.SomeCulture?.Name, other.SomeEnum);
+            return other is PocObject && (this.SomeValue, this.SomeDateTime, this.SomeNullableDateTime, this.SomeCulture?.Name, this.SomeEnum) == (other.SomeValue, other.SomeDateTime, other.SomeNullableDateTime, other.SomeCulture?.Name, other.SomeEnum);
         }
 
         /// <inheritdoc />
