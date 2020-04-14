@@ -4,6 +4,7 @@
 
 namespace Corvus.Extensions.Json
 {
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
 #pragma warning disable SA1629 // Documentation text should end with a period - this is a work in progress, hence the outstanding question marks
@@ -47,6 +48,12 @@ namespace Corvus.Extensions.Json
         /// </para>
         /// </remarks>
         bool TryGet<T>(string key, [MaybeNullWhen(false)] out T result);
+
+        /// <summary>
+        /// Retrieves the properties as a dictionary.
+        /// </summary>
+        /// <returns>A dictionary containing all of the properties in the bag.</returns>
+        IReadOnlyDictionary<string, object?> AsDictionary();
     }
 #pragma warning restore SA1629 // Documentation text should end with a period
 }

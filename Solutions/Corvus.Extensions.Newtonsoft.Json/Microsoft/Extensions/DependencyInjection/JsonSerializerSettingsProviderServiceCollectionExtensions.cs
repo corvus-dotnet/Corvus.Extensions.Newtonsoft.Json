@@ -33,7 +33,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            services.AddTransient<PropertyBag>();
+            services.AddSingleton<IJsonNetPropertyBagFactory, JsonNetPropertyBagFactory>();
+            services.AddSingleton<IPropertyBagFactory>(sp => sp.GetRequiredService<IJsonNetPropertyBagFactory>());
+
             services.AddSingleton<JsonConverter, CultureInfoConverter>();
             services.AddSingleton<JsonConverter, DateTimeOffsetConverter>();
             services.AddSingleton<JsonConverter, PropertyBagConverter>();

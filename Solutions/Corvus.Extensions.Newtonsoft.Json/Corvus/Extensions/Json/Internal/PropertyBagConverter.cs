@@ -12,11 +12,10 @@ namespace Corvus.Extensions.Json.Internal
     using Newtonsoft.Json.Linq;
 
     /// <summary>
-    /// A standard json converter for <see cref="PropertyBag"/>.
+    /// A standard json converter for <see cref="JsonNetPropertyBag"/>.
     /// </summary>
     public class PropertyBagConverter : JsonConverter
     {
-        private readonly IServiceProvider serviceProvider;
         private readonly Lazy<IJsonSerializerSettingsProvider> jsonSerializerSettings;
 
         /// <summary>
@@ -25,14 +24,13 @@ namespace Corvus.Extensions.Json.Internal
         /// <param name="serviceProvider">The service provider for the context.</param>
         public PropertyBagConverter(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-            this.jsonSerializerSettings = new Lazy<IJsonSerializerSettingsProvider>(() => this.serviceProvider.GetService<IJsonSerializerSettingsProvider>(), LazyThreadSafetyMode.ExecutionAndPublication);
+            this.jsonSerializerSettings = new Lazy<IJsonSerializerSettingsProvider>(() => serviceProvider.GetService<IJsonSerializerSettingsProvider>(), LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
         /// <inheritdoc/>
         public override bool CanConvert(Type objectType)
         {
-            return typeof(PropertyBag) == objectType || typeof(IPropertyBag) == objectType; // TODO: do we need to rework in terms of IPropertyBagFactory?
+            return typeof(IPropertyBag) == objectType || typeof(JsonNetPropertyBag) == objectType;
         }
 
         /// <inheritdoc/>
@@ -44,7 +42,7 @@ namespace Corvus.Extensions.Json.Internal
             }
 
             var value = (JObject)JToken.ReadFrom(reader);
-            return new PropertyBag(this.jsonSerializerSettings.Value.Instance) { Properties = value };
+            return new JsonNetPropertyBag(value, this.jsonSerializerSettings.Value.Instance);
         }
 
         /// <inheritdoc/>
@@ -66,7 +64,7 @@ namespace Corvus.Extensions.Json.Internal
             }
             else
             {
-                var propertyBag = (JObject)(PropertyBag)value;
+                var propertyBag = (JObject)(JsonNetPropertyBag)value;
                 propertyBag.WriteTo(writer);
             }
         }
