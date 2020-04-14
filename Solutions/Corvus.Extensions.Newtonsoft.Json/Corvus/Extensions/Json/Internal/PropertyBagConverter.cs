@@ -32,7 +32,7 @@ namespace Corvus.Extensions.Json.Internal
         /// <inheritdoc/>
         public override bool CanConvert(Type objectType)
         {
-            return typeof(PropertyBag) == objectType;
+            return typeof(PropertyBag) == objectType || typeof(IPropertyBag) == objectType; // TODO: do we need to rework in terms of IPropertyBagFactory?
         }
 
         /// <inheritdoc/>
