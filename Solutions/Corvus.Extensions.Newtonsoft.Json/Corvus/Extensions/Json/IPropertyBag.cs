@@ -41,10 +41,12 @@ namespace Corvus.Extensions.Json
         /// True if a value with the specified key was present. False if not.
         /// </returns>
         /// <remarks>
+        /// <para>
         /// <b>TODO:</b> what do we do if the serialized data wants to be of some type that is not
         /// compatible with T?. Also, do we have any special handling for deserialization errors?
+        /// </para>
         /// </remarks>
-        bool TryGet<T>(string key, [MaybeNull] out T result);
+        bool TryGet<T>(string key, [MaybeNullWhen(false)] out T result);
     }
 #pragma warning restore SA1629 // Documentation text should end with a period
 }
