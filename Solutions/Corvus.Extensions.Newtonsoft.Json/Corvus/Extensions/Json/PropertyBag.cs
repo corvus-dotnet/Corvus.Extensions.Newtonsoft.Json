@@ -12,7 +12,7 @@ namespace Corvus.Extensions.Json
     /// <summary>
     /// A property bag that serializes neatly.
     /// </summary>
-    public class PropertyBag
+    public class PropertyBag : IPropertyBag
     {
         /// <summary>
         /// Gets the fallback default JsonSerializerSettings.
@@ -127,7 +127,7 @@ namespace Corvus.Extensions.Json
         /// <param name="key">The property key.</param>
         /// <param name="result">The result.</param>
         /// <returns>True if the object was found.</returns>
-        public bool TryGet<T>(string key, [MaybeNull] out T result)
+        public bool TryGet<T>(string key, [MaybeNullWhen(false)] out T result)
         {
             JToken jtoken = this.Properties[key];
             if (jtoken == null)
@@ -136,6 +136,17 @@ namespace Corvus.Extensions.Json
                 return false;
             }
 
+            // Note that this may seem like it violates the [MaybeNullWhen(false)] promise made in
+            // the method signature, as the main purpose of that is to enable code that calls this
+            // method to avoid nullability warnings in the body of an <c>if</c> that calls this
+            // method. However, this is logically equivalent to what happens with an
+            // IDictionary<TKey, TValue>. In cases where TValue is non-nullable, the MayBeNull(false)
+            // in IDictionary<TKey, TValue>.TryGetvalue indicates that the out argument may sometimes
+            // be null. However, in cases where TValue is nullable it has no effect, because nulls
+            // are expected whether an entry with the relevant key is present or not. And it's the same
+            // here: if a caller expects the "present, and null" case, they would call, say,
+            // TryGet<Result?> instead of TryGet<Result>.
+            // This is why we use MaybeNullWhen instead of NotNullWhen.
             if (jtoken.Type == JTokenType.Null)
             {
                 result = default!;
