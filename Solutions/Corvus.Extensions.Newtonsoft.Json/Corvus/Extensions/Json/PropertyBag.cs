@@ -12,7 +12,7 @@ namespace Corvus.Extensions.Json
     /// <summary>
     /// A property bag that serializes neatly.
     /// </summary>
-    public class PropertyBag
+    public class PropertyBag : IPropertyBag
     {
         /// <summary>
         /// Gets the fallback default JsonSerializerSettings.
