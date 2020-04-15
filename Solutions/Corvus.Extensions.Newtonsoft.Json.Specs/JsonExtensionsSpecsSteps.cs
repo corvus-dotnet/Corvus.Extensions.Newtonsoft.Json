@@ -23,19 +23,31 @@ namespace Corvus.Extensions.Json.Specs
     {
         private readonly FeatureContext featureContext;
         private readonly ScenarioContext scenarioContext;
+        private readonly IPropertyBagFactory propertyBagFactory;
+        private readonly IJsonNetPropertyBagFactory jnetPropertyBagFactory;
+        private Dictionary<string, object?> properties = new Dictionary<string, object?>();
+        private IPropertyBag? propertyBag;
 
         public JsonExtensionsSpecsSteps(FeatureContext featureContext, ScenarioContext scenarioContext)
         {
             this.featureContext = featureContext;
             this.scenarioContext = scenarioContext;
-            this.scenarioContext.Set(new PropertyBag(ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<IJsonSerializerSettingsProvider>().Instance));
+            this.propertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<IPropertyBagFactory>();
+            this.jnetPropertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<IJsonNetPropertyBagFactory>();
         }
+
+        private IPropertyBag Bag => this.propertyBag ??= this.propertyBagFactory.Create(this.properties);
 
         [Given(@"I set a property called ""(.*)"" to the value ""(.*)""")]
         public void GivenISetAPropertyCalledToTheValue(string propertyName, string? value)
         {
-            PropertyBag bag = this.scenarioContext.Get<PropertyBag>();
-            bag.Set(propertyName, value);
+            this.properties.Add(propertyName, value);
+        }
+
+        [Given(@"I set a property called ""(.*)"" to the value (.*)")]
+        public void GivenISetAPropertyCalledToTheValue(string propertyName, int value)
+        {
+            this.properties.Add(propertyName, value);
         }
 
         [Given(@"I set a property called ""(.*)"" to null")]
@@ -54,7 +66,7 @@ namespace Corvus.Extensions.Json.Specs
         [When(@"I get the property called ""(.*)""")]
         public void WhenIGetThePropertyCalled(string propertyName)
         {
-            if (this.scenarioContext.Get<PropertyBag>().TryGet(propertyName, out string? value))
+            if (this.Bag.TryGet(propertyName, out string? value))
             {
                 this.scenarioContext.Set(value ?? "(null)", "Result");
             }
@@ -67,7 +79,7 @@ namespace Corvus.Extensions.Json.Specs
         [When(@"I get the property called ""(.*)"" as a custom object")]
         public void WhenIGetThePropertyCalledAsACustomObject(string propertyName)
         {
-            if (this.scenarioContext.Get<PropertyBag>().TryGet(propertyName, out PocObject? value))
+            if (this.Bag.TryGet(propertyName, out PocObject? value))
             {
                 this.scenarioContext.Set(value, "Result");
             }
@@ -81,7 +93,7 @@ namespace Corvus.Extensions.Json.Specs
         public void GivenIDeserializeAPropertyBagFromTheStringHelloWorldNumber(string json)
         {
             IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
-            this.scenarioContext.Set(JsonConvert.DeserializeObject<PropertyBag>(json, settingsProvider.Instance), "Result");
+            this.propertyBag = JsonConvert.DeserializeObject<IPropertyBag>(json, settingsProvider.Instance);
         }
 
         [Given("I serialize the property bag")]
@@ -89,9 +101,7 @@ namespace Corvus.Extensions.Json.Specs
         {
             IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
 
-            PropertyBag propertyBag = this.scenarioContext.Get<PropertyBag>();
-
-            this.scenarioContext.Set(JsonConvert.SerializeObject(propertyBag, settingsProvider.Instance), "Result");
+            this.scenarioContext.Set(JsonConvert.SerializeObject(this.Bag, settingsProvider.Instance), "Result");
         }
 
         [Given(@"I serialize a POCO with ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)""")]
@@ -138,17 +148,10 @@ namespace Corvus.Extensions.Json.Specs
             Assert.AreEqual(expected, this.scenarioContext.Get<string>("Result"));
         }
 
-        [Given(@"I set a property called ""(.*)"" to the value (.*)")]
-        public void GivenISetAPropertyCalledToTheValue(string propertyName, int value)
-        {
-            PropertyBag bag = this.scenarioContext.Get<PropertyBag>();
-            bag.Set(propertyName, value);
-        }
-
         [When("I cast to a JObject")]
         public void WhenICastToAJObject()
         {
-            this.scenarioContext.Set<JObject>(this.scenarioContext.Get<PropertyBag>(), "Result");
+            this.scenarioContext.Set(this.jnetPropertyBagFactory.AsJObject(this.Bag), "Result");
         }
 
         [Then("the result should be the JObject")]
@@ -170,8 +173,6 @@ namespace Corvus.Extensions.Json.Specs
         [Then("the result should have the properties")]
         public void ThenTheResultShouldHaveTheProperties(Table table)
         {
-            PropertyBag bag = this.scenarioContext.Get<PropertyBag>("Result");
-
             foreach (TableRow row in table.Rows)
             {
                 row.TryGetValue("Property", out string name);
@@ -181,14 +182,14 @@ namespace Corvus.Extensions.Json.Specs
                 {
                     case "string":
                         {
-                            Assert.IsTrue(bag.TryGet(name, out string? actual));
+                            Assert.IsTrue(this.Bag.TryGet(name, out string? actual));
                             Assert.AreEqual(expected, actual);
                             break;
                         }
 
                     case "integer":
                         {
-                            Assert.IsTrue(bag.TryGet(name, out int actual));
+                            Assert.IsTrue(this.Bag.TryGet(name, out int actual));
                             Assert.AreEqual(int.Parse(expected), actual);
                             break;
                         }
@@ -199,10 +200,10 @@ namespace Corvus.Extensions.Json.Specs
             }
         }
 
-        [Then(@"the dictionary should contain the properties")]
+        [Then("the dictionary should contain the properties")]
         public void ThenTheDictionaryShouldContainTheProperties(Table table)
         {
-            IDictionary<string, object> dictionary = this.scenarioContext.Get<IDictionary<string, object>>("Result");
+            IReadOnlyDictionary<string, object?> dictionary = this.scenarioContext.Get<IReadOnlyDictionary<string, object?>>("Result");
 
             foreach (TableRow row in table.Rows)
             {
@@ -234,37 +235,25 @@ namespace Corvus.Extensions.Json.Specs
         [When("I construct a PropertyBag from the JObject")]
         public void WhenIConstructAPropertyBagFromTheJObject()
         {
-            this.scenarioContext.Set(new PropertyBag(this.scenarioContext.Get<JObject>(), ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>().Instance), "Result");
-        }
-
-        [When("I construct a PropertyBag with no serializer settings")]
-        public void WhenIConstructAPropertyBagWithNoSerializerSettings()
-        {
-            this.scenarioContext.Set(new PropertyBag(), "Result");
-        }
-
-        [Given("I reset default json serializer settings")]
-        public void GivenIResetDefaultJsonSerializerSettings()
-        {
-            JsonConvert.DefaultSettings = null;
+            this.propertyBag = this.jnetPropertyBagFactory.Create(this.scenarioContext.Get<JObject>());
         }
 
         [Given("I create a PropertyBag")]
         public void GivenICreateAPropertyBag(Table table)
         {
-            this.scenarioContext.Set(CreatePropertyBagFromTable(table));
+            this.propertyBag = this.CreatePropertyBagFromTable(table);
         }
 
         [Given("I create a Dictionary")]
         public void GivenICreateADictionary(Table table)
         {
-            this.scenarioContext.Set(CreateDictionaryFromTable(table));
+            this.properties = CreateDictionaryFromTable(table);
         }
 
-        [When("I construct a PropertyBag from the Dictionary")]
+        [When("I create a PropertyBag from the Dictionary")]
         public void WhenIConstructAPropertyBagFromTheDictionary()
         {
-            this.scenarioContext.Set(new PropertyBag(this.scenarioContext.Get<IDictionary<string, object>>(), ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>().Instance), "Result");
+            this.propertyBag = this.propertyBagFactory.Create(this.properties);
         }
 
         [Given("I setup default json serializer settings")]
@@ -274,30 +263,10 @@ namespace Corvus.Extensions.Json.Specs
             JsonConvert.DefaultSettings = () => this.scenarioContext.Get<JsonSerializerSettings>("JsonSerializerSettings");
         }
 
-        [When("I construct a PropertyBag from the JObject with no serializer settings")]
-        public void WhenIConstructAPropertyBagFromTheJObjectWithNoSerializerSettings()
-        {
-            this.scenarioContext.Set(new PropertyBag(this.scenarioContext.Get<JObject>()), "Result");
-        }
-
-        [When(@"I convert the PropertyBag to a Dictionary")]
+        [When("I convert the PropertyBag to a Dictionary")]
         public void WhenIConvertThePropertyBagToADictionary()
         {
-            PropertyBag bag = this.scenarioContext.Get<PropertyBag>();
-            this.scenarioContext.Set(bag.AsDictionary(), "Result");
-        }
-
-        [When("I construct a PropertyBag from the Dictionary with no serializer settings")]
-        public void WhenIConstructAPropertyBagFromTheDictionaryWithNoSerializerSettings()
-        {
-            this.scenarioContext.Set(new PropertyBag(this.scenarioContext.Get<IDictionary<string, object>>()), "Result");
-        }
-
-        [Then("the result should have the default serializer settings")]
-        public void ThenTheResultShouldHaveTheDefaultSerializerSettings()
-        {
-            PropertyBag propertyBag = this.scenarioContext.Get<PropertyBag>("Result");
-            Assert.AreEqual(JsonConvert.DefaultSettings?.Invoke() ?? PropertyBag.DefaultJsonSerializerSettings, propertyBag.SerializerSettings);
+            this.scenarioContext.Set(this.Bag.AsDictionary(), "Result");
         }
 
         private static JObject CreateJObjectFromTable(Table table)
@@ -319,7 +288,7 @@ namespace Corvus.Extensions.Json.Specs
             return expected;
         }
 
-        private static IDictionary<string, object?> CreateDictionaryFromTable(Table table)
+        private static Dictionary<string, object?> CreateDictionaryFromTable(Table table)
         {
             var expected = new Dictionary<string, object?>();
             foreach (TableRow row in table.Rows)
@@ -338,30 +307,9 @@ namespace Corvus.Extensions.Json.Specs
             return expected;
         }
 
-        private static PropertyBag CreatePropertyBagFromTable(Table table)
+        private IPropertyBag CreatePropertyBagFromTable(Table table)
         {
-            var expected = new PropertyBag();
-            foreach (TableRow row in table.Rows)
-            {
-                row.TryGetValue("Property", out string name);
-                row.TryGetValue("Value", out string value);
-                row.TryGetValue("Type", out string type);
-                switch (type)
-                {
-                    case "string":
-                        expected.Set(name, value == "(null)" ? null : value);
-                        break;
-
-                    case "integer":
-                        expected.Set(name, int.Parse(value));
-                        break;
-
-                    default:
-                        throw new InvalidOperationException($"Unknown data type '{type}'");
-                }
-            }
-
-            return expected;
+            return this.propertyBagFactory.Create(CreateDictionaryFromTable(table));
         }
     }
 }
