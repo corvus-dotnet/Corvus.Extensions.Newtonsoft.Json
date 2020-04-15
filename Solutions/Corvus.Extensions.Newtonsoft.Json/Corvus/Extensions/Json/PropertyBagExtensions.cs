@@ -166,8 +166,46 @@ namespace Corvus.Extensions.Json
             this IPropertyBagFactory propertyBagFactory,
             Func<IEnumerable<KeyValuePair<string, object>>, IEnumerable<KeyValuePair<string, object>>> builder)
         {
-            IEnumerable<KeyValuePair<string, object>> values = builder(PropertyBagValues.Empty);
+            IEnumerable<KeyValuePair<string, object>> values = builder(PropertyBagValues.EmptyNonNull);
             return propertyBagFactory.CreateWithNonNullValues(values);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="IPropertyBag"/> based on an existing bag, but with some
+        /// properties either added, updated, or removed, using a callback that produces a
+        /// collection of key pair values where the values are all typed as non-null objects to
+        /// describe the properties to add or change.
+        /// </summary>
+        /// <param name="propertyBagFactory">The property bag factory.</param>
+        /// <param name="input">The property bag on which to base the new one.</param>
+        /// <param name="builder">A function that builds the collection describing the properties to add.</param>
+        /// <param name="propertiesToRemove">Optional list of properties to remove.</param>
+        /// <returns>A collection of key pair values.</returns>
+        /// <remarks>
+        /// <para>
+        /// Similar to
+        /// <see cref="PropertyBagExtensions.CreateWithNonNullValues(IPropertyBagFactory, System.Func{IEnumerable{KeyValuePair{string, object}}, IEnumerable{KeyValuePair{string, object}}})"/>,
+        /// this supports property builders designed to be chained together. Whereas that method
+        /// is for creating a new property bag from scratch, this is suitable for use with
+        /// <see cref="IPropertyBagFactory.CreateModified(IPropertyBag, IEnumerable{KeyValuePair{string, object?}}?, IEnumerable{string}?)"/>.
+        /// For example:
+        /// </para>
+        /// <code><![CDATA[
+        /// IPropertyBag childProperties = propertyBagFactory.CreateModified(
+        ///     existingPropertyBag,
+        ///     values => values.AddBlobStorageConfiguration(ContainerDefinition, tenancyStorageConfiguration));
+        /// ]]></code>
+        /// </remarks>
+        public static IPropertyBag CreateModifiedWithNonNullValues(
+            this IPropertyBagFactory propertyBagFactory,
+            IPropertyBag input,
+            Func<IEnumerable<KeyValuePair<string, object>>, IEnumerable<KeyValuePair<string, object>>> builder,
+            IEnumerable<string>? propertiesToRemove = null)
+        {
+            return propertyBagFactory.CreateModified(
+                input,
+                PropertyBagValues.BuildNonNull(builder),
+                propertiesToRemove);
         }
     }
 }
