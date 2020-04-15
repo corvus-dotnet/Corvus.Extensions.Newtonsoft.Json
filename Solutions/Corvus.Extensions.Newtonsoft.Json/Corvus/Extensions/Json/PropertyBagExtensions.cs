@@ -4,6 +4,8 @@
 
 namespace Corvus.Extensions.Json
 {
+    using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
@@ -74,6 +76,98 @@ namespace Corvus.Extensions.Json
             where T : class
         {
             return propertyBag.TryGet<T>(key, out result);
+        }
+
+        /// <summary>
+        /// Use a list of non-nullable key value pairs in a place declared as accepting nullable
+        /// values.
+        /// </summary>
+        /// <param name="source">A sequence of non-nullable key value pairs.</param>
+        /// <returns>The source sequence, but typed so that the values look nullable.</returns>
+        /// <remarks>
+        /// <para>
+        /// This supports a scenario you'd hope would just work thanks to covariance, but which
+        /// unfortunately does not.
+        /// </para>
+        /// <para>
+        /// In general any IEnumerable&lt;T&gt; supports implicit reference conversion to
+        /// IEnumerable&lt;B&gt; in any case where a T is a B. For example, if you have an
+        /// IEnumerable&lt;string&gt;, an implicit reference conversion to
+        /// IEnumerable&lt;object&gt; exists, and the justification for this is that any code
+        /// that works with an IEnumerable&lt;object&gt; is prepared for literally anything
+        /// to emerge from the sequence, and will therefore be perfectly happy with a
+        /// sequence that only ever produces strings. This same logic applies to nullability:
+        /// anything expecting to work with an <c>object?</c> can certainly cope with a value
+        /// of type <c>object</c>, so an implicit reference conversion exists from
+        /// IEnumerable&lt;object&gt; to IEnumerable&lt;object?&gt;. However, this breaks
+        /// down when the element type is a <see cref="KeyValuePair{TKey, TValue}"/>,
+        /// because that is invariant in both its type arguments. That means that there is
+        /// no implicit type conversion between
+        /// IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt; and
+        /// IEnumerable&lt;KeyValuePair&lt;string, object?&gt;&gt;. This is frustrating because
+        /// their runtime representation is identical—as far as the CLR is concerned,
+        /// KeyValuePair&lt;string, object&gt; and KeyValuePair&lt;string, object?&gt; are the
+        /// same type. The distinction between these types exists only in the C# type system.
+        /// But because only interfaces and delegates support variance, there's no way
+        /// for C# to infer safely that <c>KeyValuePair</c> is effectively covariant in both
+        /// of its type arguments in cases where the types vary only in nullability. (It's not
+        /// true in general for all generic structs. If a struct accepts one of its type
+        /// arguments for any sort of input parameter, this covariance will not hold.)
+        /// </para>
+        /// <para>
+        /// This extension method offers a simple explicit conversion from
+        /// IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt; to
+        /// IEnumerable&lt;KeyValuePair&lt;string, object?&gt;&gt; to enable code to use property
+        /// bags with definitely null values. (Property bags support keys with null values, but
+        /// not everything wants to use that.)
+        /// </para>
+        /// </remarks>
+        public static IEnumerable<KeyValuePair<string, object?>> NonNullToNullable(
+            this IEnumerable<KeyValuePair<string, object>> source)
+        {
+            // The way to handle this entirely within the realm of C#'s null-aware type system is
+            // to project through a Select, but that's unnecessarily inefficient. We know that
+            // the CLR representation is identical, so the easiest way to manage this conversion is
+            // to duck temporarily into the old pre-null-aware type system.
+#nullable disable
+            return source;
+#nullable restore
+        }
+
+        /// <summary>
+        /// Creates a property bag from a collection of key pair values where the values are all
+        /// typed as non-null objects.
+        /// </summary>
+        /// <param name="propertyBagFactory">The property bag factory.</param>
+        /// <param name="values">The properties for the new bag.</param>
+        /// <returns>A new property bag.</returns>
+        public static IPropertyBag CreateWithNonNullValues(
+            this IPropertyBagFactory propertyBagFactory,
+            IEnumerable<KeyValuePair<string, object>> values) =>
+                propertyBagFactory.Create(values.NonNullToNullable());
+
+        /// <summary>
+        /// Creates a property bag from a callback that produces a collection of key pair values
+        /// where the values are all typed as non-null objects.
+        /// </summary>
+        /// <param name="propertyBagFactory">The property bag factory.</param>
+        /// <param name="builder">A function that builds the property collection.</param>
+        /// <returns>A new property bag.</returns>
+        /// <remarks>
+        /// <para>
+        /// This supports property builders designed to be chained together, e.g.:
+        /// </para>
+        /// <code><![CDATA[
+        /// IPropertyBag childProperties = this.propertyBagFactory.CreateWithNonNullValues(start =>
+        ///     start.AddBlobStorageConfiguration(ContainerDefinition, tenancyStorageConfiguration));
+        /// ]]></code>
+        /// </remarks>
+        public static IPropertyBag CreateWithNonNullValues(
+            this IPropertyBagFactory propertyBagFactory,
+            Func<IEnumerable<KeyValuePair<string, object>>, IEnumerable<KeyValuePair<string, object>>> builder)
+        {
+            IEnumerable<KeyValuePair<string, object>> values = builder(PropertyBagValues.Empty);
+            return propertyBagFactory.CreateWithNonNullValues(values);
         }
     }
 }
