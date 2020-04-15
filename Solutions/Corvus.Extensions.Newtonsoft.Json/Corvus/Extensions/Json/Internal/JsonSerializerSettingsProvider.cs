@@ -6,6 +6,7 @@ namespace Corvus.Extensions.Json.Internal
 {
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -42,7 +43,7 @@ namespace Corvus.Extensions.Json.Internal
                 StringEscapeHandling = StringEscapeHandling.Default,
                 CheckAdditionalContent = false,
                 DateFormatString = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFFK",
-                Converters = new List<JsonConverter>(converters),
+                Converters = converters.ToList(),
                 ReferenceResolverProvider = null,
                 Context = default,
                 Culture = CultureInfo.InvariantCulture,
