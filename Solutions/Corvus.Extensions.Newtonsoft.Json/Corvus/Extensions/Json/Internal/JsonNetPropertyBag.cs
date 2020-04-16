@@ -34,7 +34,7 @@ namespace Corvus.Extensions.Json.Internal
         /// </summary>
         /// <param name="dictionary">A dictionary with which to initialize the bag.</param>
         /// <param name="serializerSettings">The serializer settings to use for the property bag.</param>
-        public JsonNetPropertyBag(IDictionary<string, object?> dictionary, JsonSerializerSettings serializerSettings)
+        public JsonNetPropertyBag(IDictionary<string, object> dictionary, JsonSerializerSettings serializerSettings)
         {
             if (dictionary is null)
             {
@@ -42,9 +42,9 @@ namespace Corvus.Extensions.Json.Internal
             }
 
             this.properties = new JObject();
-            foreach (KeyValuePair<string, object?> kvp in dictionary)
+            foreach (KeyValuePair<string, object> kvp in dictionary)
             {
-                (string key, object? value) = (kvp.Key, kvp.Value);
+                (string key, object value) = (kvp.Key, kvp.Value);
 
                 // We have to deal with nulls if it is not a value type
                 this.properties[key] = value is null ? JValue.CreateNull() : this.ConvertToJToken(value);
@@ -74,30 +74,13 @@ namespace Corvus.Extensions.Json.Internal
         /// <param name="key">The property key.</param>
         /// <param name="result">The result.</param>
         /// <returns>True if the object was found.</returns>
-        public bool TryGet<T>(string key, [MaybeNullWhen(false)] out T result)
+        public bool TryGet<T>(string key, [NotNullWhen(true)] out T result)
         {
             JToken jtoken = this.properties[key];
-            if (jtoken == null)
+            if (jtoken == null || jtoken.Type == JTokenType.Null)
             {
                 result = default!;
                 return false;
-            }
-
-            // Note that this may seem like it violates the [MaybeNullWhen(false)] promise made in
-            // the method signature, as the main purpose of that is to enable code that calls this
-            // method to avoid nullability warnings in the body of an <c>if</c> that calls this
-            // method. However, this is logically equivalent to what happens with an
-            // IDictionary<TKey, TValue>. In cases where TValue is non-nullable, the MayBeNull(false)
-            // in IDictionary<TKey, TValue>.TryGetvalue indicates that the out argument may sometimes
-            // be null. However, in cases where TValue is nullable it has no effect, because nulls
-            // are expected whether an entry with the relevant key is present or not. And it's the same
-            // here: if a caller expects the "present, and null" case, they would call, say,
-            // TryGet<Result?> instead of TryGet<Result>.
-            // This is why we use MaybeNullWhen instead of NotNullWhen.
-            if (jtoken.Type == JTokenType.Null)
-            {
-                result = default!;
-                return true;
             }
 
             // We do this weird double check to avoid the deepclone of a potentially deep jtoken
@@ -112,7 +95,7 @@ namespace Corvus.Extensions.Json.Internal
             using JsonReader reader = jtoken.CreateReader();
             try
             {
-                result = JsonSerializer.Create(this.serializerSettings).Deserialize<T>(reader);
+                result = JsonSerializer.Create(this.serializerSettings).Deserialize<T>(reader) !;
                 return true;
             }
             catch (JsonSerializationException ex)
@@ -122,7 +105,7 @@ namespace Corvus.Extensions.Json.Internal
         }
 
         /// <inheritdoc/>
-        public IReadOnlyDictionary<string, object?> AsDictionary() => this.properties.ToObject<Dictionary<string, object?>>();
+        public IReadOnlyDictionary<string, object> AsDictionary() => this.properties.ToObject<Dictionary<string, object>>();
 
         private JToken ConvertToJToken<T>(T value)
         {

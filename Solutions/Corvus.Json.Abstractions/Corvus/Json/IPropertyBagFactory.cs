@@ -42,7 +42,7 @@ namespace Corvus.Json
         /// This supports scenarios where a serialized form of the properties does not yet exist
         /// (e.g., creation of new entities).
         /// </remarks>
-        IPropertyBag Create(IEnumerable<KeyValuePair<string, object?>> values);
+        IPropertyBag Create(IEnumerable<KeyValuePair<string, object>> values);
 
         /// <summary>
         /// Creates a new <see cref="IPropertyBag"/> based on an existing bag, but with some
@@ -65,7 +65,7 @@ namespace Corvus.Json
         /// </remarks>
         IPropertyBag CreateModified(
             IPropertyBag input,
-            IEnumerable<KeyValuePair<string, object?>>? propertiesToSetOrAdd,
+            IEnumerable<KeyValuePair<string, object>>? propertiesToSetOrAdd,
             IEnumerable<string>? propertiesToRemove);
     }
 }

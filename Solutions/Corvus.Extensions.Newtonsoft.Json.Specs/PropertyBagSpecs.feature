@@ -12,12 +12,7 @@ Scenario: Create from a property, and get that property
 Scenario: Create from a property, and get a missing property
 	Given I set a property called "hello" to the value "world"
 	When I get the property called "goodbye"
-	Then the result should be null
-
-Scenario: Create from a null property, and get that property
-	Given I set a property called "hello" to null
-	When I get the property called "hello"
-	Then the result should be null
+	Then TryGet should have returned false and the result should be null
 
 Scenario: Get and set a badly serialized property
 	Given I set a property called "hello" to the value "jiggerypokery"

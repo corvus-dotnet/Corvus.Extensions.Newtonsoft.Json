@@ -28,7 +28,7 @@ namespace Corvus.Json
         /// <para>
         /// One is if you need to create an empty property bag. If you have an implementation of
         /// <see cref="IPropertyBagFactory"/> to hand you can pass this to its
-        /// <see cref="IPropertyBagFactory.Create(IEnumerable{KeyValuePair{string, object?}})"/>
+        /// <see cref="IPropertyBagFactory.Create(IEnumerable{KeyValuePair{string, object}})"/>
         /// method:
         /// </para>
         /// <code><![CDATA[
@@ -49,20 +49,7 @@ namespace Corvus.Json
         ///         .CreateWithNonNullValues());
         /// ]]></code>
         /// </remarks>
-        public static IEnumerable<KeyValuePair<string, object?>> Empty { get; }
-            = Enumerable.Empty<KeyValuePair<string, object?>>();
-
-        /// <summary>
-        /// Gets an empty configuration for a property bag, for when working with non-null values.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This serves the same purpose as <see cref="Empty"/>, but it supports code that does not
-        /// wish to use the feature of property bags by which present-but-null values are
-        /// supported, and thus wants to work entirely with non-nullable values.
-        /// </para>
-        /// </remarks>
-        public static IEnumerable<KeyValuePair<string, object>> EmptyNonNull { get; }
+        public static IEnumerable<KeyValuePair<string, object>> Empty { get; }
             = Enumerable.Empty<KeyValuePair<string, object>>();
 
         /// <summary>
@@ -74,21 +61,21 @@ namespace Corvus.Json
         /// <remarks>
         /// <para>
         /// Similar to
-        /// <see cref="PropertyBagExtensions.CreateWithNonNullValues(IPropertyBagFactory, Func{IEnumerable{KeyValuePair{string, object}}, IEnumerable{KeyValuePair{string, object}}})"/>,
+        /// <see cref="PropertyBagExtensions.Create(IPropertyBagFactory, Func{IEnumerable{KeyValuePair{string, object}}, IEnumerable{KeyValuePair{string, object}}})"/>,
         /// this supports property builders designed to be chained together. Whereas that method
-        /// is for creating a new property bag from scratch, this is suitable for use with
-        /// <see cref="IPropertyBagFactory.CreateModified(IPropertyBag, IEnumerable{KeyValuePair{string, object?}}?, IEnumerable{string}?)"/>.
+        /// goes on to call <see cref="IPropertyBagFactory.Create(IEnumerable{KeyValuePair{string, object}})"/>,
+        /// this just produces the property collection resulting from the chained builder.
         /// </para>
         /// <code><![CDATA[
         /// IPropertyBag childProperties = propertyBagFactory.CreateModified(
         ///     existingPropertyBag,
-        ///     PropertyBagValues.BuildNonNull(start => start.AddBlobStorageConfiguration(ContainerDefinition, tenancyStorageConfiguration));
+        ///     PropertyBagValues.Build(start => start.AddBlobStorageConfiguration(ContainerDefinition, tenancyStorageConfiguration));
         /// ]]></code>
         /// </remarks>
-        public static IEnumerable<KeyValuePair<string, object?>> BuildNonNull(
+        public static IEnumerable<KeyValuePair<string, object>> Build(
             Func<IEnumerable<KeyValuePair<string, object>>, IEnumerable<KeyValuePair<string, object>>> builder)
         {
-            return builder(EmptyNonNull).NonNullToNullable();
+            return builder(Empty);
         }
     }
 }

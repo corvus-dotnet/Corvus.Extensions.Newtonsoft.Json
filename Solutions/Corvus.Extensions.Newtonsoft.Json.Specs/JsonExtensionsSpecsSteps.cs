@@ -26,7 +26,7 @@ namespace Corvus.Extensions.Json.Specs
         private readonly ScenarioContext scenarioContext;
         private readonly IPropertyBagFactory propertyBagFactory;
         private readonly IJsonNetPropertyBagFactory jnetPropertyBagFactory;
-        private Dictionary<string, object?> properties = new Dictionary<string, object?>();
+        private Dictionary<string, object> properties = new Dictionary<string, object>();
         private IPropertyBag? propertyBag;
         private SerializationException? exception;
 
@@ -41,7 +41,7 @@ namespace Corvus.Extensions.Json.Specs
         private IPropertyBag Bag => this.propertyBag ??= this.propertyBagFactory.Create(this.properties);
 
         [Given(@"I set a property called ""(.*)"" to the value ""(.*)""")]
-        public void GivenISetAPropertyCalledToTheValue(string propertyName, string? value)
+        public void GivenISetAPropertyCalledToTheValue(string propertyName, string value)
         {
             this.properties.Add(propertyName, value);
         }
@@ -52,17 +52,12 @@ namespace Corvus.Extensions.Json.Specs
             this.properties.Add(propertyName, value);
         }
 
-        [Given(@"I set a property called ""(.*)"" to null")]
-        public void GivenISetAPropertyCalledToNull(string propertyName)
-        {
-            this.GivenISetAPropertyCalledToTheValue(propertyName, null);
-        }
-
-        [Then("the result should be null")]
+        [Then("TryGet should have returned false and the result should be null")]
         public void ThenTheResultShouldBeNull()
         {
             Assert.True(this.scenarioContext.ContainsKey("Result"));
             Assert.AreEqual("(null)", this.scenarioContext.Get<string>("Result"));
+            Assert.IsFalse(this.scenarioContext.Get<bool>("TryGetReturn"));
         }
 
         [When(@"I get the property called ""(.*)""")]
@@ -70,11 +65,13 @@ namespace Corvus.Extensions.Json.Specs
         {
             if (this.Bag.TryGet(propertyName, out string? value))
             {
-                this.scenarioContext.Set(value ?? "(null)", "Result");
+                this.scenarioContext.Set(value, "Result");
+                this.scenarioContext.Set(true, "TryGetReturn");
             }
             else
             {
                 this.scenarioContext.Set("(null)", "Result");
+                this.scenarioContext.Set(false, "TryGetReturn");
             }
         }
 
@@ -189,7 +186,7 @@ namespace Corvus.Extensions.Json.Specs
         public void WhenIAddModifyOrRemoveProperties(Table table)
         {
             var propertiesToRemove = new List<string>();
-            var propertiesToSetOrAdd = new Dictionary<string, object?>();
+            var propertiesToSetOrAdd = new Dictionary<string, object>();
             foreach (TableRow row in table.Rows)
             {
                 string propertyName = row["Property"];
@@ -256,7 +253,7 @@ namespace Corvus.Extensions.Json.Specs
         [Then("the dictionary should contain the properties")]
         public void ThenTheDictionaryShouldContainTheProperties(Table table)
         {
-            IReadOnlyDictionary<string, object?> dictionary = this.scenarioContext.Get<IReadOnlyDictionary<string, object?>>("Result");
+            IReadOnlyDictionary<string, object> dictionary = this.scenarioContext.Get<IReadOnlyDictionary<string, object>>("Result");
 
             foreach (TableRow row in table.Rows)
             {
@@ -335,36 +332,34 @@ namespace Corvus.Extensions.Json.Specs
             foreach (TableRow row in table.Rows)
             {
                 row.TryGetValue("Property", out string name);
-                row.TryGetValue("Value", out string value);
-                row.TryGetValue("Type", out string type);
-                expected[name] = type switch
-                {
-                    "string"  => value == "(null)" ? null : value,
-                    "integer" => int.Parse(value),
-                    _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
-                };
+                expected[name] = GetRowValue(row);
             }
 
             return expected;
         }
 
-        private static Dictionary<string, object?> CreateDictionaryFromTable(Table table)
+        private static Dictionary<string, object> CreateDictionaryFromTable(Table table)
         {
-            var expected = new Dictionary<string, object?>();
+            var expected = new Dictionary<string, object>();
             foreach (TableRow row in table.Rows)
             {
                 row.TryGetValue("Property", out string name);
-                row.TryGetValue("Value", out string value);
-                row.TryGetValue("Type", out string type);
-                expected[name] = type switch
-                {
-                    "string"  => value == "(null)" ? null : value,
-                    "integer" => int.Parse(value),
-                    _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
-                };
+                expected[name] = GetRowValue(row);
             }
 
             return expected;
+        }
+
+        private static JToken GetRowValue(TableRow row)
+        {
+            row.TryGetValue("Value", out string value);
+            row.TryGetValue("Type", out string type);
+            return type switch
+            {
+                "string" => value,
+                "integer" => int.Parse(value),
+                _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
+            };
         }
 
         private IPropertyBag CreatePropertyBagFromTable(Table table)

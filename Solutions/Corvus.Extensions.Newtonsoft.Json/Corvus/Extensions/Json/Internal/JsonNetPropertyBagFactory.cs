@@ -45,7 +45,7 @@ namespace Corvus.Extensions.Json.Internal
         }
 
         /// <inheritdoc/>
-        public IPropertyBag Create(IEnumerable<KeyValuePair<string, object?>> values)
+        public IPropertyBag Create(IEnumerable<KeyValuePair<string, object>> values)
         {
             return new JsonNetPropertyBag(values.ToDictionary(kv => kv.Key, kv => kv.Value), this.serializerSettings);
         }
@@ -59,15 +59,15 @@ namespace Corvus.Extensions.Json.Internal
         /// <inheritdoc/>
         public IPropertyBag CreateModified(
             IPropertyBag input,
-            IEnumerable<KeyValuePair<string, object?>>? propertiesToSetOrAdd,
+            IEnumerable<KeyValuePair<string, object>>? propertiesToSetOrAdd,
             IEnumerable<string>? propertiesToRemove)
         {
             var pb = (JsonNetPropertyBag)input;
-            IReadOnlyDictionary<string, object?> existingProperties = pb.AsDictionary();
-            Dictionary<string, object?> newProperties = propertiesToSetOrAdd?.ToDictionary(kv => kv.Key, kv => kv.Value)
-                ?? new Dictionary<string, object?>();
+            IReadOnlyDictionary<string, object> existingProperties = pb.AsDictionary();
+            Dictionary<string, object> newProperties = propertiesToSetOrAdd?.ToDictionary(kv => kv.Key, kv => kv.Value)
+                ?? new Dictionary<string, object>();
             HashSet<string>? remove = propertiesToRemove == null ? null : new HashSet<string>(propertiesToRemove);
-            foreach (KeyValuePair<string, object?> existingKv in existingProperties)
+            foreach (KeyValuePair<string, object> existingKv in existingProperties)
             {
                 string key = existingKv.Key;
                 bool newPropertyWithThisNameExists = newProperties.ContainsKey(key);

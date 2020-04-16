@@ -20,19 +20,20 @@ namespace Corvus.Json
         /// <param name="key">The key identifying the entry in the bag.</param>
         /// <param name="result">
         /// The variable in which to store the result. Will be set to <c>default(T)</c> if no entry
-        /// with the specified key exists.</param>
+        /// with the specified key exists.
+        /// </param>
         /// <returns>
         /// True if a value with the specified key was present. False if not.
         /// </returns>
         /// <exception cref="SerializationException">
         /// Thrown if the data is present but cannot be deserialized to the specified type.
         /// </exception>
-        bool TryGet<T>(string key, [MaybeNullWhen(false)] out T result);
+        bool TryGet<T>(string key, [NotNullWhen(true)] out T result);
 
         /// <summary>
         /// Retrieves the properties as a dictionary.
         /// </summary>
         /// <returns>A dictionary containing all of the properties in the bag.</returns>
-        IReadOnlyDictionary<string, object?> AsDictionary();
+        IReadOnlyDictionary<string, object> AsDictionary();
     }
 }
