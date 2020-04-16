@@ -10,6 +10,7 @@ namespace Corvus.Extensions.Json.Specs
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Runtime.CompilerServices;
     using Corvus.Extensions.Json.Specs.Samples;
     using Corvus.SpecFlow.Extensions;
     using Microsoft.Extensions.DependencyInjection;
@@ -170,6 +171,44 @@ namespace Corvus.Extensions.Json.Specs
             this.scenarioContext.Set(CreateJObjectFromTable(table));
         }
 
+        [When("I add, modify, or remove properties")]
+        public void WhenIAddModifyOrRemoveProperties(Table table)
+        {
+            var propertiesToRemove = new List<string>();
+            var propertiesToSetOrAdd = new Dictionary<string, object?>();
+            foreach (TableRow row in table.Rows)
+            {
+                string propertyName = row["Property"];
+                switch (row["Action"])
+                {
+                    case "remove":
+                        propertiesToRemove.Add(propertyName);
+                        break;
+
+                    case "addOrSet":
+                        string value = row["Value"];
+                        string type = row["Type"];
+                        object actualValue = type switch
+                        {
+                            "string" => value,
+                            "integer" => int.Parse(value),
+                            _ => throw new InvalidOperationException($"Unknown data type '{type}'")
+                        };
+                        propertiesToSetOrAdd.Add(propertyName, actualValue);
+                        break;
+
+                    default:
+                        Assert.Fail("Unknown action in add/modify/remove table: " + row["Action"]);
+                        break;
+                }
+            }
+
+            this.propertyBag = this.propertyBagFactory.CreateModified(
+                this.Bag,
+                propertiesToSetOrAdd.Count == 0 ? null : propertiesToSetOrAdd,
+                propertiesToRemove.Count == 0 ? null : propertiesToRemove);
+        }
+
         [Then("the result should have the properties")]
         public void ThenTheResultShouldHaveTheProperties(Table table)
         {
@@ -250,6 +289,7 @@ namespace Corvus.Extensions.Json.Specs
             this.properties = CreateDictionaryFromTable(table);
         }
 
+        [Given("I create a PropertyBag from the Dictionary")]
         [When("I create a PropertyBag from the Dictionary")]
         public void WhenIConstructAPropertyBagFromTheDictionary()
         {
