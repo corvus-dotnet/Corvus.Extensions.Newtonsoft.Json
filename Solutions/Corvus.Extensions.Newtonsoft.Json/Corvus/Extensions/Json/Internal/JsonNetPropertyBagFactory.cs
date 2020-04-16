@@ -69,7 +69,14 @@ namespace Corvus.Extensions.Json.Internal
             foreach (KeyValuePair<string, object?> existingKv in existingProperties)
             {
                 string key = existingKv.Key;
-                if (!newProperties.ContainsKey(key) && (remove?.Contains(key) == true))
+                bool newPropertyWithThisNameExists = newProperties.ContainsKey(key);
+                bool existingPropertyIsToBeRemoved = remove?.Contains(key) == true;
+                if (newPropertyWithThisNameExists && existingPropertyIsToBeRemoved)
+                {
+                    throw new ArgumentException($"Property {key} appears in both {nameof(propertiesToSetOrAdd)} and {nameof(propertiesToRemove)}");
+                }
+
+                if (!newPropertyWithThisNameExists && !existingPropertyIsToBeRemoved)
                 {
                     newProperties.Add(key, existingKv.Value);
                 }
