@@ -4,24 +4,18 @@ Feature: PropertyBagSpecs
 	As a developer
 	I want to be able to use a property bag
 
-Scenario: Get and set a property
+Scenario: Create from a property, and get that property
 	Given I set a property called "hello" to the value "world"
 	When I get the property called "hello"
 	Then the result should be "world"
 
-Scenario: Get and set a missing property
+Scenario: Create from a property, and get a missing property
 	Given I set a property called "hello" to the value "world"
 	When I get the property called "goodbye"
 	Then the result should be null
 
-Scenario: Get and set a null property
+Scenario: Create from a null property, and get that property
 	Given I set a property called "hello" to null
-	When I get the property called "hello"
-	Then the result should be null
-
-Scenario: Get and set a property to something, then to null
-	Given I set a property called "hello" to the value "world"
-	And I set a property called "hello" to null
 	When I get the property called "hello"
 	Then the result should be null
 
@@ -52,7 +46,6 @@ Scenario: Deserialize a property bag
 	| hello    | world | string  |
 	| number   | 3     | integer |
 
-
 Scenario: Construct from a JObject
 	Given I create a JObject
 	| Property | Value | Type    |
@@ -69,63 +62,11 @@ Scenario: Construct from a Dictionary
 	| Property | Value | Type    |
 	| hello    | world | string  |
 	| number   | 3     | integer |
-	When I construct a PropertyBag from the Dictionary
+	When I create a PropertyBag from the Dictionary
 	Then the result should have the properties
 	| Property | Value | Type    |
 	| hello    | world | string  |
 	| number   | 3     | integer |
-
-Scenario: Construct from a JObject with no serializer settings and configured defaults
-	Given I create a JObject
-	| Property | Value | Type    |
-	| hello    | world | string  |
-	| number   | 3     | integer |
-	And I setup default json serializer settings
-	When I construct a PropertyBag from the JObject with no serializer settings
-	Then the result should have the properties
-	| Property | Value | Type    |
-	| hello    | world | string  |
-	| number   | 3     | integer |
-	And the result should have the default serializer settings
-
-Scenario: Construct from a Dictionary with no serializer settings and configured defaults
-	Given I create a Dictionary
-	| Property | Value | Type    |
-	| hello    | world | string  |
-	| number   | 3     | integer |
-	And I setup default json serializer settings
-	When I construct a PropertyBag from the Dictionary with no serializer settings
-	Then the result should have the properties
-	| Property | Value | Type    |
-	| hello    | world | string  |
-	| number   | 3     | integer |
-	And the result should have the default serializer settings
-
-	Scenario: Construct from a JObject with no serializer settings
-	Given I create a JObject
-	| Property | Value | Type    |
-	| hello    | world | string  |
-	| number   | 3     | integer |
-	And I reset default json serializer settings
-	When I construct a PropertyBag from the JObject with no serializer settings
-	Then the result should have the properties
-	| Property | Value | Type    |
-	| hello    | world | string  |
-	| number   | 3     | integer |
-	And the result should have the default serializer settings
-
-Scenario: Construct from a Dictionary with no serializer settings
-	Given I create a Dictionary
-	| Property | Value | Type    |
-	| hello    | world | string  |
-	| number   | 3     | integer |
-	And I reset default json serializer settings
-	When I construct a PropertyBag from the Dictionary with no serializer settings
-	Then the result should have the properties
-	| Property | Value | Type    |
-	| hello    | world | string  |
-	| number   | 3     | integer |
-	And the result should have the default serializer settings
 
 Scenario: Convert to a Dictionary
 	Given I create a PropertyBag
@@ -138,17 +79,66 @@ Scenario: Convert to a Dictionary
 	| hello    | world | string  |
 	| number   | 3     | integer |
 
-Scenario: Construct with no serializer settings
-	Given I reset default json serializer settings
-	When I construct a PropertyBag with no serializer settings
+Scenario: Add properties
+	Given I create a Dictionary
+	| Property | Value | Type    |
+	| hello    | world | string  |
+	| number   | 3     | integer |
+	And I create a PropertyBag from the Dictionary
+	When I add, modify, or remove properties
+	| Property | Value | Type    | Action   |
+	| foo      | bar   | string  | addOrSet |
+	| quux     | 4     | integer | addOrSet |
 	Then the result should have the properties
 	| Property | Value | Type    |
-	And the result should have the default serializer settings
+	| hello    | world | string  |
+	| number   | 3     | integer |
+	| foo      | bar   | string  |
+	| quux     | 4     | integer |
 
-	
-Scenario: Construct with no serializer settings and configured defaults
-	Given I setup default json serializer settings
-	When I construct a PropertyBag with no serializer settings
+Scenario: Modify properties
+	Given I create a Dictionary
+	| Property | Value | Type    |
+	| hello    | world | string  |
+	| number   | 3     | integer |
+	And I create a PropertyBag from the Dictionary
+	When I add, modify, or remove properties
+	| Property | Value | Type    | Action   |
+	| hello    | bar   | string  | addOrSet |
+	| number   | 4     | integer | addOrSet |
 	Then the result should have the properties
 	| Property | Value | Type    |
-	And the result should have the default serializer settings
+	| hello    | bar   | string  |
+	| number   | 4     | integer |
+
+Scenario: Remove properties
+	Given I create a Dictionary
+	| Property | Value | Type    |
+	| hello    | world | string  |
+	| number   | 3     | integer |
+	| foo      | bar   | string  |
+	And I create a PropertyBag from the Dictionary
+	When I add, modify, or remove properties
+	| Property | Action |
+	| number   | remove |
+	| foo      | remove |
+	Then the result should have the properties
+	| Property | Value | Type   |
+	| hello    | world | string |
+
+Scenario: Add, modify, and remove properties
+	Given I create a Dictionary
+	| Property | Value | Type    |
+	| hello    | world | string  |
+	| number   | 3     | integer |
+	| bar      | foo   | string  |
+	And I create a PropertyBag from the Dictionary
+	When I add, modify, or remove properties
+	| Property | Value | Type    | Action   |
+	| hello    | bar   | string  | addOrSet |
+	| quux     | 4     | integer | addOrSet |
+	| number   |       |         | remove   |
+	Then the result should have the properties
+	| Property | Value | Type    |
+	| hello    | bar   | string  |
+	| quux     | 4     | integer |
