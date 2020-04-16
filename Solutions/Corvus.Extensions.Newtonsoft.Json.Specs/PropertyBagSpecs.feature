@@ -21,8 +21,8 @@ Scenario: Create from a null property, and get that property
 
 Scenario: Get and set a badly serialized property
 	Given I set a property called "hello" to the value "jiggerypokery"
-	When I get the property called "hello" as a custom object
-	Then the result should be null
+	When I get the property called "hello" as a custom object expecting an exception
+	Then TryGet should have thrown a SerializationException
 
 Scenario: Convert to a JObject
 	Given I set a property called "hello" to the value "world"

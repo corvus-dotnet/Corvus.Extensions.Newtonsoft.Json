@@ -6,7 +6,7 @@ namespace Corvus.Extensions.Json.Internal
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using Corvus.Extensions.Json;
+    using Corvus.Json;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
@@ -115,10 +115,9 @@ namespace Corvus.Extensions.Json.Internal
                 result = JsonSerializer.Create(this.serializerSettings).Deserialize<T>(reader);
                 return true;
             }
-            catch (JsonSerializationException)
+            catch (JsonSerializationException ex)
             {
-                result = default!;
-                return false;
+                throw new SerializationException(ex);
             }
         }
 

@@ -5,6 +5,7 @@
 namespace Corvus.Extensions.Json
 {
     using System;
+    using Corvus.Json;
     using Newtonsoft.Json.Linq;
 
     /// <summary>

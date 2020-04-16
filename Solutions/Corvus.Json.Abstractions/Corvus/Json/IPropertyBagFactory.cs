@@ -2,7 +2,7 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Corvus.Extensions.Json
+namespace Corvus.Json
 {
     using System;
     using System.Collections.Generic;
@@ -25,9 +25,6 @@ namespace Corvus.Extensions.Json
     /// This interface supports these "create" and "modify" scenarios. Code that needs to work
     /// with property bags can use this interface without needing to know which particular
     /// implementation is in use. (E.g. Json.NET vs System.Text.Json.)
-    /// </para>
-    /// <para>
-    /// TODO: this needs to move into wherever IPropertyBag ends up being defined.
     /// </para>
     /// </remarks>
     public interface IPropertyBagFactory

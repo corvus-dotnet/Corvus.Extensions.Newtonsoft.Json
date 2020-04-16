@@ -2,7 +2,7 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Corvus.Extensions.Json
+namespace Corvus.Json
 {
     using System;
     using System.Collections.Generic;
@@ -74,7 +74,7 @@ namespace Corvus.Extensions.Json
         /// <remarks>
         /// <para>
         /// Similar to
-        /// <see cref="PropertyBagExtensions.CreateWithNonNullValues(IPropertyBagFactory, System.Func{IEnumerable{KeyValuePair{string, object}}, IEnumerable{KeyValuePair{string, object}}})"/>,
+        /// <see cref="PropertyBagExtensions.CreateWithNonNullValues(IPropertyBagFactory, Func{IEnumerable{KeyValuePair{string, object}}, IEnumerable{KeyValuePair{string, object}}})"/>,
         /// this supports property builders designed to be chained together. Whereas that method
         /// is for creating a new property bag from scratch, this is suitable for use with
         /// <see cref="IPropertyBagFactory.CreateModified(IPropertyBag, IEnumerable{KeyValuePair{string, object?}}?, IEnumerable{string}?)"/>.

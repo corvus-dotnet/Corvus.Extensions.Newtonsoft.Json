@@ -8,11 +8,12 @@ namespace Corvus.Extensions.Json.Internal
     using System.Collections.Generic;
     using System.Linq;
     using Corvus.Extensions.Json;
+    using Corvus.Json;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
     /// <summary>
-    /// TODO: this needs to move into wherever IPropertyBag ends up being defined.
+    /// Json.NET-specific implementation of <see cref="IPropertyBagFactory"/>.
     /// </summary>
     internal class JsonNetPropertyBagFactory : IJsonNetPropertyBagFactory
     {

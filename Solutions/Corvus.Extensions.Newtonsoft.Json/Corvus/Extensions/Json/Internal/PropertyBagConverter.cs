@@ -7,6 +7,7 @@ namespace Corvus.Extensions.Json.Internal
     using System;
     using System.Threading;
     using Corvus.Extensions.Json;
+    using Corvus.Json;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;

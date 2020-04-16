@@ -2,11 +2,12 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Corvus.Extensions.Json
+namespace Corvus.Json
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
 
     /// <summary>
     /// Extension methods for <see cref="IPropertyBag"/>.
@@ -135,6 +136,54 @@ namespace Corvus.Extensions.Json
         }
 
         /// <summary>
+        /// Use a list of key value pairs with nullable values in a place that requires
+        /// non-nullable values. This throws an exception if any of the values are null.
+        /// </summary>
+        /// <param name="source">
+        /// A sequence of key value pairs typed as having nullable values, but where the
+        /// values are all non-null.
+        /// </param>
+        /// <returns>The source sequence, but typed so that the values look nullable.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if any elements turn out to have non-null values. This is not an
+        /// <see cref="ArgumentException"/> because it is thrown when the enumerable is
+        /// evaluated, which will be after this method returns.
+        /// </exception>
+        /// <remarks>
+        /// <para>
+        /// You can avoid the runtime check with <see cref="NullableToNonNullUnsafe(IEnumerable{KeyValuePair{string, object?}})"/>.
+        /// </para>
+        /// </remarks>
+        public static IEnumerable<KeyValuePair<string, object>> NullableToNonNull(
+            this IEnumerable<KeyValuePair<string, object?>> source)
+        {
+            return source.Select(kv => new KeyValuePair<string, object>(kv.Key, kv.Value ?? throw new InvalidOperationException("Not all elements had non-null values")));
+        }
+
+        /// <summary>
+        /// Use a list of key value pairs with nullable values in a place that requires
+        /// non-nullable values, without checking at runtime that the values are non-null.
+        /// </summary>
+        /// <param name="source">
+        /// A sequence of key value pairs typed as having nullable values, but where the
+        /// values are all non-null.
+        /// </param>
+        /// <returns>The source sequence, but typed so that the values look nullable.</returns>
+        /// <remarks>
+        /// <para>
+        /// You should use this only if you are confident that the source really contains
+        /// only non-null values. If in doubt, use <see cref="NonNullToNullable(IEnumerable{KeyValuePair{string, object}})"/>.
+        /// </para>
+        /// </remarks>
+        public static IEnumerable<KeyValuePair<string, object>> NullableToNonNullUnsafe(
+            this IEnumerable<KeyValuePair<string, object?>> source)
+        {
+#nullable disable
+            return source;
+#nullable restore
+        }
+
+        /// <summary>
         /// Creates a property bag from a collection of key pair values where the values are all
         /// typed as non-null objects.
         /// </summary>
@@ -184,7 +233,7 @@ namespace Corvus.Extensions.Json
         /// <remarks>
         /// <para>
         /// Similar to
-        /// <see cref="PropertyBagExtensions.CreateWithNonNullValues(IPropertyBagFactory, System.Func{IEnumerable{KeyValuePair{string, object}}, IEnumerable{KeyValuePair{string, object}}})"/>,
+        /// <see cref="CreateWithNonNullValues(IPropertyBagFactory, Func{IEnumerable{KeyValuePair{string, object}}, IEnumerable{KeyValuePair{string, object}}})"/>,
         /// this supports property builders designed to be chained together. Whereas that method
         /// is for creating a new property bag from scratch, this is suitable for use with
         /// <see cref="IPropertyBagFactory.CreateModified(IPropertyBag, IEnumerable{KeyValuePair{string, object?}}?, IEnumerable{string}?)"/>.

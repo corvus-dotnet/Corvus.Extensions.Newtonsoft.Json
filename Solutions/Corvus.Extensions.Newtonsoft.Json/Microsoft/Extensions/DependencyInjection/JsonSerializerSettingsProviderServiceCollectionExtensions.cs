@@ -7,6 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection
     using System.Linq;
     using Corvus.Extensions.Json;
     using Corvus.Extensions.Json.Internal;
+    using Corvus.Json;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 

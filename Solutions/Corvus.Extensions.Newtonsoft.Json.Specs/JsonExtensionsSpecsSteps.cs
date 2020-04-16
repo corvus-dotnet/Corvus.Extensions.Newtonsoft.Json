@@ -10,8 +10,8 @@ namespace Corvus.Extensions.Json.Specs
     using System;
     using System.Collections.Generic;
     using System.Globalization;
-    using System.Runtime.CompilerServices;
     using Corvus.Extensions.Json.Specs.Samples;
+    using Corvus.Json;
     using Corvus.SpecFlow.Extensions;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
@@ -28,6 +28,7 @@ namespace Corvus.Extensions.Json.Specs
         private readonly IJsonNetPropertyBagFactory jnetPropertyBagFactory;
         private Dictionary<string, object?> properties = new Dictionary<string, object?>();
         private IPropertyBag? propertyBag;
+        private SerializationException? exception;
 
         public JsonExtensionsSpecsSteps(FeatureContext featureContext, ScenarioContext scenarioContext)
         {
@@ -87,6 +88,19 @@ namespace Corvus.Extensions.Json.Specs
             else
             {
                 this.scenarioContext.Set("(null)", "Result");
+            }
+        }
+
+        [When(@"I get the property called ""(.*)"" as a custom object expecting an exception")]
+        public void WhenIGetThePropertyCalledAsACustomObjectExpectingAnException(string propertyName)
+        {
+            try
+            {
+                this.Bag.TryGet(propertyName, out PocObject? _);
+            }
+            catch (SerializationException x)
+            {
+                this.exception = x;
             }
         }
 
@@ -307,6 +321,12 @@ namespace Corvus.Extensions.Json.Specs
         public void WhenIConvertThePropertyBagToADictionary()
         {
             this.scenarioContext.Set(this.Bag.AsDictionary(), "Result");
+        }
+
+        [Then("TryGet should have thrown a SerializationException")]
+        public void ThenTryGetShouldHaveThrownASerializationException()
+        {
+            Assert.IsInstanceOf<SerializationException>(this.exception);
         }
 
         private static JObject CreateJObjectFromTable(Table table)
