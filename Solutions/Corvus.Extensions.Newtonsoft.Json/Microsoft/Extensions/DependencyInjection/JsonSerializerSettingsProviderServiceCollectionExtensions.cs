@@ -7,6 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection
     using System.Linq;
     using Corvus.Extensions.Json;
     using Corvus.Extensions.Json.Internal;
+    using Corvus.Json;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
@@ -33,7 +34,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            services.AddTransient<PropertyBag>();
+            services.AddSingleton<IJsonNetPropertyBagFactory, JsonNetPropertyBagFactory>();
+            services.AddSingleton<IPropertyBagFactory>(sp => sp.GetRequiredService<IJsonNetPropertyBagFactory>());
+
             services.AddSingleton<JsonConverter, CultureInfoConverter>();
             services.AddSingleton<JsonConverter, DateTimeOffsetConverter>();
             services.AddSingleton<JsonConverter, PropertyBagConverter>();
