@@ -1,6 +1,6 @@
 ﻿@setupContainer
-Feature: PropertyBagSpecs
-	In order to provide strongly typed, extensible properties for a class
+Feature: JsonNetPropertyBagSpecs
+	In order to provide strongly typed, extensible properties for a class that serialize neatly as JSON
 	As a developer
 	I want to be able to use a property bag
 
@@ -42,11 +42,12 @@ Scenario: Serialize a property bag
 	Then the result should be "{"hello":"world","number":3,"date":"2020-04-17T07:06:10+01:00","preciseDate":"2020-04-17T07:06:10.12345+01:00"}"
 
 Scenario: Deserialize a property bag
-	Given I deserialize a property bag from the string "{"hello":"world","number":3}"
+	Given I deserialize a property bag from the string "{"hello":"world","number":3,"date":"2020-04-17T07:06:10+01:00"}"
 	Then the result should have the properties
-	| Property | Value | Type    |
-	| hello    | world | string  |
-	| number   | 3     | integer |
+	| Property | Value                     | Type     |
+	| hello    | world                     | string   |
+	| number   | 3                         | integer  |
+	| date     | 2020-04-17T07:06:10+01:00 | datetime |
 
 Scenario Outline: POCO serialization and deserialization
 	Given the creation properties include a POCO called "poco" with "<value>" "<time>" "<nullableTime>" "<culture>" "<enum>"

@@ -254,6 +254,13 @@ namespace Corvus.Extensions.Json.Specs
                             break;
                         }
 
+                    case "datetime":
+                        {
+                            Assert.IsTrue(this.Bag.TryGet(name, out DateTimeOffset actual));
+                            Assert.AreEqual(DateTimeOffset.Parse(expected), actual);
+                            break;
+                        }
+
                     default:
                         throw new InvalidOperationException($"Unknown data type '{type}'");
                 }
