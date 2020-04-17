@@ -67,7 +67,7 @@ namespace Corvus.Extensions.Json.Specs.Samples
         /// <inheritdoc />
         public bool Equals(PocObject other)
         {
-            return (this.SomeValue, this.SomeDateTime, this.SomeNullableDateTime, this.SomeCulture?.Name, this.SomeEnum) == (other.SomeValue, other.SomeDateTime, other.SomeNullableDateTime, other.SomeCulture?.Name, other.SomeEnum);
+            return this.GetDefiningTuple() == other.GetDefiningTuple();
         }
 
         /// <inheritdoc />
@@ -86,5 +86,13 @@ namespace Corvus.Extensions.Json.Specs.Samples
         {
             return HashCode.Combine(this.SomeValue, this.SomeDateTime, this.SomeNullableDateTime, this.SomeCulture, this.SomeEnum);
         }
+
+        public override string ToString()
+        {
+            return this.GetDefiningTuple().ToString();
+        }
+
+        private (string SomeValue, DateTimeOffset SomeDateTime, DateTimeOffset? SomeNullableDateTime, string? Name, ExampleEnum SomeEnum) GetDefiningTuple() =>
+            (this.SomeValue, this.SomeDateTime, this.SomeNullableDateTime, this.SomeCulture?.Name, this.SomeEnum);
     }
 }
