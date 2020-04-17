@@ -296,7 +296,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line hidden
 #line 38
  testRunner.And("the creation properties include \"date\" with the date value \"2020-04-17T07:06:10+0" +
-                        "1:00\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+                        "3:00\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 39
  testRunner.And("the creation properties include \"preciseDate\" with the date value \"2020-04-17T07:" +
@@ -309,7 +309,7 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.When("I serialize the property bag", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 42
- testRunner.Then("the result should be \"{\"hello\":\"world\",\"number\":3,\"date\":\"2020-04-17T07:06:10+01:" +
+ testRunner.Then("the result should be \"{\"hello\":\"world\",\"number\":3,\"date\":\"2020-04-17T07:06:10+03:" +
                         "00\",\"preciseDate\":\"2020-04-17T07:06:10.12345+01:00\"}\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }

@@ -35,11 +35,11 @@ Scenario: Convert to a JObject
 Scenario: Serialize a property bag
 	Given the creation properties include "hello" with the value "world"
 	And the creation properties include "number" with the value 3
-	And the creation properties include "date" with the date value "2020-04-17T07:06:10+01:00"
+	And the creation properties include "date" with the date value "2020-04-17T07:06:10+03:00"
 	And the creation properties include "preciseDate" with the date value "2020-04-17T07:06:10.12345+01:00"
 	And I create the property bag from the creation properties
 	When I serialize the property bag
-	Then the result should be "{"hello":"world","number":3,"date":"2020-04-17T07:06:10+01:00","preciseDate":"2020-04-17T07:06:10.12345+01:00"}"
+	Then the result should be "{"hello":"world","number":3,"date":"2020-04-17T07:06:10+03:00","preciseDate":"2020-04-17T07:06:10.12345+01:00"}"
 
 Scenario: Deserialize a property bag
 	Given I deserialize a property bag from the string "{"hello":"world","number":3,"date":"2020-04-17T07:06:10+01:00"}"

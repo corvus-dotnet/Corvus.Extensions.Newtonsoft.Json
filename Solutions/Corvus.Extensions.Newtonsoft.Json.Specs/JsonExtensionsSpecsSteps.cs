@@ -53,7 +53,7 @@ namespace Corvus.Extensions.Json.Specs
         }
 
         [Given(@"the creation properties include ""(.*)"" with the date value ""(.*)""")]
-        public void TheCreationPropertiesInclude(string propertyName, DateTime value)
+        public void TheCreationPropertiesInclude(string propertyName, DateTimeOffset value)
         {
             this.creationProperties.Add(propertyName, value);
         }
@@ -325,13 +325,6 @@ namespace Corvus.Extensions.Json.Specs
         public void WhenIConstructAPropertyBagFromTheDictionary()
         {
             this.propertyBag = this.propertyBagFactory.Create(this.creationProperties);
-        }
-
-        [Given("I setup default json serializer settings")]
-        public void GivenISetupDefaultJsonSerializerSettings()
-        {
-            this.scenarioContext.Set(new JsonSerializerSettings(), "JsonSerializerSettings");
-            JsonConvert.DefaultSettings = () => this.scenarioContext.Get<JsonSerializerSettings>("JsonSerializerSettings");
         }
 
         [When("I convert the PropertyBag to a Dictionary")]
