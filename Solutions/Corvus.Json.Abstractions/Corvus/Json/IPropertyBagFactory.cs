@@ -16,7 +16,7 @@ namespace Corvus.Json
     /// view over a serialized representation. The presumption is that some serialized form exists
     /// somewhere, and that we don't want to deserialize it into objects until we know that the
     /// relevant information is definitely needed. However, there are occasions when new property
-    /// bags need to be build, most notably when modifying or creating new instances of some type
+    /// bags need to be built, most notably when modifying or creating new instances of some type
     /// that has a property bag. (For example, Corvus.Tenancy's ITenant includes a property bag,
     /// and in cases where we create a new tenant, or we modify the properties of an existing
     /// tenant, <see cref="IPropertyBag"/>'s read-only abstraction is no longer sufficient.)

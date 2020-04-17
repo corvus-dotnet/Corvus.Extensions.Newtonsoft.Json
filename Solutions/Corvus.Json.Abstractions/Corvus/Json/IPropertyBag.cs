@@ -4,7 +4,6 @@
 
 namespace Corvus.Json
 {
-    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
@@ -13,8 +12,8 @@ namespace Corvus.Json
     public interface IPropertyBag
     {
         /// <summary>
-        /// Determines whether the bag contains a value with the specified key, and if so retreives
-        /// it. This will typically deserialize the relevant data.
+        /// Determines whether the bag contains a value with the specified key, and if so retrieves
+        /// it. This will deserialize the relevant data if it has not already been deserialized.
         /// </summary>
         /// <typeparam name="T">The expected value type.</typeparam>
         /// <param name="key">The key identifying the entry in the bag.</param>
@@ -29,11 +28,5 @@ namespace Corvus.Json
         /// Thrown if the data is present but cannot be deserialized to the specified type.
         /// </exception>
         bool TryGet<T>(string key, [NotNullWhen(true)] out T result);
-
-        /// <summary>
-        /// Retrieves the properties as a dictionary.
-        /// </summary>
-        /// <returns>A dictionary containing all of the properties in the bag.</returns>
-        IReadOnlyDictionary<string, object> AsDictionary();
     }
 }

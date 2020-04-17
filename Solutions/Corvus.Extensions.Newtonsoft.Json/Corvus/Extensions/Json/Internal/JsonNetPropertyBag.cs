@@ -11,15 +11,15 @@ namespace Corvus.Extensions.Json.Internal
     using Newtonsoft.Json.Linq;
 
     /// <summary>
-    /// A property bag that serializes neatly.
+    /// A property bag that serializes neatly using Json.NET.
     /// </summary>
-    internal class JsonNetPropertyBag : IPropertyBag
+    internal class JsonNetPropertyBag : IJsonNetPropertyBag
     {
         private readonly JsonSerializerSettings serializerSettings;
         private readonly JObject properties;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="JsonNetPropertyBag"/> class.
+        /// Creates a <see cref="JsonNetPropertyBag"/> from a <see cref="JObject"/>.
         /// </summary>
         /// <param name="jobject">The JObject from which to initialize the property bag.</param>
         /// <param name="serializerSettings">The serializer settings to use for the property bag.</param>
@@ -30,7 +30,7 @@ namespace Corvus.Extensions.Json.Internal
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="JsonNetPropertyBag"/> class.
+        /// Creates a <see cref="JsonNetPropertyBag"/> from a dictionary of properties.
         /// </summary>
         /// <param name="dictionary">A dictionary with which to initialize the bag.</param>
         /// <param name="serializerSettings">The serializer settings to use for the property bag.</param>
@@ -46,8 +46,7 @@ namespace Corvus.Extensions.Json.Internal
             {
                 (string key, object value) = (kvp.Key, kvp.Value);
 
-                // We have to deal with nulls if it is not a value type
-                this.properties[key] = value is null ? JValue.CreateNull() : this.ConvertToJToken(value);
+                this.properties[key] = this.ConvertToJToken(value);
             }
 
             this.serializerSettings = serializerSettings;
@@ -92,9 +91,9 @@ namespace Corvus.Extensions.Json.Internal
                 return true;
             }
 
-            using JsonReader reader = jtoken.CreateReader();
             try
             {
+                using JsonReader reader = jtoken.CreateReader();
                 result = JsonSerializer.Create(this.serializerSettings).Deserialize<T>(reader) !;
                 return true;
             }

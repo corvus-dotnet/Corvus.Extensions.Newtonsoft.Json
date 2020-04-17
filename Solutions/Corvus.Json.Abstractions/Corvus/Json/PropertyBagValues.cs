@@ -11,11 +11,6 @@ namespace Corvus.Json
     /// <summary>
     /// Helps build values in the form required by <see cref="IPropertyBagFactory"/>.
     /// </summary>
-    /// <remarks>
-    /// <b>TODO:</b> should we introduce a formal PropertyBagBuilder instead of just using
-    /// IEnumerable for everything? Not sure if this makes the null/non-null problem better
-    /// or worse.
-    /// </remarks>
     public static class PropertyBagValues
     {
         /// <summary>
@@ -46,7 +41,7 @@ namespace Corvus.Json
         ///     PropertyBagValues
         ///         .Empty
         ///         .AddBlobStorageConfiguration(ContainerDefinition, tenancyStorageConfiguration)
-        ///         .CreateWithNonNullValues());
+        ///         .Create());
         /// ]]></code>
         /// </remarks>
         public static IEnumerable<KeyValuePair<string, object>> Empty { get; }
@@ -54,7 +49,7 @@ namespace Corvus.Json
 
         /// <summary>
         /// Builds a collection of property bag values from a callback that produces a collection
-        /// of key pair values where the values are all typed as non-null objects.
+        /// of key pair values.
         /// </summary>
         /// <param name="builder">A function that builds the property collection.</param>
         /// <returns>A collection of key pair values.</returns>

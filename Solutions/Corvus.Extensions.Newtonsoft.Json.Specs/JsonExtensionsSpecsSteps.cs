@@ -61,15 +61,18 @@ namespace Corvus.Extensions.Json.Specs
         [Given(@"the creation properties include a POCO called ""(.*)"" with ""(.*)"" ""(.*)"" ""(.*)"" ""(.*)"" ""(.*)""")]
         public void TheCreationPropertiesIncludeAPOCOWith(string name, string value, string time, string nullableTime, string? culture, ExampleEnum someEnum)
         {
-            var poco = new PocObject(value)
-            {
-                SomeCulture = string.IsNullOrEmpty(culture) ? null : CultureInfo.GetCultureInfo(culture),
-                SomeDateTime = DateTimeOffset.Parse(time),
-                SomeNullableDateTime = string.IsNullOrEmpty(nullableTime) ? null : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime),
-                SomeEnum = someEnum,
-            };
+            PocObject poco = MakePoco(value, time, nullableTime, culture, someEnum);
 
             this.creationProperties.Add(name, poco);
+        }
+
+        [Given(@"I serialize a POCO with ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)""")]
+        public void GivenISerializeAPOCOWith(string value, string time, string nullableTime, string? culture, ExampleEnum someEnum)
+        {
+            PocObject poco = MakePoco(value, time, nullableTime, culture, someEnum);
+
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
+            this.scenarioContext.Set(JsonConvert.SerializeObject(poco, settingsProvider.Instance), "Result");
         }
 
         [Given("I create the property bag from the creation properties")]
@@ -334,7 +337,7 @@ namespace Corvus.Extensions.Json.Specs
         [When("I convert the PropertyBag to a Dictionary")]
         public void WhenIConvertThePropertyBagToADictionary()
         {
-            this.scenarioContext.Set(this.Bag.AsDictionary(), "Result");
+            this.scenarioContext.Set(((IJsonNetPropertyBag)this.Bag).AsDictionary(), "Result");
         }
 
         [Then("TryGet should have thrown a SerializationException")]
@@ -383,6 +386,17 @@ namespace Corvus.Extensions.Json.Specs
         private IPropertyBag CreatePropertyBagFromTable(Table table)
         {
             return this.propertyBagFactory.Create(CreateDictionaryFromTable(table));
+        }
+
+        private static PocObject MakePoco(string value, string time, string nullableTime, string? culture, ExampleEnum someEnum)
+        {
+            return new PocObject(value)
+            {
+                SomeCulture = string.IsNullOrEmpty(culture) ? null : CultureInfo.GetCultureInfo(culture),
+                SomeDateTime = DateTimeOffset.Parse(time),
+                SomeNullableDateTime = string.IsNullOrEmpty(nullableTime) ? null : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime),
+                SomeEnum = someEnum,
+            };
         }
 
         private static void CheckPocosAreEqual(string value, string time, string nullableTime, string culture, ExampleEnum someEnum, PocObject poc)

@@ -6,8 +6,6 @@ namespace Corvus.Json
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
 
     /// <summary>
     /// Extension methods for <see cref="IPropertyBag"/>.
@@ -15,8 +13,7 @@ namespace Corvus.Json
     public static class PropertyBagExtensions
     {
         /// <summary>
-        /// Creates a property bag from a callback that produces a collection of key pair values
-        /// where the values are all typed as non-null objects.
+        /// Creates a property bag from a callback that produces a collection of key pair values.
         /// </summary>
         /// <param name="propertyBagFactory">The property bag factory.</param>
         /// <param name="builder">A function that builds the property collection.</param>
@@ -26,7 +23,7 @@ namespace Corvus.Json
         /// This supports property builders designed to be chained together, e.g.:
         /// </para>
         /// <code><![CDATA[
-        /// IPropertyBag childProperties = this.propertyBagFactory.CreateWithNonNullValues(start =>
+        /// IPropertyBag childProperties = this.propertyBagFactory.Create(start =>
         ///     start.AddBlobStorageConfiguration(ContainerDefinition, tenancyStorageConfiguration));
         /// ]]></code>
         /// <para>
@@ -45,8 +42,7 @@ namespace Corvus.Json
         /// <summary>
         /// Creates a new <see cref="IPropertyBag"/> based on an existing bag, but with some
         /// properties either added, updated, or removed, using a callback that produces a
-        /// collection of key pair values where the values are all typed as non-null objects to
-        /// describe the properties to add or change.
+        /// collection of key pair values to describe the properties to add or change.
         /// </summary>
         /// <param name="propertyBagFactory">The property bag factory.</param>
         /// <param name="input">The property bag on which to base the new one.</param>
