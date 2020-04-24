@@ -309,8 +309,9 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.When("I serialize the property bag", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 42
- testRunner.Then("the result should be \"{\"hello\":\"world\",\"number\":3,\"date\":\"2020-04-17T07:06:10+03:" +
-                        "00\",\"preciseDate\":\"2020-04-17T07:06:10.12345+01:00\"}\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the result should be \"{\"hello\":\"world\",\"number\":3,\"date\":{\"dateTimeOffset\":\"2020-" +
+                        "04-17T07:06:10.0000000+03:00\",\"unixTime\":1587096370000},\"preciseDate\":{\"dateTime" +
+                        "Offset\":\"2020-04-17T07:06:10.1234500+01:00\",\"unixTime\":1587103570123}}\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
