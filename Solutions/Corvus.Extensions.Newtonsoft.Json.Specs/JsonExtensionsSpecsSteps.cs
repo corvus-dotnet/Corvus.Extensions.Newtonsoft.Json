@@ -10,6 +10,7 @@ namespace Corvus.Extensions.Json.Specs
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Runtime.CompilerServices;
     using Corvus.Extensions.Json.Specs.Samples;
     using Corvus.Json;
     using Corvus.SpecFlow.Extensions;
@@ -26,6 +27,7 @@ namespace Corvus.Extensions.Json.Specs
         private readonly ScenarioContext scenarioContext;
         private readonly IPropertyBagFactory propertyBagFactory;
         private readonly IJsonNetPropertyBagFactory jnetPropertyBagFactory;
+        private readonly IJsonSerializerSettingsProvider jsonSerializerSettingsProvider;
         private Dictionary<string, object> creationProperties = new Dictionary<string, object>();
         private IPropertyBag? propertyBag;
         private SerializationException? exception;
@@ -36,6 +38,7 @@ namespace Corvus.Extensions.Json.Specs
             this.scenarioContext = scenarioContext;
             this.propertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<IPropertyBagFactory>();
             this.jnetPropertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<IJsonNetPropertyBagFactory>();
+            this.jsonSerializerSettingsProvider = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
         }
 
         private IPropertyBag Bag => this.propertyBag ?? throw new InvalidOperationException("The test is trying to use property bag before it has been created");
@@ -182,7 +185,7 @@ namespace Corvus.Extensions.Json.Specs
         [Then("the result should be the JObject")]
         public void ThenTheResultShouldBeTheJObject(Table table)
         {
-            JObject expected = CreateJObjectFromTable(table);
+            JObject expected = this.CreateJObjectFromTable(table);
 
             JObject actual = this.scenarioContext.Get<JObject>("Result");
 
@@ -192,7 +195,7 @@ namespace Corvus.Extensions.Json.Specs
         [Given("I create a JObject")]
         public void GivenICreateAJObject(Table table)
         {
-            this.scenarioContext.Set(CreateJObjectFromTable(table));
+            this.scenarioContext.Set(this.CreateJObjectFromTable(table));
         }
 
         [When("I add, modify, or remove properties")]
@@ -317,7 +320,7 @@ namespace Corvus.Extensions.Json.Specs
         [Given("I create a Dictionary")]
         public void GivenICreateADictionary(Table table)
         {
-            this.creationProperties = CreateDictionaryFromTable(table);
+            this.creationProperties = this.CreateDictionaryFromTable(table);
         }
 
         [Given("I create a PropertyBag from the Dictionary")]
@@ -339,46 +342,48 @@ namespace Corvus.Extensions.Json.Specs
             Assert.IsInstanceOf<SerializationException>(this.exception);
         }
 
-        private static JObject CreateJObjectFromTable(Table table)
+        private JObject CreateJObjectFromTable(Table table)
         {
             var expected = new JObject();
             foreach (TableRow row in table.Rows)
             {
                 row.TryGetValue("Property", out string name);
-                expected[name] = GetRowValue(row);
+                expected[name] = this.GetRowValue(row);
             }
 
             return expected;
         }
 
-        private static Dictionary<string, object> CreateDictionaryFromTable(Table table)
+        private Dictionary<string, object> CreateDictionaryFromTable(Table table)
         {
             var expected = new Dictionary<string, object>();
             foreach (TableRow row in table.Rows)
             {
                 row.TryGetValue("Property", out string name);
-                expected[name] = GetRowValue(row);
+                expected[name] = this.GetRowValue(row);
             }
 
             return expected;
         }
 
-        private static JToken GetRowValue(TableRow row)
+        private JToken GetRowValue(TableRow row)
         {
             row.TryGetValue("Value", out string value);
             row.TryGetValue("Type", out string type);
-            return type switch
-            {
-                "string" => value,
-                "integer" => int.Parse(value),
-                "datetime" => DateTimeOffset.Parse(value),
-                _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
-            };
+            return JToken.FromObject(
+                type switch
+                {
+                    "string" => value,
+                    "integer" => int.Parse(value),
+                    "datetime" => DateTimeOffset.Parse(value),
+                    _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
+                },
+                JsonSerializer.Create(this.jsonSerializerSettingsProvider.Instance));
         }
 
         private IPropertyBag CreatePropertyBagFromTable(Table table)
         {
-            return this.propertyBagFactory.Create(CreateDictionaryFromTable(table));
+            return this.propertyBagFactory.Create(this.CreateDictionaryFromTable(table));
         }
 
         private static PocObject MakePoco(string value, string time, string nullableTime, string? culture, ExampleEnum someEnum)

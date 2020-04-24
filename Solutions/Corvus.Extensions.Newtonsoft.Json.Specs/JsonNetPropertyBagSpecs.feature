@@ -39,7 +39,7 @@ Scenario: Serialize a property bag
 	And the creation properties include "preciseDate" with the date value "2020-04-17T07:06:10.12345+01:00"
 	And I create the property bag from the creation properties
 	When I serialize the property bag
-	Then the result should be "{"hello":"world","number":3,"date":"2020-04-17T07:06:10+03:00","preciseDate":"2020-04-17T07:06:10.12345+01:00"}"
+	Then the result should be "{"hello":"world","number":3,"date":{"dateTimeOffset":"2020-04-17T07:06:10.0000000+03:00","unixTime":1587096370000},"preciseDate":{"dateTimeOffset":"2020-04-17T07:06:10.1234500+01:00","unixTime":1587103570123}}"
 
 Scenario: Deserialize a property bag
 	Given I deserialize a property bag from the string "{"hello":"world","number":3,"date":"2020-04-17T07:06:10+01:00"}"

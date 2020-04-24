@@ -26,7 +26,7 @@ namespace Corvus.Extensions.Json.Internal
         public JsonNetPropertyBag(JObject jobject, JsonSerializerSettings serializerSettings)
         {
             this.properties = jobject ?? throw new System.ArgumentNullException(nameof(jobject));
-            this.serializerSettings = serializerSettings;
+            this.serializerSettings = serializerSettings ?? throw new System.ArgumentNullException(nameof(jobject));
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Corvus.Extensions.Json.Internal
                 throw new System.ArgumentNullException(nameof(dictionary));
             }
 
-            if (this.serializerSettings is null)
+            if (serializerSettings is null)
             {
                 throw new System.ArgumentNullException(nameof(serializerSettings));
             }
