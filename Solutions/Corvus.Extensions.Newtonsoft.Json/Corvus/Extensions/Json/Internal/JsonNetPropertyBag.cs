@@ -41,6 +41,13 @@ namespace Corvus.Extensions.Json.Internal
                 throw new System.ArgumentNullException(nameof(dictionary));
             }
 
+            if (this.serializerSettings is null)
+            {
+                throw new System.ArgumentNullException(nameof(serializerSettings));
+            }
+
+            this.serializerSettings = serializerSettings;
+
             this.properties = new JObject();
             foreach (KeyValuePair<string, object> kvp in dictionary)
             {
@@ -48,8 +55,6 @@ namespace Corvus.Extensions.Json.Internal
 
                 this.properties[key] = this.ConvertToJToken(value);
             }
-
-            this.serializerSettings = serializerSettings;
         }
 
         /// <summary>
