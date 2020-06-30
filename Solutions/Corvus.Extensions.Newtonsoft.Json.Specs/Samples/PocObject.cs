@@ -65,9 +65,9 @@ namespace Corvus.Extensions.Json.Specs.Samples
         }
 
         /// <inheritdoc />
-        public bool Equals(PocObject other)
+        public bool Equals(PocObject? other)
         {
-            return this.GetDefiningTuple() == other.GetDefiningTuple();
+            return other is PocObject && this.GetDefiningTuple() == other.GetDefiningTuple();
         }
 
         /// <inheritdoc />
