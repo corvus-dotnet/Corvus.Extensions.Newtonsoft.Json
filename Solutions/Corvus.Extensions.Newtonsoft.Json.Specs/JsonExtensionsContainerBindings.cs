@@ -6,6 +6,8 @@ namespace Corvus.Extensions.Json.Specs
 {
     using Corvus.SpecFlow.Extensions;
     using Microsoft.Extensions.DependencyInjection;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -24,7 +26,14 @@ namespace Corvus.Extensions.Json.Specs
         {
             ContainerBindings.ConfigureServices(
                 featureContext,
-                serviceCollection => serviceCollection.AddJsonSerializerSettings());
+                serviceCollection =>
+                {
+                    serviceCollection.AddJsonNetSerializerSettingsProvider();
+                    serviceCollection.AddJsonNetPropertyBag();
+                    serviceCollection.AddJsonNetCultureInfoConverter();
+                    serviceCollection.AddJsonNetDateTimeOffsetConverter();
+                    serviceCollection.AddSingleton<JsonConverter>(new StringEnumConverter(true));
+                });
         }
     }
 }
