@@ -83,14 +83,13 @@ namespace Corvus.Extensions.Json.Specs
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Serialize an object with convertible properties")]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "en-US", "{\"someValue\":\"Hello there\",\"someCulture\":\"en-US\"}", null)]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "en-US", "{\"someValue\":\"Hello there\",\"someCulture\":\"en-US\"}", null)]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "", "{\"someValue\":\"Hello there\"}", null)]
-        public virtual void SerializeAnObjectWithConvertibleProperties(string someValue, string someCulture, string content, string[] exampleTags)
+        [NUnit.Framework.TestCaseAttribute("en-US", "{\"someCulture\":\"en-US\"}", null)]
+        [NUnit.Framework.TestCaseAttribute("en-US", "{\"someCulture\":\"en-US\"}", null)]
+        [NUnit.Framework.TestCaseAttribute("", "{}", null)]
+        public virtual void SerializeAnObjectWithConvertibleProperties(string someCulture, string content, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            argumentsOfScenario.Add("SomeValue", someValue);
             argumentsOfScenario.Add("SomeCulture", someCulture);
             argumentsOfScenario.Add("Content", content);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Serialize an object with convertible properties", null, tagsOfScenario, argumentsOfScenario);
@@ -115,7 +114,7 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 10
- testRunner.Given(string.Format("I serialize a CultureInfo POCO with \"{0}\", \"{1}\"", someValue, someCulture), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given(string.Format("I serialize a CultureInfo POCO with \"{0}\"", someCulture), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 11
  testRunner.Then(string.Format("the result should be \"{0}\"", content), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -126,15 +125,14 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Deserialize an object with convertible properties")]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "en-US", "{\"someValue\":\"Hello there\",\"someCulture\":\"en-US\"}", null)]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "en-US", "{\"someValue\":\"Hello there\",\"someCulture\":\"en-US\"}", null)]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "en-US", "{\"someValue\":\"Hello there\",\"someCulture\":\"en-US\"}", null)]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "", "{\"someValue\":\"Hello there\",\"someCulture\":null}", null)]
-        public virtual void DeserializeAnObjectWithConvertibleProperties(string someValue, string someCulture, string content, string[] exampleTags)
+        [NUnit.Framework.TestCaseAttribute("en-US", "{\"someCulture\":\"en-US\"}", null)]
+        [NUnit.Framework.TestCaseAttribute("en-US", "{\"someCulture\":\"en-US\"}", null)]
+        [NUnit.Framework.TestCaseAttribute("en-US", "{\"someCulture\":\"en-US\"}", null)]
+        [NUnit.Framework.TestCaseAttribute("", "{\"someCulture\":null}", null)]
+        public virtual void DeserializeAnObjectWithConvertibleProperties(string someCulture, string content, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            argumentsOfScenario.Add("SomeValue", someValue);
             argumentsOfScenario.Add("SomeCulture", someCulture);
             argumentsOfScenario.Add("Content", content);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Deserialize an object with convertible properties", null, tagsOfScenario, argumentsOfScenario);
@@ -162,7 +160,7 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.Given(string.Format("I deserialize a CultureInfo POCO with the json string \"{0}\"", content), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 21
- testRunner.Then(string.Format("the result should have CultureInfo values \"{0}\", \"{1}\"", someValue, someCulture), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then(string.Format("the result should have CultureInfo values \"{0}\"", someCulture), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

@@ -60,15 +60,37 @@ namespace Corvus.Extensions.Json.Specs
         [Given(@"the creation properties include a POCO called ""(.*)"" with ""(.*)"" ""(.*)"" ""(.*)"" ""(.*)"" ""(.*)""")]
         public void TheCreationPropertiesIncludeAPOCOWith(string name, string value, string time, string nullableTime, string? culture, ExampleEnum someEnum)
         {
-            CultureInfoPocObject poco = MakeCultureInfoPoco(value, culture);
+        }
+
+        [Given(@"the creation properties include a DateTime POCO called ""(.*)"" with ""(.*)"" ""(.*)""")]
+        public void GivenTheCreationPropertiesIncludeADateTimePOCOCalledWith(string name, string time, string nullableTime)
+        {
+            DateTimeOffsetPocObject poco = MakeDateTimeOffsetPoco(time, nullableTime);
 
             this.creationProperties.Add(name, poco);
         }
 
-        [Given(@"I serialize a CultureInfo POCO with ""(.*)"", ""(.*)""")]
-        public void GivenISerializeACultureInfoPOCOWith(string value, string? culture)
+        [Given(@"the creation properties include a CultureInfo POCO called ""(.*)"" with ""(.*)""")]
+        public void GivenTheCreationPropertiesIncludeACultureInfoPOCOCalledWith(string name, string culture)
         {
-            CultureInfoPocObject poco = MakeCultureInfoPoco(value, culture);
+            if (!string.IsNullOrEmpty(culture))
+            {
+            CultureInfoPocObject poco = MakeCultureInfoPoco(culture);
+
+            this.creationProperties.Add(name, poco);
+            }
+        }
+
+        [Given(@"the creation properties include an enum value called ""(.*)"" with value ""(.*)""")]
+        public void GivenTheCreationPropertiesIncludeAnEnumValueCalledWithValue(string name, ExampleEnum value)
+        {
+            this.creationProperties.Add(name, value);
+        }
+
+        [Given(@"I serialize a CultureInfo POCO with ""(.*)""")]
+        public void GivenISerializeACultureInfoPOCOWith(string? culture)
+        {
+            CultureInfoPocObject poco = MakeCultureInfoPoco(culture);
 
             IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
             this.scenarioContext.Set(JsonConvert.SerializeObject(poco, settingsProvider.Instance), "Result");
@@ -167,18 +189,46 @@ namespace Corvus.Extensions.Json.Specs
             this.scenarioContext.Set(JsonConvert.DeserializeObject<DateTimeOffsetPocObject>(json, settingsProvider.Instance), "Result");
         }
 
-        [Then(@"the result should have a POCO named ""(.*)"" with values ""(.*)"" ""(.*)"" ""(.*)"" ""(.*)"" ""(.*)""")]
-        public void ThenTheResultShouldHaveValues(string name, string value, string time, string nullableTime, string culture, ExampleEnum someEnum)
+        [Then(@"the result should have a DateTime POCO named ""(.*)"" with values ""(.*)"" ""(.*)""")]
+        public void ThenTheResultShouldHaveADateTimePOCONamedWithValues(string name, string time, string nullableTime)
         {
-            Assert.IsTrue(this.Bag.TryGet(name, out CultureInfoPocObject poc), "TryGet return value");
-            CheckPocosAreEqual(value, culture, poc);
+            Assert.IsTrue(this.Bag.TryGet(name, out DateTimeOffsetPocObject poc), "TryGet return value");
+            CheckPocosAreEqual(time, nullableTime, poc);
         }
 
-        [Then(@"the result should have CultureInfo values ""(.*)"", ""(.*)""")]
-        public void ThenTheResultShouldHaveCultureInfoValues(string value, string culture)
+        [Then(@"the result should have a CultureInfo POCO named ""(.*)"" with value ""(.*)""")]
+        public void ThenTheResultShouldHaveACultureInfoPocoNamed(string name, string culture)
+        {
+            if (!string.IsNullOrEmpty(culture))
+            {
+                Assert.IsTrue(this.Bag.TryGet(name, out CultureInfoPocObject poc), "TryGet return value");
+                CheckPocosAreEqual(culture, poc);
+            }
+            else
+            {
+                Assert.IsFalse(this.Bag.TryGet(name, out CultureInfoPocObject _), "TryGet return value");
+            }
+        }
+
+        [Then(@"the result should have an enum value named ""(.*)"" with value ""(.*)""")]
+        public void ThenTheResultShouldHaveAnEnumValueNamedWithValue(string name, string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                Assert.IsTrue(this.Bag.TryGet(name, out ExampleEnum actual), "TryGet return value");
+                Assert.AreEqual(value, actual.ToString());
+            }
+            else
+            {
+                Assert.IsFalse(this.Bag.TryGet(name, out ExampleEnum _), "TryGet return value");
+            }
+        }
+
+        [Then(@"the result should have CultureInfo values ""(.*)""")]
+        public void ThenTheResultShouldHaveCultureInfoValues(string culture)
         {
             CultureInfoPocObject poc = this.scenarioContext.Get<CultureInfoPocObject>("Result");
-            CheckPocosAreEqual(value, culture, poc);
+            CheckPocosAreEqual(culture, poc);
         }
 
         [Then(@"the result should have DateTimeOffset values ""(.*)"", ""(.*)""")]
@@ -405,9 +455,9 @@ namespace Corvus.Extensions.Json.Specs
             return this.propertyBagFactory.Create(this.CreateDictionaryFromTable(table));
         }
 
-        private static CultureInfoPocObject MakeCultureInfoPoco(string value, string? culture)
+        private static CultureInfoPocObject MakeCultureInfoPoco(string? culture)
         {
-            return new CultureInfoPocObject(value)
+            return new CultureInfoPocObject
             {
                 SomeCulture = string.IsNullOrEmpty(culture) ? null : CultureInfo.GetCultureInfo(culture),
             };
@@ -422,9 +472,9 @@ namespace Corvus.Extensions.Json.Specs
             };
         }
 
-        private static void CheckPocosAreEqual(string value, string culture, CultureInfoPocObject poc)
+        private static void CheckPocosAreEqual(string culture, CultureInfoPocObject poc)
         {
-            var expected = new CultureInfoPocObject(value)
+            var expected = new CultureInfoPocObject
             {
                 SomeCulture = string.IsNullOrEmpty(culture) ? null : CultureInfo.GetCultureInfo(culture),
             };
@@ -444,5 +494,3 @@ namespace Corvus.Extensions.Json.Specs
         }
     }
 }
-
-#pragma warning restore CS1591 // Elements should be documented

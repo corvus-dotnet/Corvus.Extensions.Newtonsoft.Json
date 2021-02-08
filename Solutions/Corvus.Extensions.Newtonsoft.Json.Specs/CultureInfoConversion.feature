@@ -7,22 +7,22 @@ Feature: CultureInfo conversion
 	I want to be able to use a JsonConverter that supports serialization to culture name
 
 Scenario Outline: Serialize an object with convertible properties
-	Given I serialize a CultureInfo POCO with "<SomeValue>", "<SomeCulture>"
+	Given I serialize a CultureInfo POCO with "<SomeCulture>"
 	Then the result should be "<Content>"
 
 	Examples:
-		| SomeValue   | SomeCulture | Content                                           |
-		| Hello there | en-US       | {"someValue":"Hello there","someCulture":"en-US"} |
-		| Hello there | en-US       | {"someValue":"Hello there","someCulture":"en-US"} |
-		| Hello there |             | {"someValue":"Hello there"}                       |
+		| SomeCulture | Content                                           |
+		| en-US       | {"someCulture":"en-US"} |
+		| en-US       | {"someCulture":"en-US"} |
+		|             | {}                      |
 
 Scenario Outline: Deserialize an object with convertible properties
 	Given I deserialize a CultureInfo POCO with the json string "<Content>"
-	Then the result should have CultureInfo values "<SomeValue>", "<SomeCulture>"
+	Then the result should have CultureInfo values "<SomeCulture>"
 
 	Examples:
-		| SomeValue   | SomeCulture | Content                                           |
-		| Hello there | en-US       | {"someValue":"Hello there","someCulture":"en-US"} |
-		| Hello there | en-US       | {"someValue":"Hello there","someCulture":"en-US"} |
-		| Hello there | en-US       | {"someValue":"Hello there","someCulture":"en-US"} |
-		| Hello there |             | {"someValue":"Hello there","someCulture":null}    |
+		| SomeCulture | Content                                           |
+		| en-US       | {"someCulture":"en-US"} |
+		| en-US       | {"someCulture":"en-US"} |
+		| en-US       | {"someCulture":"en-US"} |
+		|             | {"someCulture":null}    |

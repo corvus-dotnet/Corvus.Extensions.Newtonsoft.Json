@@ -12,16 +12,6 @@ namespace Corvus.Extensions.Json.Specs.Samples
     /// </summary>
     public class CultureInfoPocObject : IEquatable<CultureInfoPocObject>
     {
-        public CultureInfoPocObject(string someValue)
-        {
-            this.SomeValue = someValue;
-        }
-
-        /// <summary>
-        /// Gets or sets a simple value.
-        /// </summary>
-        public string SomeValue { get; set; }
-
         /// <summary>
         /// Gets or sets a culture info.
         /// </summary>
@@ -52,7 +42,7 @@ namespace Corvus.Extensions.Json.Specs.Samples
         /// <inheritdoc />
         public bool Equals(CultureInfoPocObject? other)
         {
-            return other is CultureInfoPocObject && this.GetDefiningTuple() == other.GetDefiningTuple();
+            return other is CultureInfoPocObject && this.SomeCulture?.Name == other.SomeCulture?.Name;
         }
 
         /// <inheritdoc />
@@ -69,15 +59,12 @@ namespace Corvus.Extensions.Json.Specs.Samples
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return HashCode.Combine(this.SomeValue, this.SomeCulture);
+            return HashCode.Combine(this.SomeCulture);
         }
 
         public override string ToString()
         {
-            return this.GetDefiningTuple().ToString();
+            return this.SomeCulture?.ToString() ?? "null";
         }
-
-        private (string SomeValue, string? Name) GetDefiningTuple() =>
-            (this.SomeValue, this.SomeCulture?.Name);
     }
 }
