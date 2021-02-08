@@ -6,8 +6,6 @@ namespace Corvus.Extensions.Json.Specs
 {
     using Corvus.SpecFlow.Extensions;
     using Microsoft.Extensions.DependencyInjection;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -21,8 +19,8 @@ namespace Corvus.Extensions.Json.Specs
         /// </summary>
         /// <remarks>We expect features run in parallel to be executing in separate app domains.</remarks>
         /// <param name="featureContext">The SpecFlow test context.</param>
-        [BeforeFeature("@setupContainer", Order = ContainerBeforeFeatureOrder.PopulateServiceCollection)]
-        public static void SetupFeature(FeatureContext featureContext)
+        [BeforeFeature("@setupContainerForJsonNetPropertyBag", Order = ContainerBeforeFeatureOrder.PopulateServiceCollection)]
+        public static void SetupFeatureForJsonNetPropertyBag(FeatureContext featureContext)
         {
             ContainerBindings.ConfigureServices(
                 featureContext,
@@ -30,9 +28,40 @@ namespace Corvus.Extensions.Json.Specs
                 {
                     serviceCollection.AddJsonNetSerializerSettingsProvider();
                     serviceCollection.AddJsonNetPropertyBag();
+                });
+        }
+
+        /// <summary>
+        /// Setup the endjin container for a feature.
+        /// </summary>
+        /// <remarks>We expect features run in parallel to be executing in separate app domains.</remarks>
+        /// <param name="featureContext">The SpecFlow test context.</param>
+        [BeforeFeature("@setupContainerForJsonNetCultureInfoConversion", Order = ContainerBeforeFeatureOrder.PopulateServiceCollection)]
+        public static void SetupFeatureForJsonNetCultureInfoConversion(FeatureContext featureContext)
+        {
+            ContainerBindings.ConfigureServices(
+                featureContext,
+                serviceCollection =>
+                {
+                    serviceCollection.AddJsonNetSerializerSettingsProvider();
                     serviceCollection.AddJsonNetCultureInfoConverter();
-                    serviceCollection.AddJsonNetDateTimeOffsetConverter();
-                    serviceCollection.AddSingleton<JsonConverter>(new StringEnumConverter(true));
+                });
+        }
+
+        /// <summary>
+        /// Setup the endjin container for a feature.
+        /// </summary>
+        /// <remarks>We expect features run in parallel to be executing in separate app domains.</remarks>
+        /// <param name="featureContext">The SpecFlow test context.</param>
+        [BeforeFeature("@setupContainerForJsonNetDateTimeOffsetConversion", Order = ContainerBeforeFeatureOrder.PopulateServiceCollection)]
+        public static void SetupFeatureForJsonNetDateTimeOffsetConversion(FeatureContext featureContext)
+        {
+            ContainerBindings.ConfigureServices(
+                featureContext,
+                serviceCollection =>
+                {
+                    serviceCollection.AddJsonNetSerializerSettingsProvider();
+                    serviceCollection.AddJsonNetDateTimeOffsetToIso8601AndUnixTimeConverter();
                 });
         }
     }

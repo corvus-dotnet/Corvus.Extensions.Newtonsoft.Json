@@ -1,4 +1,4 @@
-﻿// <copyright file="PocObject.cs" company="Endjin Limited">
+﻿// <copyright file="CultureInfoPocObject.cs" company="Endjin Limited">
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
@@ -10,9 +10,9 @@ namespace Corvus.Extensions.Json.Specs.Samples
     /// <summary>
     /// A plain old CLR object.
     /// </summary>
-    public class PocObject : IEquatable<PocObject>
+    public class CultureInfoPocObject : IEquatable<CultureInfoPocObject>
     {
-        public PocObject(string someValue)
+        public CultureInfoPocObject(string someValue)
         {
             this.SomeValue = someValue;
         }
@@ -23,24 +23,9 @@ namespace Corvus.Extensions.Json.Specs.Samples
         public string SomeValue { get; set; }
 
         /// <summary>
-        /// Gets or sets a date time offset.
-        /// </summary>
-        public DateTimeOffset SomeDateTime { get; set; }
-
-        /// <summary>
-        /// Gets or sets a nullable date time offset.
-        /// </summary>
-        public DateTimeOffset? SomeNullableDateTime { get; set; }
-
-        /// <summary>
         /// Gets or sets a culture info.
         /// </summary>
         public CultureInfo? SomeCulture { get; set; }
-
-        /// <summary>
-        /// Gets or sets an enumeration value.
-        /// </summary>
-        public ExampleEnum SomeEnum { get; set; }
 
         /// <summary>
         /// Compares two instances of PocObject for equality.
@@ -48,7 +33,7 @@ namespace Corvus.Extensions.Json.Specs.Samples
         /// <param name="left">The first object to compare.</param>
         /// <param name="right">The second object to compare.</param>
         /// <returns>True if the instances are equal, false otherwise.</returns>
-        public static bool operator ==(PocObject left, PocObject right)
+        public static bool operator ==(CultureInfoPocObject left, CultureInfoPocObject right)
         {
             return left?.Equals(right) ?? false;
         }
@@ -59,21 +44,21 @@ namespace Corvus.Extensions.Json.Specs.Samples
         /// <param name="left">The first object to compare.</param>
         /// <param name="right">The second object to compare.</param>
         /// <returns>False if the instances are equal, true otherwise.</returns>
-        public static bool operator !=(PocObject left, PocObject right)
+        public static bool operator !=(CultureInfoPocObject left, CultureInfoPocObject right)
         {
             return !(left == right);
         }
 
         /// <inheritdoc />
-        public bool Equals(PocObject? other)
+        public bool Equals(CultureInfoPocObject? other)
         {
-            return other is PocObject && this.GetDefiningTuple() == other.GetDefiningTuple();
+            return other is CultureInfoPocObject && this.GetDefiningTuple() == other.GetDefiningTuple();
         }
 
         /// <inheritdoc />
         public override bool Equals(object? obj)
         {
-            if (obj is PocObject sci)
+            if (obj is CultureInfoPocObject sci)
             {
                 return this.Equals(sci);
             }
@@ -84,7 +69,7 @@ namespace Corvus.Extensions.Json.Specs.Samples
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return HashCode.Combine(this.SomeValue, this.SomeDateTime, this.SomeNullableDateTime, this.SomeCulture, this.SomeEnum);
+            return HashCode.Combine(this.SomeValue, this.SomeCulture);
         }
 
         public override string ToString()
@@ -92,7 +77,7 @@ namespace Corvus.Extensions.Json.Specs.Samples
             return this.GetDefiningTuple().ToString();
         }
 
-        private (string SomeValue, DateTimeOffset SomeDateTime, DateTimeOffset? SomeNullableDateTime, string? Name, ExampleEnum SomeEnum) GetDefiningTuple() =>
-            (this.SomeValue, this.SomeDateTime, this.SomeNullableDateTime, this.SomeCulture?.Name, this.SomeEnum);
+        private (string SomeValue, string? Name) GetDefiningTuple() =>
+            (this.SomeValue, this.SomeCulture?.Name);
     }
 }

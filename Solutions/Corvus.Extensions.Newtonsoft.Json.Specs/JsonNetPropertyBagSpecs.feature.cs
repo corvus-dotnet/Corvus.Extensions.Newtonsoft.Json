@@ -21,14 +21,18 @@ namespace Corvus.Extensions.Json.Specs
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("JsonNetPropertyBagSpecs")]
-    [NUnit.Framework.CategoryAttribute("setupContainer")]
+    [NUnit.Framework.CategoryAttribute("setupContainerForJsonNetPropertyBag")]
+    [NUnit.Framework.CategoryAttribute("setupContainerForJsonNetCultureInfoConversion")]
+    [NUnit.Framework.CategoryAttribute("setupContainerForJsonNetDateTimeOffsetConversion")]
     public partial class JsonNetPropertyBagSpecsFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private string[] _featureTags = new string[] {
-                "setupContainer"};
+                "setupContainerForJsonNetPropertyBag",
+                "setupContainerForJsonNetCultureInfoConversion",
+                "setupContainerForJsonNetDateTimeOffsetConversion"};
         
 #line 1 "JsonNetPropertyBagSpecs.feature"
 #line hidden
@@ -39,7 +43,9 @@ namespace Corvus.Extensions.Json.Specs
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "", "JsonNetPropertyBagSpecs", "\tIn order to provide strongly typed, extensible properties for a class that seria" +
                     "lize neatly as JSON\r\n\tAs a developer\r\n\tI want to be able to use a property bag", ProgrammingLanguage.CSharp, new string[] {
-                        "setupContainer"});
+                        "setupContainerForJsonNetPropertyBag",
+                        "setupContainerForJsonNetCultureInfoConversion",
+                        "setupContainerForJsonNetDateTimeOffsetConversion"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -84,7 +90,7 @@ namespace Corvus.Extensions.Json.Specs
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create from a property, and get that property", null, tagsOfScenario, argumentsOfScenario);
-#line 7
+#line 10
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -104,13 +110,13 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 8
+#line 11
  testRunner.Given("the creation properties include \"hello\" with the value \"world\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 9
+#line 12
  testRunner.When("I create the property bag from the creation properties", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 10
+#line 13
  testRunner.Then("the property bag should contain a property called \"hello\" with the value \"world\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -124,7 +130,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create from a property, and get a missing property", null, tagsOfScenario, argumentsOfScenario);
-#line 12
+#line 15
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -144,13 +150,13 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 13
+#line 16
  testRunner.Given("the creation properties include \"hello\" with the value \"world\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 14
+#line 17
  testRunner.When("I create the property bag from the creation properties", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 15
+#line 18
  testRunner.Then("calling TryGet with \"goodbye\" should return false and the result should be null", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -164,7 +170,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get and set a badly serialized property", null, tagsOfScenario, argumentsOfScenario);
-#line 17
+#line 20
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -184,16 +190,16 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 18
+#line 21
  testRunner.Given("the creation properties include \"hello\" with the value \"jiggerypokery\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 19
+#line 22
  testRunner.When("I create the property bag from the creation properties", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 20
+#line 23
  testRunner.And("I get the property called \"hello\" as a custom object expecting an exception", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 21
+#line 24
  testRunner.Then("TryGet should have thrown a SerializationException", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -207,7 +213,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Convert to a JObject", null, tagsOfScenario, argumentsOfScenario);
-#line 23
+#line 26
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -227,20 +233,20 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 24
+#line 27
  testRunner.Given("the creation properties include \"hello\" with the value \"world\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 25
+#line 28
  testRunner.And("the creation properties include \"number\" with the value 3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 26
+#line 29
  testRunner.And("the creation properties include \"date\" with the date value \"2020-04-17T07:06:10+0" +
                         "1:00\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 27
+#line 30
  testRunner.And("I create the property bag from the creation properties", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 28
+#line 31
  testRunner.When("I cast to a JObject", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -259,7 +265,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "date",
                             "2020-04-17T07:06:10+01:00",
                             "datetime"});
-#line 29
+#line 32
  testRunner.Then("the result should be the JObject", ((string)(null)), table1, "Then ");
 #line hidden
             }
@@ -273,7 +279,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Serialize a property bag", null, tagsOfScenario, argumentsOfScenario);
-#line 35
+#line 38
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -293,27 +299,27 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 36
+#line 39
  testRunner.Given("the creation properties include \"hello\" with the value \"world\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 37
+#line 40
  testRunner.And("the creation properties include \"number\" with the value 3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 38
+#line 41
  testRunner.And("the creation properties include \"date\" with the date value \"2020-04-17T07:06:10+0" +
                         "3:00\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 39
+#line 42
  testRunner.And("the creation properties include \"preciseDate\" with the date value \"2020-04-17T07:" +
                         "06:10.12345+01:00\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 40
+#line 43
  testRunner.And("I create the property bag from the creation properties", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 41
+#line 44
  testRunner.When("I serialize the property bag", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 42
+#line 45
  testRunner.Then("the result should be \"{\"hello\":\"world\",\"number\":3,\"date\":{\"dateTimeOffset\":\"2020-" +
                         "04-17T07:06:10.0000000+03:00\",\"unixTime\":1587096370000},\"preciseDate\":{\"dateTime" +
                         "Offset\":\"2020-04-17T07:06:10.1234500+01:00\",\"unixTime\":1587103570123}}\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -329,7 +335,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Deserialize a property bag", null, tagsOfScenario, argumentsOfScenario);
-#line 44
+#line 47
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -349,7 +355,7 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 45
+#line 48
  testRunner.Given("I deserialize a property bag from the string \"{\"hello\":\"world\",\"number\":3,\"date\":" +
                         "\"2020-04-17T07:06:10+01:00\"}\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
@@ -369,7 +375,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "date",
                             "2020-04-17T07:06:10+01:00",
                             "datetime"});
-#line 46
+#line 49
  testRunner.Then("the result should have the properties", ((string)(null)), table2, "Then ");
 #line hidden
             }
@@ -391,7 +397,7 @@ this.ScenarioInitialize(scenarioInfo);
             argumentsOfScenario.Add("culture", culture);
             argumentsOfScenario.Add("enum", @enum);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("POCO serialization and deserialization", null, tagsOfScenario, argumentsOfScenario);
-#line 52
+#line 55
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -411,20 +417,20 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 53
+#line 56
  testRunner.Given(string.Format("the creation properties include a POCO called \"poco\" with \"{0}\" \"{1}\" \"{2}\" \"{3}\"" +
                             " \"{4}\"", value, time, nullableTime, culture, @enum), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 54
+#line 57
  testRunner.When("I create the property bag from the creation properties", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 55
+#line 58
  testRunner.And("I serialize the property bag", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 56
+#line 59
  testRunner.And("I deserialize the serialized property bag", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 57
+#line 60
  testRunner.Then(string.Format("the result should have a POCO named \"poco\" with values \"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{" +
                             "4}\"", value, time, nullableTime, culture, @enum), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
@@ -452,7 +458,7 @@ this.ScenarioInitialize(scenarioInfo);
             argumentsOfScenario.Add("enum", @enum);
             argumentsOfScenario.Add("bagJson", bagJson);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("POCO deserialization", null, tagsOfScenario, argumentsOfScenario);
-#line 64
+#line 67
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -472,10 +478,10 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 65
+#line 68
  testRunner.Given(string.Format("I deserialize a property bag from the string \"{0}\"", bagJson), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 66
+#line 69
  testRunner.Then(string.Format("the result should have a POCO named \"poco\" with values \"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{" +
                             "4}\"", value, time, nullableTime, culture, @enum), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
@@ -490,7 +496,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Construct from a JObject", null, tagsOfScenario, argumentsOfScenario);
-#line 73
+#line 76
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -522,10 +528,10 @@ this.ScenarioInitialize(scenarioInfo);
                             "number",
                             "3",
                             "integer"});
-#line 74
+#line 77
  testRunner.Given("I create a JObject", ((string)(null)), table3, "Given ");
 #line hidden
-#line 78
+#line 81
  testRunner.When("I construct a PropertyBag from the JObject", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -540,7 +546,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "number",
                             "3",
                             "integer"});
-#line 79
+#line 82
  testRunner.Then("the result should have the properties", ((string)(null)), table4, "Then ");
 #line hidden
             }
@@ -554,7 +560,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Construct from a Dictionary", null, tagsOfScenario, argumentsOfScenario);
-#line 84
+#line 87
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -586,10 +592,10 @@ this.ScenarioInitialize(scenarioInfo);
                             "number",
                             "3",
                             "integer"});
-#line 85
+#line 88
  testRunner.Given("I create a Dictionary", ((string)(null)), table5, "Given ");
 #line hidden
-#line 89
+#line 92
  testRunner.When("I create a PropertyBag from the Dictionary", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -604,7 +610,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "number",
                             "3",
                             "integer"});
-#line 90
+#line 93
  testRunner.Then("the result should have the properties", ((string)(null)), table6, "Then ");
 #line hidden
             }
@@ -618,7 +624,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Convert to a Dictionary", null, tagsOfScenario, argumentsOfScenario);
-#line 95
+#line 98
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -650,10 +656,10 @@ this.ScenarioInitialize(scenarioInfo);
                             "number",
                             "3",
                             "integer"});
-#line 96
+#line 99
  testRunner.Given("I create a PropertyBag", ((string)(null)), table7, "Given ");
 #line hidden
-#line 100
+#line 103
  testRunner.When("I convert the PropertyBag to a Dictionary", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
@@ -668,7 +674,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "number",
                             "3",
                             "integer"});
-#line 101
+#line 104
  testRunner.Then("the dictionary should contain the properties", ((string)(null)), table8, "Then ");
 #line hidden
             }
@@ -682,7 +688,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Add properties", null, tagsOfScenario, argumentsOfScenario);
-#line 106
+#line 109
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -714,10 +720,10 @@ this.ScenarioInitialize(scenarioInfo);
                             "number",
                             "3",
                             "integer"});
-#line 107
+#line 110
  testRunner.Given("I create a Dictionary", ((string)(null)), table9, "Given ");
 #line hidden
-#line 111
+#line 114
  testRunner.And("I create a PropertyBag from the Dictionary", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
@@ -735,7 +741,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "4",
                             "integer",
                             "addOrSet"});
-#line 112
+#line 115
  testRunner.When("I add, modify, or remove properties", ((string)(null)), table10, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
@@ -758,7 +764,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "quux",
                             "4",
                             "integer"});
-#line 116
+#line 119
  testRunner.Then("the result should have the properties", ((string)(null)), table11, "Then ");
 #line hidden
             }
@@ -772,7 +778,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Modify properties", null, tagsOfScenario, argumentsOfScenario);
-#line 123
+#line 126
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -804,10 +810,10 @@ this.ScenarioInitialize(scenarioInfo);
                             "number",
                             "3",
                             "integer"});
-#line 124
+#line 127
  testRunner.Given("I create a Dictionary", ((string)(null)), table12, "Given ");
 #line hidden
-#line 128
+#line 131
  testRunner.And("I create a PropertyBag from the Dictionary", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
@@ -825,7 +831,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "4",
                             "integer",
                             "addOrSet"});
-#line 129
+#line 132
  testRunner.When("I add, modify, or remove properties", ((string)(null)), table13, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
@@ -840,7 +846,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "number",
                             "4",
                             "integer"});
-#line 133
+#line 136
  testRunner.Then("the result should have the properties", ((string)(null)), table14, "Then ");
 #line hidden
             }
@@ -854,7 +860,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Remove properties", null, tagsOfScenario, argumentsOfScenario);
-#line 138
+#line 141
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -890,10 +896,10 @@ this.ScenarioInitialize(scenarioInfo);
                             "foo",
                             "bar",
                             "string"});
-#line 139
+#line 142
  testRunner.Given("I create a Dictionary", ((string)(null)), table15, "Given ");
 #line hidden
-#line 144
+#line 147
  testRunner.And("I create a PropertyBag from the Dictionary", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
@@ -905,7 +911,7 @@ this.ScenarioInitialize(scenarioInfo);
                 table16.AddRow(new string[] {
                             "foo",
                             "remove"});
-#line 145
+#line 148
  testRunner.When("I add, modify, or remove properties", ((string)(null)), table16, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
@@ -916,7 +922,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "hello",
                             "world",
                             "string"});
-#line 149
+#line 152
  testRunner.Then("the result should have the properties", ((string)(null)), table17, "Then ");
 #line hidden
             }
@@ -930,7 +936,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Add, modify, and remove properties", null, tagsOfScenario, argumentsOfScenario);
-#line 153
+#line 156
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -966,10 +972,10 @@ this.ScenarioInitialize(scenarioInfo);
                             "bar",
                             "foo",
                             "string"});
-#line 154
+#line 157
  testRunner.Given("I create a Dictionary", ((string)(null)), table18, "Given ");
 #line hidden
-#line 159
+#line 162
  testRunner.And("I create a PropertyBag from the Dictionary", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
@@ -992,7 +998,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "",
                             "",
                             "remove"});
-#line 160
+#line 163
  testRunner.When("I add, modify, or remove properties", ((string)(null)), table19, "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
@@ -1007,7 +1013,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "quux",
                             "4",
                             "integer"});
-#line 165
+#line 168
  testRunner.Then("the result should have the properties", ((string)(null)), table20, "Then ");
 #line hidden
             }

@@ -25,4 +25,4 @@ The existing `AddJsonSerializerSettings` method will be deprecated via the `Obso
 
 ## Consequences
 
-The use of `ObsoleteAttribute` on the existing method prevents this change from being a breaking one, however it will mean that codebases that depend on this library and treat warnings as errors will need minor code changes in order to accept this update.
+The use of `ObsoleteAttribute` on the existing method prevents this change from being a breaking one, but it will mean that codebases that depend on this library and treat warnings as errors will need minor code changes in order to accept this update.

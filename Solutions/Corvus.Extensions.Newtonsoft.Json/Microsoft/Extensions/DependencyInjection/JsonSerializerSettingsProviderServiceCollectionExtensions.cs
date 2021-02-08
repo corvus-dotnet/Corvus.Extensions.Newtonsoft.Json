@@ -45,7 +45,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// services.AddJsonNetSerializerSettingsProvider();
         /// services.AddJsonNetPropertyBag();
         /// services.AddJsonNetCultureInfoConverter();
-        /// services.AddJsonNetDateTimeOffsetConverter();
+        /// services.AddJsonNetDateTimeOffsetToIso8601AndUnixTimeConverter();
         /// services.AddSingleton<JsonConverter>(new StringEnumConverter(true));
         /// ]]>
         /// </code>
@@ -56,7 +56,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddJsonNetSerializerSettingsProvider();
             services.AddJsonNetPropertyBag();
             services.AddJsonNetCultureInfoConverter();
-            services.AddJsonNetDateTimeOffsetConverter();
+            services.AddJsonNetDateTimeOffsetToIso8601AndUnixTimeConverter();
 
             services.AddSingleton<JsonConverter>(new StringEnumConverter(true));
             return services;
@@ -126,7 +126,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// time zone values.
         /// </para>
         /// </remarks>
-        public static IServiceCollection AddJsonNetDateTimeOffsetConverter(this IServiceCollection services)
+        public static IServiceCollection AddJsonNetDateTimeOffsetToIso8601AndUnixTimeConverter(this IServiceCollection services)
         {
             if (services is null)
             {

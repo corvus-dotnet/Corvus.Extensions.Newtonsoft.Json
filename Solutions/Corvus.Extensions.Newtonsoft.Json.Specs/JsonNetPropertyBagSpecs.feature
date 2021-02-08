@@ -1,4 +1,7 @@
-﻿@setupContainer
+﻿@setupContainerForJsonNetPropertyBag
+@setupContainerForJsonNetCultureInfoConversion
+@setupContainerForJsonNetDateTimeOffsetConversion
+
 Feature: JsonNetPropertyBagSpecs
 	In order to provide strongly typed, extensible properties for a class that serialize neatly as JSON
 	As a developer

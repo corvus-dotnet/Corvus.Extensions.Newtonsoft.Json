@@ -20,26 +20,27 @@ namespace Corvus.Extensions.Json.Specs
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.4.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("StandardConversion")]
-    [NUnit.Framework.CategoryAttribute("setupContainer")]
-    public partial class StandardConversionFeature
+    [NUnit.Framework.DescriptionAttribute("Date time offset to ISO 8601 and Unix Time conversion")]
+    [NUnit.Framework.CategoryAttribute("setupContainerForJsonNetDateTimeOffsetConversion")]
+    public partial class DateTimeOffsetToISO8601AndUnixTimeConversionFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private string[] _featureTags = new string[] {
-                "setupContainer"};
+                "setupContainerForJsonNetDateTimeOffsetConversion"};
         
-#line 1 "StandardConversion.feature"
+#line 1 "DateTimeOffsetConversion.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "", "StandardConversion", "\tIn order to ensure common serialization specifications\r\n\tAs a developer\r\n\tI want" +
-                    " to be provided with standard serializer settings", ProgrammingLanguage.CSharp, new string[] {
-                        "setupContainer"});
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "", "Date time offset to ISO 8601 and Unix Time conversion", "\tIn order to ensure DateTimeOffset values are serialized in a sortable and filter" +
+                    "able way without losing time zone information\r\n\tAs a developer\r\n\tI want to use a" +
+                    " JsonConverter that supports serialization to ISO 8601 and unix time", ProgrammingLanguage.CSharp, new string[] {
+                        "setupContainerForJsonNetDateTimeOffsetConversion"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -79,22 +80,23 @@ namespace Corvus.Extensions.Json.Specs
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Serialize an object with convertible properties")]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "2018-04-15T09:09:31.234+01:00", "en-US", "Second", @"{""someValue"":""Hello there"",""someDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someNullableDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someCulture"":""en-US"",""someEnum"":""second""}", null)]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "2018-04-15T09:09:31.234+01:00", "en-US", "Second", @"{""someValue"":""Hello there"",""someDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someNullableDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someCulture"":""en-US"",""someEnum"":""second""}", null)]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "", "", "Second", "{\"someValue\":\"Hello there\",\"someDateTime\":{\"dateTimeOffset\":\"2018-04-15T09:09:31." +
-            "2340000+01:00\",\"unixTime\":1523779771234},\"someEnum\":\"second\"}", null)]
-        public virtual void SerializeAnObjectWithConvertibleProperties(string someValue, string someDateTime, string someNullableDateTime, string someCulture, string someEnum, string content, string[] exampleTags)
+        [NUnit.Framework.TestCaseAttribute("2018-04-15T09:09:31.234+01:00", "2018-04-15T09:09:31.234+01:00", "{\"someDateTime\":{\"dateTimeOffset\":\"2018-04-15T09:09:31.2340000+01:00\",\"unixTime\":" +
+            "1523779771234},\"someNullableDateTime\":{\"dateTimeOffset\":\"2018-04-15T09:09:31.234" +
+            "0000+01:00\",\"unixTime\":1523779771234}}", null)]
+        [NUnit.Framework.TestCaseAttribute("2018-04-15T09:09:31.234+01:00", "2018-04-15T09:09:31.234+01:00", "{\"someDateTime\":{\"dateTimeOffset\":\"2018-04-15T09:09:31.2340000+01:00\",\"unixTime\":" +
+            "1523779771234},\"someNullableDateTime\":{\"dateTimeOffset\":\"2018-04-15T09:09:31.234" +
+            "0000+01:00\",\"unixTime\":1523779771234}}", null)]
+        [NUnit.Framework.TestCaseAttribute("2018-04-15T09:09:31.234+01:00", "", "{\"someDateTime\":{\"dateTimeOffset\":\"2018-04-15T09:09:31.2340000+01:00\",\"unixTime\":" +
+            "1523779771234}}", null)]
+        public virtual void SerializeAnObjectWithConvertibleProperties(string someDateTime, string someNullableDateTime, string content, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            argumentsOfScenario.Add("SomeValue", someValue);
             argumentsOfScenario.Add("SomeDateTime", someDateTime);
             argumentsOfScenario.Add("SomeNullableDateTime", someNullableDateTime);
-            argumentsOfScenario.Add("SomeCulture", someCulture);
-            argumentsOfScenario.Add("SomeEnum", someEnum);
             argumentsOfScenario.Add("Content", content);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Serialize an object with convertible properties", null, tagsOfScenario, argumentsOfScenario);
-#line 7
+#line 8
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -114,10 +116,10 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 8
- testRunner.Given(string.Format("I serialize a POCO with \"{0}\", \"{1}\", \"{2}\", \"{3}\", \"{4}\"", someValue, someDateTime, someNullableDateTime, someCulture, someEnum), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
 #line 9
+ testRunner.Given(string.Format("I serialize a DateTimeOffset POCO with \"{0}\", \"{1}\"", someDateTime, someNullableDateTime), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 10
  testRunner.Then(string.Format("the result should be \"{0}\"", content), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -126,28 +128,24 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Deserialize an object with convertible properties")]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "2018-04-15T09:09:31.234+01:00", "en-US", "Second", @"{""someValue"":""Hello there"",""someDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someNullableDateTime"":{""dateTimeOffset"":""2018-04-15T09:09:31.2340000+01:00"",""unixTime"":1523779771234},""someCulture"":""en-US"",""someEnum"":""second""}", null)]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "2018-04-15T09:09:31.234+01:00", "en-US", "Second", "{\"someValue\":\"Hello there\",\"someDateTime\":\"2018-04-15T09:09:31.2340000+01:00\",\"so" +
-            "meNullableDateTime\":\"2018-04-15T09:09:31.2340000+01:00\",\"someCulture\":\"en-US\",\"s" +
-            "omeEnum\":\"second\"}", null)]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "", "en-US", "Second", "{\"someValue\":\"Hello there\",\"someDateTime\":{\"dateTimeOffset\":\"2018-04-15T09:09:31." +
-            "2340000+01:00\",\"unixTime\":1523779771234},\"someCulture\":\"en-US\",\"someEnum\":\"secon" +
-            "d\"}", null)]
-        [NUnit.Framework.TestCaseAttribute("Hello there", "2018-04-15T09:09:31.234+01:00", "", "", "Second", "{\"someValue\":\"Hello there\",\"someDateTime\":{\"dateTimeOffset\":\"2018-04-15T09:09:31." +
-            "2340000+01:00\",\"unixTime\":1523779771234},\"someCulture\":null,\"someEnum\":\"second\"}" +
-            "", null)]
-        public virtual void DeserializeAnObjectWithConvertibleProperties(string someValue, string someDateTime, string someNullableDateTime, string someCulture, string someEnum, string content, string[] exampleTags)
+        [NUnit.Framework.TestCaseAttribute("2018-04-15T09:09:31.234+01:00", "2018-04-15T09:09:31.234+01:00", "{\"someDateTime\":{\"dateTimeOffset\":\"2018-04-15T09:09:31.2340000+01:00\",\"unixTime\":" +
+            "1523779771234},\"someNullableDateTime\":{\"dateTimeOffset\":\"2018-04-15T09:09:31.234" +
+            "0000+01:00\",\"unixTime\":1523779771234}}", null)]
+        [NUnit.Framework.TestCaseAttribute("2018-04-15T09:09:31.234+01:00", "2018-04-15T09:09:31.234+01:00", "{\"someDateTime\":\"2018-04-15T09:09:31.2340000+01:00\",\"someNullableDateTime\":\"2018-" +
+            "04-15T09:09:31.2340000+01:00\"}", null)]
+        [NUnit.Framework.TestCaseAttribute("2018-04-15T09:09:31.234+01:00", "", "{\"someDateTime\":{\"dateTimeOffset\":\"2018-04-15T09:09:31.2340000+01:00\",\"unixTime\":" +
+            "1523779771234}}", null)]
+        [NUnit.Framework.TestCaseAttribute("2018-04-15T09:09:31.234+01:00", "", "{\"someDateTime\":{\"dateTimeOffset\":\"2018-04-15T09:09:31.2340000+01:00\",\"unixTime\":" +
+            "1523779771234}}", null)]
+        public virtual void DeserializeAnObjectWithConvertibleProperties(string someDateTime, string someNullableDateTime, string content, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            argumentsOfScenario.Add("SomeValue", someValue);
             argumentsOfScenario.Add("SomeDateTime", someDateTime);
             argumentsOfScenario.Add("SomeNullableDateTime", someNullableDateTime);
-            argumentsOfScenario.Add("SomeCulture", someCulture);
-            argumentsOfScenario.Add("SomeEnum", someEnum);
             argumentsOfScenario.Add("Content", content);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Deserialize an object with convertible properties", null, tagsOfScenario, argumentsOfScenario);
-#line 17
+#line 18
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -167,11 +165,11 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 18
+#line 19
  testRunner.Given(string.Format("I deserialize a POCO with the json string \"{0}\"", content), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 19
- testRunner.Then(string.Format("the result should have values \"{0}\", \"{1}\", \"{2}\", \"{3}\", \"{4}\"", someValue, someDateTime, someNullableDateTime, someCulture, someEnum), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 20
+ testRunner.Then(string.Format("the result should have DateTimeOffset values \"{0}\", \"{1}\"", someDateTime, someNullableDateTime), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
