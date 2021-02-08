@@ -1,4 +1,5 @@
-﻿@setupContainerForJsonNetPropertyBag
+﻿@perFeatureContainer
+@setupContainerForJsonNetPropertyBag
 @setupContainerForJsonNetCultureInfoConversion
 @setupContainerForJsonNetDateTimeOffsetConversion
 

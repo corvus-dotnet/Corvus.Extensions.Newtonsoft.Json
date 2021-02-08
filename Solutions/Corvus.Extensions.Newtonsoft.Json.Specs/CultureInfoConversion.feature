@@ -1,4 +1,5 @@
-﻿@setupContainerForJsonNetCultureInfoConversion
+﻿@perFeatureContainer
+@setupContainerForJsonNetCultureInfoConversion
 
 Feature: CultureInfo conversion
 	In order to ensure CultureInfo instances are serialized in a consistent way

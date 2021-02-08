@@ -2,18 +2,14 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-#pragma warning disable SA1600 // Elements should be documented
-#pragma warning disable CS1591 // Elements should be documented
-
 namespace Corvus.Extensions.Json.Specs
 {
     using System;
     using System.Collections.Generic;
     using System.Globalization;
-    using System.Runtime.CompilerServices;
     using Corvus.Extensions.Json.Specs.Samples;
     using Corvus.Json;
-    using Corvus.SpecFlow.Extensions;
+    using Corvus.Testing.SpecFlow;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
@@ -36,8 +32,8 @@ namespace Corvus.Extensions.Json.Specs
         {
             this.featureContext = featureContext;
             this.scenarioContext = scenarioContext;
-            this.propertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<IPropertyBagFactory>();
-            this.jnetPropertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<IJsonNetPropertyBagFactory>();
+            this.propertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetService<IPropertyBagFactory>();
+            this.jnetPropertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetService<IJsonNetPropertyBagFactory>();
             this.jsonSerializerSettingsProvider = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
         }
 
@@ -157,11 +153,18 @@ namespace Corvus.Extensions.Json.Specs
             this.propertyBag = JsonConvert.DeserializeObject<IPropertyBag>(serializedBag, settingsProvider.Instance);
         }
 
-        [Given(@"I deserialize a POCO with the json string ""(.*)""")]
-        public void GivenIDeserializeAPOCOWithTheJsonString(string json)
+        [Given(@"I deserialize a CultureInfo POCO with the json string ""(.*)""")]
+        public void GivenIDeserializeACultureInfoPOCOWithTheJsonString(string json)
         {
             IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
             this.scenarioContext.Set(JsonConvert.DeserializeObject<CultureInfoPocObject>(json, settingsProvider.Instance), "Result");
+        }
+
+        [Given(@"I deserialize a DateTimeOffset POCO with the json string ""(.*)""")]
+        public void GivenIDeserializeADateTimeOffsetPOCOWithTheJsonString(string json)
+        {
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
+            this.scenarioContext.Set(JsonConvert.DeserializeObject<DateTimeOffsetPocObject>(json, settingsProvider.Instance), "Result");
         }
 
         [Then(@"the result should have a POCO named ""(.*)"" with values ""(.*)"" ""(.*)"" ""(.*)"" ""(.*)"" ""(.*)""")]
@@ -442,5 +445,4 @@ namespace Corvus.Extensions.Json.Specs
     }
 }
 
-#pragma warning restore SA1600 // Elements should be documented
 #pragma warning restore CS1591 // Elements should be documented
