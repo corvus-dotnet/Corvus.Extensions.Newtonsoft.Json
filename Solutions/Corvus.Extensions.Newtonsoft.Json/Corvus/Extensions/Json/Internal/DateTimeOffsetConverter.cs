@@ -73,7 +73,7 @@ namespace Corvus.Extensions.Json.Internal
 
                 writer.WriteStartObject();
                 writer.WritePropertyName("dateTimeOffset");
-                writer.WriteRawValue($"\"{dto.ToString("O")}\"");
+                writer.WriteRawValue($"\"{dto:O}\"");
                 writer.WritePropertyName("unixTime");
                 writer.WriteValue(dto.ToUnixTimeMilliseconds());
                 writer.WriteEndObject();

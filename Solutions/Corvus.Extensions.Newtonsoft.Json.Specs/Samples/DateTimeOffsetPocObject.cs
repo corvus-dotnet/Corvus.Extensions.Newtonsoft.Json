@@ -1,27 +1,16 @@
-﻿// <copyright file="PocObject.cs" company="Endjin Limited">
+﻿// <copyright file="DateTimeOffsetPocObject.cs" company="Endjin Limited">
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 namespace Corvus.Extensions.Json.Specs.Samples
 {
     using System;
-    using System.Globalization;
 
     /// <summary>
     /// A plain old CLR object.
     /// </summary>
-    public class PocObject : IEquatable<PocObject>
+    public class DateTimeOffsetPocObject : IEquatable<DateTimeOffsetPocObject>
     {
-        public PocObject(string someValue)
-        {
-            this.SomeValue = someValue;
-        }
-
-        /// <summary>
-        /// Gets or sets a simple value.
-        /// </summary>
-        public string SomeValue { get; set; }
-
         /// <summary>
         /// Gets or sets a date time offset.
         /// </summary>
@@ -33,47 +22,37 @@ namespace Corvus.Extensions.Json.Specs.Samples
         public DateTimeOffset? SomeNullableDateTime { get; set; }
 
         /// <summary>
-        /// Gets or sets a culture info.
-        /// </summary>
-        public CultureInfo? SomeCulture { get; set; }
-
-        /// <summary>
-        /// Gets or sets an enumeration value.
-        /// </summary>
-        public ExampleEnum SomeEnum { get; set; }
-
-        /// <summary>
         /// Compares two instances of PocObject for equality.
         /// </summary>
         /// <param name="left">The first object to compare.</param>
         /// <param name="right">The second object to compare.</param>
         /// <returns>True if the instances are equal, false otherwise.</returns>
-        public static bool operator ==(PocObject left, PocObject right)
+        public static bool operator ==(DateTimeOffsetPocObject left, DateTimeOffsetPocObject right)
         {
             return left?.Equals(right) ?? false;
         }
 
         /// <summary>
-        /// Compares two instances of PocObject for inequality.
+        /// Compares two instances of DateTimeOffsetPocObject for inequality.
         /// </summary>
         /// <param name="left">The first object to compare.</param>
         /// <param name="right">The second object to compare.</param>
         /// <returns>False if the instances are equal, true otherwise.</returns>
-        public static bool operator !=(PocObject left, PocObject right)
+        public static bool operator !=(DateTimeOffsetPocObject left, DateTimeOffsetPocObject right)
         {
             return !(left == right);
         }
 
         /// <inheritdoc />
-        public bool Equals(PocObject? other)
+        public bool Equals(DateTimeOffsetPocObject? other)
         {
-            return other is PocObject && this.GetDefiningTuple() == other.GetDefiningTuple();
+            return other is DateTimeOffsetPocObject && this.GetDefiningTuple() == other.GetDefiningTuple();
         }
 
         /// <inheritdoc />
         public override bool Equals(object? obj)
         {
-            if (obj is PocObject sci)
+            if (obj is DateTimeOffsetPocObject sci)
             {
                 return this.Equals(sci);
             }
@@ -84,7 +63,7 @@ namespace Corvus.Extensions.Json.Specs.Samples
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return HashCode.Combine(this.SomeValue, this.SomeDateTime, this.SomeNullableDateTime, this.SomeCulture, this.SomeEnum);
+            return HashCode.Combine(this.SomeDateTime, this.SomeNullableDateTime);
         }
 
         public override string ToString()
@@ -92,7 +71,7 @@ namespace Corvus.Extensions.Json.Specs.Samples
             return this.GetDefiningTuple().ToString();
         }
 
-        private (string SomeValue, DateTimeOffset SomeDateTime, DateTimeOffset? SomeNullableDateTime, string? Name, ExampleEnum SomeEnum) GetDefiningTuple() =>
-            (this.SomeValue, this.SomeDateTime, this.SomeNullableDateTime, this.SomeCulture?.Name, this.SomeEnum);
+        private (DateTimeOffset SomeDateTime, DateTimeOffset? SomeNullableDateTime) GetDefiningTuple() =>
+            (this.SomeDateTime, this.SomeNullableDateTime);
     }
 }

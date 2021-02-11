@@ -1,4 +1,8 @@
-﻿@setupContainer
+﻿@perFeatureContainer
+@setupContainerForJsonNetPropertyBag
+@setupContainerForJsonNetCultureInfoConversion
+@setupContainerForJsonNetDateTimeOffsetConversion
+
 Feature: JsonNetPropertyBagSpecs
 	In order to provide strongly typed, extensible properties for a class that serialize neatly as JSON
 	As a developer
@@ -50,25 +54,31 @@ Scenario: Deserialize a property bag
 	| date     | 2020-04-17T07:06:10+01:00 | datetime |
 
 Scenario Outline: POCO serialization and deserialization
-	Given the creation properties include a POCO called "poco" with "<value>" "<time>" "<nullableTime>" "<culture>" "<enum>"
+	Given the creation properties include a DateTime POCO called "datetimepoco" with "<time>" "<nullableTime>"
+	Given the creation properties include a CultureInfo POCO called "cultureinfopoco" with "<culture>"
+	Given the creation properties include an enum value called "enumvalue" with value "<enum>"
 	When I create the property bag from the creation properties
 	And I serialize the property bag
 	And I deserialize the serialized property bag
-	Then the result should have a POCO named "poco" with values "<value>" "<time>" "<nullableTime>" "<culture>" "<enum>"
+	Then the result should have a DateTime POCO named "datetimepoco" with values "<time>" "<nullableTime>"
+	Then the result should have a CultureInfo POCO named "cultureinfopoco" with value "<culture>"
+	Then the result should have an enum value named "enumvalue" with value "<enum>"
 	Examples:
-	| value | time                          | nullableTime                | culture | enum   |
-	| hello | 2020-04-17T07:06:10.0+01:00   | 2020-05-01T13:14:15.3+01:00 | en-GB   | First  |
-	| world | 2020-05-04T00:00:00.0+00:00   |                             | en-US   | Second |
-	| pi    | 2020-03-14T03:49:20.527+00:00 |                             |         | Third  |
+	| time                          | nullableTime                | culture | enum   |
+	| 2020-04-17T07:06:10.0+01:00   | 2020-05-01T13:14:15.3+01:00 | en-GB   | First  |
+	| 2020-05-04T00:00:00.0+00:00   |                             | en-US   | Second |
+	| 2020-03-14T03:49:20.527+00:00 |                             |         | Third  |
 
 Scenario Outline: POCO deserialization
 	Given I deserialize a property bag from the string "<bagJson>"
-	Then the result should have a POCO named "poco" with values "<value>" "<time>" "<nullableTime>" "<culture>" "<enum>"
+	Then the result should have a DateTime POCO named "datetimepoco" with values "<time>" "<nullableTime>"
+	Then the result should have a CultureInfo POCO named "cultureinfopoco" with value "<culture>"
+	Then the result should have an enum value named "enumvalue" with value "<enum>"
 	Examples:
-	| value | time                          | nullableTime                | culture | enum   | bagJson                                                                                                                                       |
-	| hello | 2020-04-17T07:06:10.0+01:00   | 2020-05-01T13:14:15.3+01:00 | en-GB   | First  | {'poco':{'someValue':'hello','someDateTime':'2020-04-17T07:06:10.0+01:00','someNullableDateTime':'2020-05-01T13:14:15.3+01:00','someCulture':'en-GB','someEnum':'First'}} |
-	| world | 2020-05-04T00:00:00.0+00:00   |                             | en-US   | Second | {'poco':{'someValue':'world','someDateTime':'2020-05-04T00:00:00.0+00:00','someCulture':'en-US','someEnum':'Second'}}                                             |
-	| pi    | 2020-03-14T03:49:20.527+00:00 |                             |         | Third  | {'poco':{'someValue':'pi','someDateTime':'2020-03-14T03:49:20.527+00:00','someEnum':'Third'}}                                                                 |
+	| time                          | nullableTime                | culture | enum   | bagJson                                                                                                                                                                             |
+	| 2020-04-17T07:06:10.0+01:00   | 2020-05-01T13:14:15.3+01:00 | en-GB   | First  | {'datetimepoco':{'someDateTime':'2020-04-17T07:06:10.0+01:00','someNullableDateTime':'2020-05-01T13:14:15.3+01:00'},'cultureinfopoco':{'someCulture':'en-GB'},'enumvalue':'First'}} |
+	| 2020-05-04T00:00:00.0+00:00   |                             | en-US   | Second | {'datetimepoco':{'someDateTime':'2020-05-04T00:00:00.0+00:00'},'cultureinfopoco':{'someCulture':'en-US'},'enumvalue':'Second'}}                                                     |
+	| 2020-03-14T03:49:20.527+00:00 |                             |         | Third  | {'datetimepoco':{'someDateTime':'2020-03-14T03:49:20.527+00:00'},'enumvalue':'Third'}}                                                                                              |
 
 Scenario: Construct from a JObject
 	Given I create a JObject
