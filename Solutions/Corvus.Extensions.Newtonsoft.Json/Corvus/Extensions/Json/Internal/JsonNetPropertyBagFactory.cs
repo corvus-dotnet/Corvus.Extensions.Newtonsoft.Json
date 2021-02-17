@@ -36,7 +36,7 @@ namespace Corvus.Extensions.Json.Internal
         /// <inheritdoc/>
         public JObject AsJObject(IPropertyBag propertyBag)
         {
-            if (!(propertyBag is JsonNetPropertyBag jsonNetPropertyBag))
+            if (propertyBag is not JsonNetPropertyBag jsonNetPropertyBag)
             {
                 throw new ArgumentException($"Not a {nameof(JsonNetPropertyBag)}", nameof(propertyBag));
             }
@@ -62,14 +62,7 @@ namespace Corvus.Extensions.Json.Internal
             IEnumerable<KeyValuePair<string, object>>? propertiesToSetOrAdd,
             IEnumerable<string>? propertiesToRemove)
         {
-            if (!(input is IJsonNetPropertyBag propertyBag))
-            {
-                throw new ArgumentException(
-                    $"The input property bag must be a {nameof(JsonNetPropertyBag)}",
-                    nameof(input));
-            }
-
-            IReadOnlyDictionary<string, object> existingProperties = propertyBag.AsDictionary();
+            IReadOnlyDictionary<string, object> existingProperties = input.AsDictionary();
             Dictionary<string, object> newProperties = propertiesToSetOrAdd?.ToDictionary(kv => kv.Key, kv => kv.Value)
                 ?? new Dictionary<string, object>();
             HashSet<string>? remove = propertiesToRemove == null ? null : new HashSet<string>(propertiesToRemove);

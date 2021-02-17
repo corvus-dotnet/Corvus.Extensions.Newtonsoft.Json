@@ -176,3 +176,64 @@ Scenario: Add, modify, and remove properties
 	| Property | Value | Type    |
 	| hello    | bar   | string  |
 	| quux     | 4     | integer |
+
+Scenario: Convert a property bag containing nested objects to a dictionary
+	Given I deserialize a property bag from the string
+		"""
+		{
+			"hello": "world",
+			"number": 3,
+			"nested": {
+				"nestedstring": "goodbye",
+				"nestednumber": 4
+			}
+		}
+		"""
+	When I convert the PropertyBag to a Dictionary
+	Then the dictionary should contain the properties
+	| Property | Value | Type         |
+	| hello    | world | string       |
+	| number   | 3     | integer      |
+	| nested   |       | IPropertyBag |
+
+Scenario: Convert a PropertyBag containing an array of a scalar type to a Dictionary
+	Given I deserialize a property bag from the string
+		"""
+		{
+			"hello": "world",
+			"number": 3,
+			"scalarArray": [1, 2, 3 ,4]
+		}
+		"""
+	When I convert the PropertyBag to a Dictionary
+	Then the dictionary should contain the properties
+	| Property    | Value | Type     |
+	| hello       | world | string   |
+	| number      | 3     | integer  |
+	| scalarArray |       | object[] |
+	And the array stored in the dictionary as "scalarArray" should contain 4 entries
+	And the array stored in the dictionary as "scalarArray" should contain items of type "long"
+
+Scenario: Convert a PropertyBag containing an array of objects to a Dictionary
+	Given I deserialize a property bag from the string
+		"""
+		{
+			"hello": "world",
+			"number": 3,
+			"objectArray": [
+				{ "prop": "val1" },
+				{ "prop": "val2" },
+				{ "prop": "val3" },
+				{ "prop": "val4" },
+				{ "prop": "val5" }
+			]
+		}
+		"""
+	When I convert the PropertyBag to a Dictionary
+	Then the dictionary should contain the properties
+	| Property    | Value | Type     |
+	| hello       | world | string   |
+	| number      | 3     | integer  |
+	| objectArray |       | object[] |
+	And the array stored in the dictionary as "objectArray" should contain 5 entries
+	And the array stored in the dictionary as "objectArray" should contain items of type "IPropertyBag"

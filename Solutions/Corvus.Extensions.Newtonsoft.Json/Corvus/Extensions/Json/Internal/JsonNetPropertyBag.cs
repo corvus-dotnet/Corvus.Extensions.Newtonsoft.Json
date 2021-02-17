@@ -6,6 +6,7 @@ namespace Corvus.Extensions.Json.Internal
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using Corvus.Json;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
@@ -13,7 +14,7 @@ namespace Corvus.Extensions.Json.Internal
     /// <summary>
     /// A property bag that serializes neatly using Json.NET.
     /// </summary>
-    internal class JsonNetPropertyBag : IJsonNetPropertyBag
+    internal class JsonNetPropertyBag : IPropertyBag
     {
         private readonly JsonSerializerSettings serializerSettings;
         private readonly JObject properties;
@@ -109,7 +110,35 @@ namespace Corvus.Extensions.Json.Internal
         }
 
         /// <inheritdoc/>
-        public IReadOnlyDictionary<string, object> AsDictionary() => this.properties.ToObject<Dictionary<string, object>>();
+        public IReadOnlyDictionary<string, object> AsDictionary()
+        {
+            Dictionary<string, object> dictionary = this.properties.ToObject<Dictionary<string, object>>();
+
+            // Now for each item in the dictionary we need to check that it's either
+            // 1. A scalar type
+            // 2. An IPropertyBag
+            // 3. An array of 1. or 2.
+            // The initial call to properties.ToObject<T>() will have given us a dictionary containing either scalars
+            // or JTokens. We need to look for the JTokens and process them appropriately.
+            var jtokenEntries = dictionary.Where(x => x.Value is JToken).ToList();
+            foreach (KeyValuePair<string, object> jtokenEntry in jtokenEntries)
+            {
+                dictionary[jtokenEntry.Key] = this.ConvertFromJToken(jtokenEntry.Value);
+            }
+
+            return dictionary;
+        }
+
+        private object ConvertFromJToken(object value)
+        {
+            return value switch
+            {
+                JArray jarray => jarray.Select(x => this.ConvertFromJToken(x)).ToArray(),
+                JObject jobject => new JsonNetPropertyBag(jobject, this.serializerSettings),
+                JValue jvalue => jvalue.ToObject<object>(),
+                _ => value,
+            };
+        }
 
         private JToken ConvertToJToken<T>(T value)
         {

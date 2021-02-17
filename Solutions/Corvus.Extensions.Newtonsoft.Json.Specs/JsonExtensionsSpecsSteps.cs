@@ -159,6 +159,13 @@ namespace Corvus.Extensions.Json.Specs
             this.propertyBag = JsonConvert.DeserializeObject<IPropertyBag>(json, settingsProvider.Instance);
         }
 
+        [Given("I deserialize a property bag from the string")]
+        public void GivenIDeserializeAPropertyBagFromTheMultilineString(string multiLineJson)
+        {
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
+            this.propertyBag = JsonConvert.DeserializeObject<IPropertyBag>(multiLineJson, settingsProvider.Instance);
+        }
+
         [When("I serialize the property bag")]
         public void GivenISerializeThePropertyBag()
         {
@@ -368,9 +375,50 @@ namespace Corvus.Extensions.Json.Specs
                             break;
                         }
 
+                    case "IPropertyBag":
+                        {
+                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
+                            Assert.IsInstanceOf<IPropertyBag>(actual);
+                            break;
+                        }
+
+                    case "object[]":
+                        {
+                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
+                            Assert.IsInstanceOf<object[]>(actual);
+                            break;
+                        }
+
                     default:
                         throw new InvalidOperationException($"Unknown data type '{type}'");
                 }
+            }
+        }
+
+        [Then(@"the array stored in the dictionary as ""(.*)"" should contain (.*) entries")]
+        public void ThenTheArrayStoredInTheDictionaryAsShouldContainEntries(string key, int entryCount)
+        {
+            IReadOnlyDictionary<string, object> dictionary = this.scenarioContext.Get<IReadOnlyDictionary<string, object>>("Result");
+            object[] array = (object[])dictionary[key];
+            Assert.AreEqual(entryCount, array.Length);
+        }
+
+        [Then(@"the array stored in the dictionary as ""(.*)"" should contain items of type ""(.*)""")]
+        public void ThenTheArrayStoredInTheDictionaryAsShouldContainItemsOfType(string key, string type)
+        {
+            IReadOnlyDictionary<string, object> dictionary = this.scenarioContext.Get<IReadOnlyDictionary<string, object>>("Result");
+            object[] array = (object[])dictionary[key];
+
+            Type targetType = type switch
+            {
+                "long" => typeof(long),
+                "IPropertyBag" => typeof(IPropertyBag),
+                _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
+            };
+
+            foreach (object current in array)
+            {
+                Assert.IsTrue(targetType.IsAssignableFrom(current.GetType()));
             }
         }
 
@@ -402,7 +450,7 @@ namespace Corvus.Extensions.Json.Specs
         [When("I convert the PropertyBag to a Dictionary")]
         public void WhenIConvertThePropertyBagToADictionary()
         {
-            this.scenarioContext.Set(((IJsonNetPropertyBag)this.Bag).AsDictionary(), "Result");
+            this.scenarioContext.Set(this.Bag.AsDictionary(), "Result");
         }
 
         [Then("TryGet should have thrown a SerializationException")]
