@@ -348,46 +348,24 @@ namespace Corvus.Extensions.Json.Specs
         public void ThenTheDictionaryShouldContainTheProperties(Table table)
         {
             IReadOnlyDictionary<string, object> dictionary = this.scenarioContext.Get<IReadOnlyDictionary<string, object>>("Result");
+            this.VerifyDictionaryContainsProperties(dictionary, table);
+        }
 
-            foreach (TableRow row in table.Rows)
+        [Then(@"the nested dictionary called ""(.*)"" shuld contain the properties")]
+        public void ThenTheNestedDictionaryCalledShuldContainTheProperties(string key, Table table)
+        {
+            string[] keySegments = key.Split('.');
+
+            IReadOnlyDictionary<string, object>? dictionary = this.scenarioContext.Get<IReadOnlyDictionary<string, object>>("Result");
+
+            foreach (string keySegment in keySegments)
             {
-                row.TryGetValue("Property", out string name);
-                row.TryGetValue("Value", out string expected);
-                row.TryGetValue("Type", out string type);
-                switch (type)
-                {
-                    case "string":
-                        {
-                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
-                            Assert.AreEqual(expected, actual);
-                            break;
-                        }
-
-                    case "integer":
-                        {
-                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
-                            Assert.AreEqual(int.Parse(expected), actual);
-                            break;
-                        }
-
-                    case "IPropertyBag":
-                        {
-                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
-                            Assert.IsInstanceOf<IPropertyBag>(actual);
-                            break;
-                        }
-
-                    case "object[]":
-                        {
-                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
-                            Assert.IsInstanceOf<object[]>(actual);
-                            break;
-                        }
-
-                    default:
-                        throw new InvalidOperationException($"Unknown data type '{type}'");
-                }
+                Assert.IsTrue(dictionary!.TryGetValue(keySegment, out object? nestedDictionaryObject));
+                dictionary = nestedDictionaryObject as IReadOnlyDictionary<string, object>;
+                Assert.IsNotNull(dictionary);
             }
+
+            this.VerifyDictionaryContainsProperties(dictionary!, table);
         }
 
         [Then(@"the array stored in the dictionary as ""(.*)"" should contain (.*) entries")]
@@ -408,6 +386,7 @@ namespace Corvus.Extensions.Json.Specs
             {
                 "long" => typeof(long),
                 "IPropertyBag" => typeof(IPropertyBag),
+                "IReadOnlyDictionary<string, object>" => typeof(IReadOnlyDictionary<string, object>),
                 _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
             };
 
@@ -448,10 +427,66 @@ namespace Corvus.Extensions.Json.Specs
             this.scenarioContext.Set(this.Bag.AsDictionary(), "Result");
         }
 
+        [When("I recursively convert the PropertyBag to a Dictionary")]
+        public void WhenIRecursivelyConvertThePropertyBagToADictionary()
+        {
+            this.scenarioContext.Set(this.Bag.AsDictionaryRecursive(), "Result");
+        }
+
         [Then("TryGet should have thrown a SerializationException")]
         public void ThenTryGetShouldHaveThrownASerializationException()
         {
             Assert.IsInstanceOf<SerializationException>(this.exception);
+        }
+
+        private void VerifyDictionaryContainsProperties(IReadOnlyDictionary<string, object> dictionary, Table table)
+        {
+            foreach (TableRow row in table.Rows)
+            {
+                row.TryGetValue("Property", out string name);
+                row.TryGetValue("Value", out string expected);
+                row.TryGetValue("Type", out string type);
+                switch (type)
+                {
+                    case "string":
+                        {
+                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
+                            Assert.AreEqual(expected, actual);
+                            break;
+                        }
+
+                    case "integer":
+                        {
+                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
+                            Assert.AreEqual(int.Parse(expected), actual);
+                            break;
+                        }
+
+                    case "IPropertyBag":
+                        {
+                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
+                            Assert.IsInstanceOf<IPropertyBag>(actual);
+                            break;
+                        }
+
+                    case "object[]":
+                        {
+                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
+                            Assert.IsInstanceOf<object[]>(actual);
+                            break;
+                        }
+
+                    case "IReadOnlyDictionary<string, object>":
+                        {
+                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
+                            Assert.IsInstanceOf<IReadOnlyDictionary<string, object>>(actual);
+                            break;
+                        }
+
+                    default:
+                        throw new InvalidOperationException($"Unknown data type '{type}'");
+                }
+            }
         }
 
         private JObject CreateJObjectFromTable(Table table)

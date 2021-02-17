@@ -237,3 +237,47 @@ Scenario: Convert a PropertyBag containing an array of objects to a Dictionary
 	| objectArray |       | object[] |
 	And the array stored in the dictionary as "objectArray" should contain 5 entries
 	And the array stored in the dictionary as "objectArray" should contain items of type "IPropertyBag"
+
+Scenario: Recursively convert a PropertyBag to a Dictionary
+	Given I deserialize a property bag from the string
+		"""
+		{
+			"hello": "world",
+			"number": 3,
+			"scalarArray": [1, 2, 3 ,4],
+			"objectArray": [
+				{ "prop1": "val1", "prop2": 1 },
+				{ "prop1": "val2", "prop2": 2 },
+				{ "prop1": "val3", "prop2": 3 }
+			],
+			"nested": {
+				"nestedstring": "goodbye",
+				"nestednumber": 4,
+				"nestedscalararray": ["a", "b", "c"],
+				"nestedobject": {
+					"nestedstring": "hello again",
+					"nestednumber": 5
+				}
+			}
+		}
+		"""
+	When I recursively convert the PropertyBag to a Dictionary
+	Then the dictionary should contain the properties
+	| Property    | Value | Type                                |
+	| hello       | world | string                              |
+	| number      | 3     | integer                             |
+	| nested      |       | IReadOnlyDictionary<string, object> |
+	| scalarArray |       | object[]                            |
+	| objectArray |       | object[]                            |
+	And the array stored in the dictionary as "scalarArray" should contain items of type "long"
+	And the array stored in the dictionary as "objectArray" should contain items of type "IReadOnlyDictionary<string, object>"
+	And the nested dictionary called "nested" shuld contain the properties
+	| Property          | Value   | Type                                |
+	| nestedstring      | goodbye | string                              |
+	| nestednumber      | 4       | integer                             |
+	| nestedobject      |         | IReadOnlyDictionary<string, object> |
+	| nestedscalararray |         | object[]                            |
+	And the nested dictionary called "nested.nestedobject" shuld contain the properties
+	| Property     | Value       | Type    |
+	| nestedstring | hello again | string  |
+	| nestednumber | 5           | integer |

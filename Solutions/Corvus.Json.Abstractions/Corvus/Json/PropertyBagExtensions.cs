@@ -5,7 +5,9 @@
 namespace Corvus.Json
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Extension methods for <see cref="IPropertyBag"/>.
@@ -74,6 +76,44 @@ namespace Corvus.Json
                 input,
                 builder(PropertyBagValues.Empty),
                 propertiesToRemove);
+        }
+
+        /// <summary>
+        /// Retrieves the properties as a dictionary.
+        /// </summary>
+        /// <param name="propertyBag">The <see cref="IPropertyBag"/> to convert.</param>
+        /// <returns>A dictionary containing all of the properties in the bag.</returns>
+        /// <remarks>
+        /// <para>
+        /// This method extends the <see cref="IPropertyBag.AsDictionary"/> method by recursively processing the
+        /// result dictionary and converting any nested <see cref="IPropertyBag"/> instances to further
+        /// <see cref="IReadOnlyDictionary{TKey, TValue}"/>s.
+        /// </para>
+        /// <para>
+        /// As a result, this is a potentially expensive operation. It should not be called repeatedly; the result from
+        /// a call should be stored and reused.
+        /// </para>
+        /// </remarks>
+        public static IReadOnlyDictionary<string, object> AsDictionaryRecursive(this IPropertyBag propertyBag)
+        {
+            return RecursivelyProcessDictionary(propertyBag.AsDictionary());
+        }
+
+        private static IReadOnlyDictionary<string, object> RecursivelyProcessDictionary(IReadOnlyDictionary<string, object> input)
+        {
+            return input.ToDictionary(
+                x => x.Key,
+                x => ProcessPropertyBagItem(x.Value));
+        }
+
+        private static object ProcessPropertyBagItem(object input)
+        {
+            return input switch
+            {
+                IEnumerable<object> enumerableInput => enumerableInput.Select(ProcessPropertyBagItem).ToArray(),
+                IPropertyBag propertyBagInput => propertyBagInput.AsDictionaryRecursive(),
+                _ => input,
+            };
         }
     }
 }
