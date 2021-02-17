@@ -57,11 +57,6 @@ namespace Corvus.Extensions.Json.Specs
             this.creationProperties.Add(propertyName, value);
         }
 
-        [Given(@"the creation properties include a POCO called ""(.*)"" with ""(.*)"" ""(.*)"" ""(.*)"" ""(.*)"" ""(.*)""")]
-        public void TheCreationPropertiesIncludeAPOCOWith(string name, string value, string time, string nullableTime, string? culture, ExampleEnum someEnum)
-        {
-        }
-
         [Given(@"the creation properties include a DateTime POCO called ""(.*)"" with ""(.*)"" ""(.*)""")]
         public void GivenTheCreationPropertiesIncludeADateTimePOCOCalledWith(string name, string time, string nullableTime)
         {
