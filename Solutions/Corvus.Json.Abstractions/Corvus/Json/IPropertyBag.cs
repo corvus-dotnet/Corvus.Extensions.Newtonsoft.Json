@@ -19,6 +19,8 @@ namespace Corvus.Json
         /// <remarks>
         /// <para>
         /// The types of the individual entries will either be .NET primitive types (e.g. int, string, etc) or further
+        /// <see cref="IPropertyBag"/>s. Any arrays in the source <see cref="IPropertyBag"/> will be added to the
+        /// dictionary as arrays of <see cref="object"/>, with array elements being further .NET primitive types of
         /// <see cref="IPropertyBag"/>s.
         /// </para>
         /// </remarks>
