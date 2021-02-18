@@ -469,6 +469,20 @@ namespace Corvus.Extensions.Json.Specs
                             break;
                         }
 
+                    case "IPropertyBag":
+                        {
+                            Assert.IsTrue(bag.TryGet(name, out IPropertyBag actual));
+                            Assert.IsInstanceOf<IPropertyBag>(actual);
+                            break;
+                        }
+
+                    case "object[]":
+                        {
+                            Assert.IsTrue(bag.TryGet(name, out object[] actual));
+                            Assert.IsInstanceOf<object[]>(actual);
+                            break;
+                        }
+
                     default:
                         throw new InvalidOperationException($"Unknown data type '{type}'");
                 }

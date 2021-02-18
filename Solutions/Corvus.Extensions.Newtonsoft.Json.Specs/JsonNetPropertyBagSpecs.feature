@@ -131,6 +131,45 @@ Scenario: Convert to a Dictionary
 	| hello    | world | string  |
 	| number   | 3     | integer |
 
+Scenario: Construct from an existing property bag with modifications
+	Given I deserialize a property bag from the string
+		"""
+		{
+			"hello": "world",
+			"number": 3,
+			"scalarArray": [1, 2, 3 ,4],
+			"objectArray": [
+				{ "prop1": "val1", "prop2": 1 },
+				{ "prop1": "val2", "prop2": 2 },
+				{ "prop1": "val3", "prop2": 3 }
+			],
+			"nested": {
+				"nestedstring": "goodbye",
+				"nestednumber": 4,
+				"nestedscalararray": ["a", "b", "c"],
+				"nestedobject": {
+					"nestedstring": "hello again",
+					"nestednumber": 5
+				}
+			}
+		}
+		"""
+	When I add, modify, or remove properties
+	| Property    | Value | Type    | Action   |
+	| foo         | bar   | string  | addOrSet |
+	And I get the property called "nested" as an IPropertyBag and call it "nestedbag"
+	Then the result should have the properties
+	| Property    | Value | Type         |
+	| hello       | world | string       |
+	| number      | 3     | integer      |
+	| foo         | bar   | string       |
+	| objectArray |       | object[]     |
+	| scalarArray |       | object[]     |
+	| nested      |       | IPropertyBag |
+	And the IPropertyBag called "nestedbag" should have the properties
+	| Property     | Value   | Type   |
+	| nestedstring | goodbye | string |
+
 Scenario: Add properties
 	Given I create a Dictionary
 	| Property | Value | Type    |
