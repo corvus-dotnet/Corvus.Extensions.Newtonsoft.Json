@@ -5,14 +5,20 @@ VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DevOps", "DevOps", "{C011D1F5-E3A2-476B-8029-D25369D6D19E}"
 	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		..\azure-pipelines.release.yml = ..\azure-pipelines.release.yml
 		..\azure-pipelines.yml = ..\azure-pipelines.yml
+		..\GitVersion.yml = ..\GitVersion.yml
+		..\imm.yaml = ..\imm.yaml
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corvus.Extensions.Newtonsoft.Json", "Corvus.Extensions.Newtonsoft.Json\Corvus.Extensions.Newtonsoft.Json.csproj", "{1D134F25-770A-4B75-ABB7-BA1E2A4B9490}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corvus.Extensions.Newtonsoft.Json.Specs", "Corvus.Extensions.Newtonsoft.Json.Specs\Corvus.Extensions.Newtonsoft.Json.Specs.csproj", "{21BC1AED-88DF-411E-959C-0232BC67A765}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corvus.Json.Abstractions", "Corvus.Json.Abstractions\Corvus.Json.Abstractions.csproj", "{8AB3C926-0AB2-4BC6-A9B2-AF7088734F1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corvus.Json.Abstractions", "Corvus.Json.Abstractions\Corvus.Json.Abstractions.csproj", "{8AB3C926-0AB2-4BC6-A9B2-AF7088734F1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
