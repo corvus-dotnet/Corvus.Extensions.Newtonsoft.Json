@@ -131,7 +131,7 @@ Scenario: Convert to a Dictionary
 	| hello    | world | string  |
 	| number   | 3     | integer |
 
-Scenario: Construct from an existing property bag with modifications
+Scenario: Construct with modifications from an existing property bag that contains nested objects
 	Given I deserialize a property bag from the string
 		"""
 		{
@@ -143,7 +143,7 @@ Scenario: Construct from an existing property bag with modifications
 				{ "prop1": "val2", "prop2": 2 },
 				{ "prop1": "val3", "prop2": 3 }
 			],
-			"nested": {
+			"nested1": {
 				"nestedstring": "goodbye",
 				"nestednumber": 4,
 				"nestedscalararray": ["a", "b", "c"],
@@ -151,13 +151,17 @@ Scenario: Construct from an existing property bag with modifications
 					"nestedstring": "hello again",
 					"nestednumber": 5
 				}
+			},
+			"nested2": {
+				"nestedstring": "hello again"
 			}
 		}
 		"""
 	When I add, modify, or remove properties
-	| Property    | Value | Type    | Action   |
-	| foo         | bar   | string  | addOrSet |
-	And I get the property called "nested" as an IPropertyBag and call it "nestedbag"
+	| Property | Value | Type   | Action   |
+	| foo      | bar   | string | addOrSet |
+	| nested2  |       |        | remove   |
+	And I get the property called "nested1" as an IPropertyBag and call it "nestedbag"
 	Then the result should have the properties
 	| Property    | Value | Type         |
 	| hello       | world | string       |
@@ -165,7 +169,10 @@ Scenario: Construct from an existing property bag with modifications
 	| foo         | bar   | string       |
 	| objectArray |       | object[]     |
 	| scalarArray |       | object[]     |
-	| nested      |       | IPropertyBag |
+	| nested1     |       | IPropertyBag |
+	And the result should not have the properties
+	| Property |
+	| nested2  |
 	And the IPropertyBag called "nestedbag" should have the properties
 	| Property     | Value   | Type   |
 	| nestedstring | goodbye | string |

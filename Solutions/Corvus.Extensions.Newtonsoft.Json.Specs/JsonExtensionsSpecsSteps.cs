@@ -328,6 +328,12 @@ namespace Corvus.Extensions.Json.Specs
             this.AssertPropertyBagHasProperties(this.Bag, table);
         }
 
+        [Then("the result should not have the properties")]
+        public void ThenTheResultShouldNotHaveTheProperties(Table table)
+        {
+            this.AssertPropertyBagDoesNotHaveProperties(this.Bag, table);
+        }
+
         [Then(@"the dictionary called ""(.*)"" should contain the properties")]
         public void ThenTheDictionaryShouldContainTheProperties(string name, Table table)
         {
@@ -437,6 +443,15 @@ namespace Corvus.Extensions.Json.Specs
         public void ThenTryGetShouldHaveThrownASerializationException()
         {
             Assert.IsInstanceOf<SerializationException>(this.exception);
+        }
+
+        private void AssertPropertyBagDoesNotHaveProperties(IPropertyBag bag, Table table)
+        {
+            foreach (TableRow row in table.Rows)
+            {
+                row.TryGetValue("Property", out string name);
+                Assert.IsFalse(bag.TryGet(name, out object? actual));
+            }
         }
 
         private void AssertPropertyBagHasProperties(IPropertyBag bag, Table table)
