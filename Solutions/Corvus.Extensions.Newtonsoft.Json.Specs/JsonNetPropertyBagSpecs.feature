@@ -36,6 +36,24 @@ Scenario: Convert to a JObject
 	| number   | 3                         | integer  |
 	| date     | 2020-04-17T07:06:10+01:00 | datetime |
 
+Scenario: Retrieve an object property as an IPropertyBag
+	Given I deserialize a property bag from the string
+		"""
+		{
+			"hello": "world",
+			"number": 3,
+			"nested": {
+				"nestedstring": "goodbye",
+				"nestednumber": 4
+			}
+		}
+		"""
+	When I get the property called "nested" as an IPropertyBag and call it "nested"
+	Then the IPropertyBag called "nested" should have the properties
+	| Property     | Value   | Type    |
+	| nestedstring | goodbye | string  |
+	| nestednumber | 4       | integer |
+
 Scenario: Serialize a property bag
 	Given the creation properties include "hello" with the value "world"
 	And the creation properties include "number" with the value 3
@@ -107,8 +125,8 @@ Scenario: Convert to a Dictionary
 	| Property | Value | Type    |
 	| hello    | world | string  |
 	| number   | 3     | integer |
-	When I convert the PropertyBag to a Dictionary
-	Then the dictionary should contain the properties
+	When I convert the PropertyBag to a Dictionary and call it "result"
+	Then the dictionary called "result" should contain the properties
 	| Property | Value | Type    |
 	| hello    | world | string  |
 	| number   | 3     | integer |
@@ -189,12 +207,17 @@ Scenario: Convert a property bag containing nested objects to a dictionary
 			}
 		}
 		"""
-	When I convert the PropertyBag to a Dictionary
-	Then the dictionary should contain the properties
+	When I convert the PropertyBag to a Dictionary and call it "result"
+	And I get the property called "nested" as an IPropertyBag and call it "nestedbag"
+	Then the dictionary called "result" should contain the properties
 	| Property | Value | Type         |
 	| hello    | world | string       |
 	| number   | 3     | integer      |
 	| nested   |       | IPropertyBag |
+	Then the IPropertyBag called "nestedbag" should have the properties
+	| Property     | Value   | Type    |
+	| nestedstring | goodbye | string  |
+	| nestednumber | 4       | integer |
 
 Scenario: Convert a PropertyBag containing an array of a scalar type to a Dictionary
 	Given I deserialize a property bag from the string
@@ -205,14 +228,15 @@ Scenario: Convert a PropertyBag containing an array of a scalar type to a Dictio
 			"scalarArray": [1, 2, 3 ,4]
 		}
 		"""
-	When I convert the PropertyBag to a Dictionary
-	Then the dictionary should contain the properties
+	When I convert the PropertyBag to a Dictionary and call it "result"
+	And I get the key called "scalarArray" from the dictionary called "result" as an array and call it "scalarArray"
+	Then the dictionary called "result" should contain the properties
 	| Property    | Value | Type     |
 	| hello       | world | string   |
 	| number      | 3     | integer  |
 	| scalarArray |       | object[] |
-	And the array stored in the dictionary as "scalarArray" should contain 4 entries
-	And the array stored in the dictionary as "scalarArray" should contain items of type "long"
+	And the array called "scalarArray" should contain 4 entries
+	And the array called "scalarArray" should contain items of type "long"
 
 Scenario: Convert a PropertyBag containing an array of objects to a Dictionary
 	Given I deserialize a property bag from the string
@@ -229,14 +253,15 @@ Scenario: Convert a PropertyBag containing an array of objects to a Dictionary
 			]
 		}
 		"""
-	When I convert the PropertyBag to a Dictionary
-	Then the dictionary should contain the properties
+	When I convert the PropertyBag to a Dictionary and call it "result"
+	And I get the key called "objectArray" from the dictionary called "result" as an array and call it "objectArray"
+	Then the dictionary called "result" should contain the properties
 	| Property    | Value | Type     |
 	| hello       | world | string   |
 	| number      | 3     | integer  |
 	| objectArray |       | object[] |
-	And the array stored in the dictionary as "objectArray" should contain 5 entries
-	And the array stored in the dictionary as "objectArray" should contain items of type "IPropertyBag"
+	And the array called "objectArray" should contain 5 entries
+	And the array called "objectArray" should contain items of type "IPropertyBag"
 
 Scenario: Recursively convert a PropertyBag to a Dictionary
 	Given I deserialize a property bag from the string
@@ -261,23 +286,26 @@ Scenario: Recursively convert a PropertyBag to a Dictionary
 			}
 		}
 		"""
-	When I recursively convert the PropertyBag to a Dictionary
-	Then the dictionary should contain the properties
+	When I recursively convert the PropertyBag to a Dictionary and call it "result"
+	And I get the key called "nested" from the dictionary called "result" as an IReadOnlyDictionary<string, object> and call it "nested"
+	And I get the key called "scalarArray" from the dictionary called "result" as an array and call it "scalarArray"
+	And I get the key called "objectArray" from the dictionary called "result" as an array and call it "objectArray"
+	Then the dictionary called "result" should contain the properties
 	| Property    | Value | Type                                |
 	| hello       | world | string                              |
 	| number      | 3     | integer                             |
 	| nested      |       | IReadOnlyDictionary<string, object> |
 	| scalarArray |       | object[]                            |
 	| objectArray |       | object[]                            |
-	And the array stored in the dictionary as "scalarArray" should contain items of type "long"
-	And the array stored in the dictionary as "objectArray" should contain items of type "IReadOnlyDictionary<string, object>"
-	And the nested dictionary called "nested" shuld contain the properties
+	And the array called "scalarArray" should contain items of type "long"
+	And the array called "objectArray" should contain items of type "IReadOnlyDictionary<string, object>"
+	And the nested dictionary with key "nested" contained in the dictionary called "result" should contain the properties
 	| Property          | Value   | Type                                |
 	| nestedstring      | goodbye | string                              |
 	| nestednumber      | 4       | integer                             |
 	| nestedobject      |         | IReadOnlyDictionary<string, object> |
 	| nestedscalararray |         | object[]                            |
-	And the nested dictionary called "nested.nestedobject" shuld contain the properties
+	And the nested dictionary with key "nested.nestedobject" contained in the dictionary called "result" should contain the properties
 	| Property     | Value       | Type    |
 	| nestedstring | hello again | string  |
 	| nestednumber | 5           | integer |
