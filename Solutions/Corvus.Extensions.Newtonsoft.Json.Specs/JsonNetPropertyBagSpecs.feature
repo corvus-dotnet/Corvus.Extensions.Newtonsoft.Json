@@ -27,6 +27,7 @@ Scenario: Get and set a badly serialized property
 Scenario: Convert to a JObject
 	Given the creation properties include "hello" with the value "world"
 	And the creation properties include "number" with the value 3
+	And the creation properties include "fpnumber" with the floating point value 3.14
 	And the creation properties include "date" with the date value "2020-04-17T07:06:10+01:00"
 	And I create the property bag from the creation properties
 	When I cast to a JObject
@@ -34,6 +35,7 @@ Scenario: Convert to a JObject
 	| Property | Value                     | Type     |
 	| hello    | world                     | string   |
 	| number   | 3                         | integer  |
+	| fpnumber | 3.14                      | fp       |
 	| date     | 2020-04-17T07:06:10+01:00 | datetime |
 
 Scenario: Retrieve an object property as an IPropertyBag

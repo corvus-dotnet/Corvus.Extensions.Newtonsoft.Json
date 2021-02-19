@@ -51,6 +51,12 @@ namespace Corvus.Extensions.Json.Specs
             this.creationProperties.Add(propertyName, value);
         }
 
+        [Given(@"the creation properties include ""(.*)"" with the floating point value (.*)")]
+        public void TheCreationPropertiesInclude(string propertyName, double value)
+        {
+            this.creationProperties.Add(propertyName, value);
+        }
+
         [Given(@"the creation properties include ""(.*)"" with the date value ""(.*)""")]
         public void TheCreationPropertiesInclude(string propertyName, DateTimeOffset value)
         {
@@ -398,7 +404,7 @@ namespace Corvus.Extensions.Json.Specs
 
             foreach (object current in array)
             {
-                Assert.IsTrue(targetType.IsAssignableFrom(current.GetType()));
+                Assert.IsTrue(targetType.IsAssignableFrom(current.GetType()), $"Expected {targetType}, was {current.GetType()}");
             }
         }
 
@@ -450,7 +456,7 @@ namespace Corvus.Extensions.Json.Specs
             foreach (TableRow row in table.Rows)
             {
                 row.TryGetValue("Property", out string name);
-                Assert.IsFalse(bag.TryGet(name, out object? actual));
+                Assert.IsFalse(bag.TryGet(name, out object? _));
             }
         }
 
@@ -587,6 +593,7 @@ namespace Corvus.Extensions.Json.Specs
                 {
                     "string" => value,
                     "integer" => int.Parse(value),
+                    "fp" => double.Parse(value),
                     "datetime" => DateTimeOffset.Parse(value),
                     _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
                 },

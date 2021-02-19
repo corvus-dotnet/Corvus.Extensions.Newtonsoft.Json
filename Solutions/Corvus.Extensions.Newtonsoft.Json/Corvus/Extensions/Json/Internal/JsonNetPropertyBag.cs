@@ -4,7 +4,10 @@
 
 namespace Corvus.Extensions.Json.Internal
 {
+    using System;
+    using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Corvus.Json;
@@ -14,7 +17,7 @@ namespace Corvus.Extensions.Json.Internal
     /// <summary>
     /// A property bag that serializes neatly using Json.NET.
     /// </summary>
-    internal class JsonNetPropertyBag : IPropertyBag
+    internal class JsonNetPropertyBag : IPropertyBag, IEnumerable<(string Key, PropertyBagEntryType Type)>
     {
         private readonly JsonSerializerSettings serializerSettings;
         private readonly JObject properties;
@@ -97,6 +100,12 @@ namespace Corvus.Extensions.Json.Internal
                 return true;
             }
 
+            if (typeof(T) == typeof(object[]) || typeof(T) == typeof(IPropertyBag))
+            {
+                result = (T)this.ConvertFromJToken(jtoken);
+                return true;
+            }
+
             try
             {
                 using JsonReader reader = jtoken.CreateReader();
@@ -110,24 +119,30 @@ namespace Corvus.Extensions.Json.Internal
         }
 
         /// <inheritdoc/>
-        public IReadOnlyDictionary<string, object> AsDictionary()
+        public IEnumerator<(string Key, PropertyBagEntryType Type)> GetEnumerator()
         {
-            Dictionary<string, object> dictionary = this.properties.ToObject<Dictionary<string, object>>();
+            return this.properties
+                .ToObject<Dictionary<string, object>>()
+                .Select(kv => (
+                    kv.Key,
+                    kv.Value switch
+                    {
+                        null => PropertyBagEntryType.Null,
+                        string => PropertyBagEntryType.String,
+                        bool => PropertyBagEntryType.Boolean,
+                        int => PropertyBagEntryType.Integer,
+                        long => PropertyBagEntryType.Integer,
+                        double => PropertyBagEntryType.Decimal,
+                        JArray => PropertyBagEntryType.Array,
+                        JObject => PropertyBagEntryType.Object,
 
-            // Now for each item in the dictionary we need to check that it's either
-            // 1. A scalar type
-            // 2. An IPropertyBag
-            // 3. An array of 1. or 2.
-            // The initial call to properties.ToObject<T>() will have given us a dictionary containing either scalars
-            // or JTokens. We need to look for the JTokens and process them appropriately.
-            var jtokenEntries = dictionary.Where(x => x.Value is JToken).ToList();
-            foreach (KeyValuePair<string, object> jtokenEntry in jtokenEntries)
-            {
-                dictionary[jtokenEntry.Key] = this.ConvertFromJToken(jtokenEntry.Value);
-            }
-
-            return dictionary;
+                        _ => throw new InvalidOperationException($"Unexpected element of type {kv.Value.GetType()} in property bag")
+                    }))
+                .GetEnumerator();
         }
+
+        /// <inheritdoc/>
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         private object ConvertFromJToken(object value)
         {

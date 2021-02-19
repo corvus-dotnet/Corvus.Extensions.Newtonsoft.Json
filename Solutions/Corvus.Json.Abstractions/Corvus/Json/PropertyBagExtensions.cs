@@ -81,11 +81,64 @@ namespace Corvus.Json
         /// <summary>
         /// Retrieves the properties as a dictionary.
         /// </summary>
+        /// <param name="propertyBag">The property bag.</param>
+        /// <returns>A dictionary containing all of the properties in the bag.</returns>
+        /// <remarks>
+        /// <para>
+        /// The types of the individual entries will either be .NET primitive types (e.g. int, string, etc) or further
+        /// <see cref="IPropertyBag"/>s. Any arrays in the source <see cref="IPropertyBag"/> will be added to the
+        /// dictionary as arrays of <see cref="object"/>, with array elements being further .NET primitive types of
+        /// <see cref="IPropertyBag"/>s.
+        /// </para>
+        /// </remarks>
+        public static IReadOnlyDictionary<string, object> AsDictionary(this IPropertyBag propertyBag)
+        {
+            if (propertyBag is not IEnumerable<(string key, PropertyBagEntryType type)> items)
+            {
+                throw new ArgumentException($"Only property bags that implement {nameof(IEnumerable<(string key, PropertyBagEntryType type)>)} can be converted to dictionaries");
+            }
+
+            var dictionary = new Dictionary<string, object>();
+
+            // Now for each item in the dictionary we need to check that it's either
+            // 1. A scalar type
+            // 2. An IPropertyBag
+            // 3. An array of 1. or 2.
+            // The initial call to properties.ToObject<T>() will have given us a dictionary containing either scalars
+            // or JTokens. We need to look for the JTokens and process them appropriately.
+            ////var jtokenEntries = dictionary.Where(x => x.Value is JToken).ToList();
+            foreach ((string key, PropertyBagEntryType type) in items)
+            {
+                T RequireItem<T>(string key) => propertyBag.TryGet<T>(key, out T result)
+                    ? result
+                    : throw new InvalidOperationException($"Property bag advertised entry {key} of type {typeof(T).Name} during enumeration, but TryGet for that entry failed");
+                ////dictionary[jtokenEntry.Key] = this.ConvertFromJToken(jtokenEntry.Value);
+                object value = type switch
+                {
+                    PropertyBagEntryType.Null => throw new ArgumentException("Cannot return a dictionary with non-null value type when the bag contains null values"),
+                    PropertyBagEntryType.String => RequireItem<string>(key),
+                    PropertyBagEntryType.Boolean => RequireItem<bool>(key),
+                    PropertyBagEntryType.Integer => RequireItem<long>(key),
+                    PropertyBagEntryType.Decimal => RequireItem<double>(key),
+                    PropertyBagEntryType.Array => RequireItem<object[]>(key),
+                    PropertyBagEntryType.Object => RequireItem<IPropertyBag>(key),
+
+                    _ => throw new InvalidOperationException($"Bag reported entry of unrecognized type: {type}"),
+                };
+                dictionary.Add(key, value);
+            }
+
+            return dictionary;
+        }
+
+        /// <summary>
+        /// Retrieves the properties as a dictionary.
+        /// </summary>
         /// <param name="propertyBag">The <see cref="IPropertyBag"/> to convert.</param>
         /// <returns>A dictionary containing all of the properties in the bag.</returns>
         /// <remarks>
         /// <para>
-        /// This method extends the <see cref="IPropertyBag.AsDictionary"/> method by recursively processing the
+        /// This method extends the <see cref="AsDictionary"/> method by recursively processing the
         /// result dictionary and converting any nested <see cref="IPropertyBag"/> instances to further
         /// <see cref="IReadOnlyDictionary{TKey, TValue}"/>s.
         /// </para>
