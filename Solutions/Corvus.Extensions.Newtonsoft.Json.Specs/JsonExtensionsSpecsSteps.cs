@@ -51,15 +51,16 @@ namespace Corvus.Extensions.Json.Specs
             this.creationProperties.Add(propertyName, value);
         }
 
-        [Given(@"the creation properties include ""(.*)"" with the date value ""(.*)""")]
-        public void TheCreationPropertiesInclude(string propertyName, DateTimeOffset value)
+        [Given(@"the creation properties include ""(.*)"" with the floating point value (.*)")]
+        public void TheCreationPropertiesInclude(string propertyName, double value)
         {
             this.creationProperties.Add(propertyName, value);
         }
 
-        [Given(@"the creation properties include a POCO called ""(.*)"" with ""(.*)"" ""(.*)"" ""(.*)"" ""(.*)"" ""(.*)""")]
-        public void TheCreationPropertiesIncludeAPOCOWith(string name, string value, string time, string nullableTime, string? culture, ExampleEnum someEnum)
+        [Given(@"the creation properties include ""(.*)"" with the date value ""(.*)""")]
+        public void TheCreationPropertiesInclude(string propertyName, DateTimeOffset value)
         {
+            this.creationProperties.Add(propertyName, value);
         }
 
         [Given(@"the creation properties include a DateTime POCO called ""(.*)"" with ""(.*)"" ""(.*)""")]
@@ -152,11 +153,25 @@ namespace Corvus.Extensions.Json.Specs
             }
         }
 
+        [When(@"I get the property called ""(.*)"" as an IPropertyBag and call it ""(.*)""")]
+        public void WhenIGetThePropertyCalledAsAnIPropertyBagAndCallIt(string propertyName, string name)
+        {
+            Assert.IsTrue(this.Bag.TryGet(propertyName, out IPropertyBag nestedBag));
+            this.scenarioContext.Set(nestedBag, name);
+        }
+
         [Given(@"I deserialize a property bag from the string ""(.*)""")]
         public void GivenIDeserializeAPropertyBagFromTheString(string json)
         {
             IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
             this.propertyBag = JsonConvert.DeserializeObject<IPropertyBag>(json, settingsProvider.Instance);
+        }
+
+        [Given("I deserialize a property bag from the string")]
+        public void GivenIDeserializeAPropertyBagFromTheMultilineString(string multiLineJson)
+        {
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
+            this.propertyBag = JsonConvert.DeserializeObject<IPropertyBag>(multiLineJson, settingsProvider.Instance);
         }
 
         [When("I serialize the property bag")]
@@ -305,72 +320,98 @@ namespace Corvus.Extensions.Json.Specs
                 propertiesToRemove.Count == 0 ? null : propertiesToRemove);
         }
 
+        [Then(@"the IPropertyBag called ""(.*)"" should have the properties")]
+        public void ThenTheIPropertyBagCalledShouldHaveTheProperties(string name, Table table)
+        {
+            IPropertyBag nestedBag = this.scenarioContext.Get<IPropertyBag>(name);
+            Assert.IsNotNull(nestedBag);
+            this.AssertPropertyBagHasProperties(nestedBag, table);
+        }
+
         [Then("the result should have the properties")]
         public void ThenTheResultShouldHaveTheProperties(Table table)
         {
-            foreach (TableRow row in table.Rows)
-            {
-                row.TryGetValue("Property", out string name);
-                row.TryGetValue("Value", out string expected);
-                row.TryGetValue("Type", out string type);
-                switch (type)
-                {
-                    case "string":
-                        {
-                            Assert.IsTrue(this.Bag.TryGet(name, out string? actual));
-                            Assert.AreEqual(expected, actual);
-                            break;
-                        }
-
-                    case "integer":
-                        {
-                            Assert.IsTrue(this.Bag.TryGet(name, out int actual));
-                            Assert.AreEqual(int.Parse(expected), actual);
-                            break;
-                        }
-
-                    case "datetime":
-                        {
-                            Assert.IsTrue(this.Bag.TryGet(name, out DateTimeOffset actual));
-                            Assert.AreEqual(DateTimeOffset.Parse(expected), actual);
-                            break;
-                        }
-
-                    default:
-                        throw new InvalidOperationException($"Unknown data type '{type}'");
-                }
-            }
+            this.AssertPropertyBagHasProperties(this.Bag, table);
         }
 
-        [Then("the dictionary should contain the properties")]
-        public void ThenTheDictionaryShouldContainTheProperties(Table table)
+        [Then("the result should not have the properties")]
+        public void ThenTheResultShouldNotHaveTheProperties(Table table)
         {
-            IReadOnlyDictionary<string, object> dictionary = this.scenarioContext.Get<IReadOnlyDictionary<string, object>>("Result");
+            this.AssertPropertyBagDoesNotHaveProperties(this.Bag, table);
+        }
 
-            foreach (TableRow row in table.Rows)
+        [Then(@"the dictionary called ""(.*)"" should contain the properties")]
+        public void ThenTheDictionaryShouldContainTheProperties(string name, Table table)
+        {
+            IReadOnlyDictionary<string, object> dictionary = this.scenarioContext.Get<IReadOnlyDictionary<string, object>>(name);
+            this.AssertDictionaryContainsProperties(dictionary, table);
+        }
+
+        [Then(@"the array called ""(.*)"" should contain")]
+        public void ThenTheArrayCalledShouldContain(string name, Table table)
+        {
+            object[] array = this.scenarioContext.Get<object[]>(name);
+            this.AssertArrayContainsValues(array, table);
+        }
+
+        [When(@"I get the key called ""(.*)"" from the dictionary called ""(.*)"" as an IReadOnlyDictionary<string, object> and call it ""(.*)""")]
+        public void WhenIGetTheKeyCalledFromTheDictionaryCalledAsAnIDictionaryAndCallIt(string key, string dictionaryName, string name)
+        {
+            IReadOnlyDictionary<string, object> dictionary = this.scenarioContext.Get<IReadOnlyDictionary<string, object>>(dictionaryName);
+            Assert.IsTrue(dictionary.TryGetValue(key, out object? result));
+            var dictionaryResult = result as IReadOnlyDictionary<string, object>;
+            Assert.IsNotNull(dictionaryResult);
+            this.scenarioContext.Set(dictionaryResult, name);
+        }
+
+        [Then(@"the nested dictionary with key ""(.*)"" contained in the dictionary called ""(.*)"" should contain the properties")]
+        public void ThenTheNestedDictionaryCalledShuldContainTheProperties(string key, string dictionaryName, Table table)
+        {
+            string[] keySegments = key.Split('.');
+
+            IReadOnlyDictionary<string, object>? dictionary = this.scenarioContext.Get<IReadOnlyDictionary<string, object>>(dictionaryName);
+
+            foreach (string keySegment in keySegments)
             {
-                row.TryGetValue("Property", out string name);
-                row.TryGetValue("Value", out string expected);
-                row.TryGetValue("Type", out string type);
-                switch (type)
-                {
-                    case "string":
-                        {
-                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
-                            Assert.AreEqual(expected, actual);
-                            break;
-                        }
+                Assert.IsTrue(dictionary!.TryGetValue(keySegment, out object? nestedDictionaryObject));
+                dictionary = nestedDictionaryObject as IReadOnlyDictionary<string, object>;
+                Assert.IsNotNull(dictionary);
+            }
 
-                    case "integer":
-                        {
-                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
-                            Assert.AreEqual(int.Parse(expected), actual);
-                            break;
-                        }
+            this.AssertDictionaryContainsProperties(dictionary!, table);
+        }
 
-                    default:
-                        throw new InvalidOperationException($"Unknown data type '{type}'");
-                }
+        [When(@"I get the key called ""(.*)"" from the dictionary called ""(.*)"" as an array and call it ""(.*)""")]
+        public void WhenIGetTheDictionaryKeyCalledAsAnArrayAndCallIt(string key, string dictionaryName, string resultName)
+        {
+            IReadOnlyDictionary<string, object> dictionary = this.scenarioContext.Get<IReadOnlyDictionary<string, object>>(dictionaryName);
+            object[] array = (object[])dictionary[key];
+            this.scenarioContext.Set(array, resultName);
+        }
+
+        [Then(@"the array called ""(.*)"" should contain (.*) entries")]
+        public void ThenTheArrayStoredInTheDictionaryAsShouldContainEntries(string name, int entryCount)
+        {
+            object[] array = this.scenarioContext.Get<object[]>(name);
+            Assert.AreEqual(entryCount, array.Length);
+        }
+
+        [Then(@"the array called ""(.*)"" should contain items of type ""(.*)""")]
+        public void ThenTheArrayStoredInTheDictionaryAsShouldContainItemsOfType(string name, string type)
+        {
+            object[] array = this.scenarioContext.Get<object[]>(name);
+
+            Type targetType = type switch
+            {
+                "long" => typeof(long),
+                "IPropertyBag" => typeof(IPropertyBag),
+                "IReadOnlyDictionary<string, object>" => typeof(IReadOnlyDictionary<string, object>),
+                _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
+            };
+
+            foreach (object current in array)
+            {
+                Assert.IsTrue(targetType.IsAssignableFrom(current.GetType()), $"Expected {targetType}, was {current.GetType()}");
             }
         }
 
@@ -399,16 +440,140 @@ namespace Corvus.Extensions.Json.Specs
             this.propertyBag = this.propertyBagFactory.Create(this.creationProperties);
         }
 
-        [When("I convert the PropertyBag to a Dictionary")]
-        public void WhenIConvertThePropertyBagToADictionary()
+        [When(@"I convert the PropertyBag to a Dictionary and call it ""(.*)""")]
+        public void WhenIConvertThePropertyBagToADictionaryAndCallItResult(string name)
         {
-            this.scenarioContext.Set(((IJsonNetPropertyBag)this.Bag).AsDictionary(), "Result");
+            this.scenarioContext.Set(this.Bag.AsDictionary(), name);
+        }
+
+        [When(@"I recursively convert the PropertyBag to a Dictionary and call it ""(.*)""")]
+        public void WhenIRecursivelyConvertThePropertyBagToADictionary(string name)
+        {
+            this.scenarioContext.Set(this.Bag.AsDictionaryRecursive(), name);
         }
 
         [Then("TryGet should have thrown a SerializationException")]
         public void ThenTryGetShouldHaveThrownASerializationException()
         {
             Assert.IsInstanceOf<SerializationException>(this.exception);
+        }
+
+        private void AssertPropertyBagDoesNotHaveProperties(IPropertyBag bag, Table table)
+        {
+            foreach (TableRow row in table.Rows)
+            {
+                row.TryGetValue("Property", out string name);
+                Assert.IsFalse(bag.TryGet(name, out object? _));
+            }
+        }
+
+        private void AssertPropertyBagHasProperties(IPropertyBag bag, Table table)
+        {
+            foreach (TableRow row in table.Rows)
+            {
+                row.TryGetValue("Property", out string name);
+                row.TryGetValue("Value", out string expected);
+                row.TryGetValue("Type", out string type);
+                object? actualAsObject;
+                void Test<T>(IPropertyBag bag, string name)
+                {
+                    Assert.IsTrue(bag.TryGet(name, out T actual));
+                    actualAsObject = actual;
+                }
+
+                switch (type)
+                {
+#pragma warning disable SA1101 // Prefix local calls with this - StyleCop appears not to understand local methods
+                    case "string":
+                        Test<string?>(bag, name);
+                        break;
+
+                    case "integer":
+                        Test<int>(bag, name);
+                        break;
+
+                    case "datetime":
+                        Test<DateTimeOffset>(bag, name);
+                        break;
+
+                    case "IPropertyBag":
+                        Test<IPropertyBag>(bag, name);
+                        break;
+
+                    case "object[]":
+                        Test<object[]>(bag, name);
+                        break;
+#pragma warning restore SA1101 // Prefix local calls with this
+
+                    default:
+                        throw new InvalidOperationException($"Unknown data type '{type}'");
+                }
+
+                AssertChildValueIs(expected, type, actualAsObject);
+            }
+        }
+
+        private void AssertArrayContainsValues(object[] array, Table table)
+        {
+            Assert.AreEqual(table.Rows.Count, array.Length, "Array length");
+            for (int i = 0; i < array.Length; ++i)
+            {
+                TableRow row = table.Rows[i];
+                object actual = array[i];
+                row.TryGetValue("Value", out string expected);
+                row.TryGetValue("Type", out string type);
+
+                AssertChildValueIs(expected, type, actual);
+            }
+        }
+
+        private void AssertDictionaryContainsProperties(IReadOnlyDictionary<string, object> dictionary, Table table)
+        {
+            foreach (TableRow row in table.Rows)
+            {
+                row.TryGetValue("Property", out string name);
+                row.TryGetValue("Value", out string expected);
+                row.TryGetValue("Type", out string type);
+                Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
+                AssertChildValueIs(expected, type, actual);
+            }
+        }
+
+        private static void AssertChildValueIs(string expected, string type, object? actual)
+        {
+            switch (type)
+            {
+                case "string":
+                    Assert.AreEqual(expected, actual);
+                    break;
+
+                case "integer":
+                    Assert.AreEqual(int.Parse(expected), actual);
+                    break;
+
+                case "datetime":
+                    Assert.AreEqual(DateTimeOffset.Parse(expected), actual);
+                    break;
+
+                case "IPropertyBag":
+                    Assert.IsInstanceOf<IPropertyBag>(actual);
+                    break;
+
+                case "object[]":
+                    Assert.IsInstanceOf<object[]>(actual);
+                    break;
+
+                case "IReadOnlyDictionary<string, object>":
+                    Assert.IsInstanceOf<IReadOnlyDictionary<string, object>>(actual);
+                    break;
+
+                case "null":
+                    Assert.IsNull(actual);
+                    break;
+
+                default:
+                    throw new InvalidOperationException($"Unknown data type '{type}'");
+            }
         }
 
         private JObject CreateJObjectFromTable(Table table)
@@ -444,6 +609,7 @@ namespace Corvus.Extensions.Json.Specs
                 {
                     "string" => value,
                     "integer" => int.Parse(value),
+                    "fp" => double.Parse(value),
                     "datetime" => DateTimeOffset.Parse(value),
                     _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
                 },

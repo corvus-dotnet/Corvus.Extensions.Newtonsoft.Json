@@ -4,8 +4,12 @@
 
 namespace Corvus.Extensions.Json.Internal
 {
+    using System;
+    using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using Corvus.Json;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
@@ -13,7 +17,7 @@ namespace Corvus.Extensions.Json.Internal
     /// <summary>
     /// A property bag that serializes neatly using Json.NET.
     /// </summary>
-    internal class JsonNetPropertyBag : IJsonNetPropertyBag
+    internal class JsonNetPropertyBag : IPropertyBag, IEnumerable<(string Key, PropertyBagEntryType Type)>
     {
         private readonly JsonSerializerSettings serializerSettings;
         private readonly JObject properties;
@@ -96,6 +100,12 @@ namespace Corvus.Extensions.Json.Internal
                 return true;
             }
 
+            if (typeof(T) == typeof(object[]) || typeof(T) == typeof(IPropertyBag))
+            {
+                result = (T)this.ConvertFromJToken(jtoken);
+                return true;
+            }
+
             try
             {
                 using JsonReader reader = jtoken.CreateReader();
@@ -109,7 +119,41 @@ namespace Corvus.Extensions.Json.Internal
         }
 
         /// <inheritdoc/>
-        public IReadOnlyDictionary<string, object> AsDictionary() => this.properties.ToObject<Dictionary<string, object>>();
+        public IEnumerator<(string Key, PropertyBagEntryType Type)> GetEnumerator()
+        {
+            return this.properties
+                .ToObject<Dictionary<string, object>>()
+                .Select(kv => (
+                    kv.Key,
+                    kv.Value switch
+                    {
+                        null => PropertyBagEntryType.Null,
+                        string => PropertyBagEntryType.String,
+                        bool => PropertyBagEntryType.Boolean,
+                        int => PropertyBagEntryType.Integer,
+                        long => PropertyBagEntryType.Integer,
+                        double => PropertyBagEntryType.Decimal,
+                        JArray => PropertyBagEntryType.Array,
+                        JObject => PropertyBagEntryType.Object,
+
+                        _ => throw new InvalidOperationException($"Unexpected element of type {kv.Value.GetType()} in property bag")
+                    }))
+                .GetEnumerator();
+        }
+
+        /// <inheritdoc/>
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+
+        private object ConvertFromJToken(object value)
+        {
+            return value switch
+            {
+                JArray jarray => jarray.Select(x => this.ConvertFromJToken(x)).ToArray(),
+                JObject jobject => new JsonNetPropertyBag(jobject, this.serializerSettings),
+                JValue jvalue => jvalue.ToObject<object>(),
+                _ => throw new InvalidOperationException($"Underlying JObject contains unexpected JToken type: {value.GetType().Name}"),
+            };
+        }
 
         private JToken ConvertToJToken<T>(T value)
         {
