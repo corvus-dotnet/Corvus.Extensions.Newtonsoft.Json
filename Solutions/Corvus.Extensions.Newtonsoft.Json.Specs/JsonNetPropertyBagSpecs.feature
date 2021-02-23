@@ -311,6 +311,34 @@ Scenario: Convert a PropertyBag containing an array of objects to a Dictionary
 	And the array called "objectArray" should contain 5 entries
 	And the array called "objectArray" should contain items of type "IPropertyBag"
 
+Scenario: Convert a PropertyBag containing an array with a null entry to a Dictionary
+	Given I deserialize a property bag from the string
+		"""
+		{
+			"hello": "world",
+			"number": 3,
+			"objectArray": [
+				{ "prop": "val1" },
+				"Hello",
+				42,
+				null
+			]
+		}
+		"""
+	When I convert the PropertyBag to a Dictionary and call it "result"
+	And I get the key called "objectArray" from the dictionary called "result" as an array and call it "objectArray"
+	Then the dictionary called "result" should contain the properties
+	| Property    | Value | Type     |
+	| hello       | world | string   |
+	| number      | 3     | integer  |
+	| objectArray |       | object[] |
+	And the array called "objectArray" should contain
+	| Value | Type         |
+	|       | IPropertyBag |
+	| Hello | string       |
+	| 42    | integer      |
+	|       | null         |
+
 Scenario: Recursively convert a PropertyBag to a Dictionary
 	Given I deserialize a property bag from the string
 		"""

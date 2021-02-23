@@ -151,7 +151,7 @@ namespace Corvus.Extensions.Json.Internal
                 JArray jarray => jarray.Select(x => this.ConvertFromJToken(x)).ToArray(),
                 JObject jobject => new JsonNetPropertyBag(jobject, this.serializerSettings),
                 JValue jvalue => jvalue.ToObject<object>(),
-                _ => value,
+                _ => throw new InvalidOperationException($"Underlying JObject contains unexpected JToken type: {value.GetType().Name}"),
             };
         }
 

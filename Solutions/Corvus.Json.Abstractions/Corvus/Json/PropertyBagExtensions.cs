@@ -106,13 +106,11 @@ namespace Corvus.Json
             // 3. An array of 1. or 2.
             // The initial call to properties.ToObject<T>() will have given us a dictionary containing either scalars
             // or JTokens. We need to look for the JTokens and process them appropriately.
-            ////var jtokenEntries = dictionary.Where(x => x.Value is JToken).ToList();
             foreach ((string key, PropertyBagEntryType type) in items)
             {
                 T RequireItem<T>(string key) => propertyBag.TryGet<T>(key, out T result)
                     ? result
                     : throw new InvalidOperationException($"Property bag advertised entry {key} of type {typeof(T).Name} during enumeration, but TryGet for that entry failed");
-                ////dictionary[jtokenEntry.Key] = this.ConvertFromJToken(jtokenEntry.Value);
                 object value = type switch
                 {
                     PropertyBagEntryType.Null => throw new ArgumentException("Cannot return a dictionary with non-null value type when the bag contains null values"),
