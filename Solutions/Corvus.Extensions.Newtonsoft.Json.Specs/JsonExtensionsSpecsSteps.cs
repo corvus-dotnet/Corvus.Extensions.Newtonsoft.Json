@@ -51,6 +51,12 @@ namespace Corvus.Extensions.Json.Specs
             this.creationProperties.Add(propertyName, value);
         }
 
+        [Given(@"the creation properties include ""(.*)"" with the floating point value (.*)")]
+        public void TheCreationPropertiesInclude(string propertyName, double value)
+        {
+            this.creationProperties.Add(propertyName, value);
+        }
+
         [Given(@"the creation properties include ""(.*)"" with the date value ""(.*)""")]
         public void TheCreationPropertiesInclude(string propertyName, DateTimeOffset value)
         {
@@ -341,6 +347,13 @@ namespace Corvus.Extensions.Json.Specs
             this.AssertDictionaryContainsProperties(dictionary, table);
         }
 
+        [Then(@"the array called ""(.*)"" should contain")]
+        public void ThenTheArrayCalledShouldContain(string name, Table table)
+        {
+            object[] array = this.scenarioContext.Get<object[]>(name);
+            this.AssertArrayContainsValues(array, table);
+        }
+
         [When(@"I get the key called ""(.*)"" from the dictionary called ""(.*)"" as an IReadOnlyDictionary<string, object> and call it ""(.*)""")]
         public void WhenIGetTheKeyCalledFromTheDictionaryCalledAsAnIDictionaryAndCallIt(string key, string dictionaryName, string name)
         {
@@ -398,7 +411,7 @@ namespace Corvus.Extensions.Json.Specs
 
             foreach (object current in array)
             {
-                Assert.IsTrue(targetType.IsAssignableFrom(current.GetType()));
+                Assert.IsTrue(targetType.IsAssignableFrom(current.GetType()), $"Expected {targetType}, was {current.GetType()}");
             }
         }
 
@@ -450,7 +463,7 @@ namespace Corvus.Extensions.Json.Specs
             foreach (TableRow row in table.Rows)
             {
                 row.TryGetValue("Property", out string name);
-                Assert.IsFalse(bag.TryGet(name, out object? actual));
+                Assert.IsFalse(bag.TryGet(name, out object? _));
             }
         }
 
@@ -461,46 +474,56 @@ namespace Corvus.Extensions.Json.Specs
                 row.TryGetValue("Property", out string name);
                 row.TryGetValue("Value", out string expected);
                 row.TryGetValue("Type", out string type);
+                object? actualAsObject;
+                void Test<T>(IPropertyBag bag, string name)
+                {
+                    Assert.IsTrue(bag.TryGet(name, out T actual));
+                    actualAsObject = actual;
+                }
+
                 switch (type)
                 {
+#pragma warning disable SA1101 // Prefix local calls with this - StyleCop appears not to understand local methods
                     case "string":
-                        {
-                            Assert.IsTrue(bag.TryGet(name, out string? actual));
-                            Assert.AreEqual(expected, actual);
-                            break;
-                        }
+                        Test<string?>(bag, name);
+                        break;
 
                     case "integer":
-                        {
-                            Assert.IsTrue(bag.TryGet(name, out int actual));
-                            Assert.AreEqual(int.Parse(expected), actual);
-                            break;
-                        }
+                        Test<int>(bag, name);
+                        break;
 
                     case "datetime":
-                        {
-                            Assert.IsTrue(bag.TryGet(name, out DateTimeOffset actual));
-                            Assert.AreEqual(DateTimeOffset.Parse(expected), actual);
-                            break;
-                        }
+                        Test<DateTimeOffset>(bag, name);
+                        break;
 
                     case "IPropertyBag":
-                        {
-                            Assert.IsTrue(bag.TryGet(name, out IPropertyBag actual));
-                            Assert.IsInstanceOf<IPropertyBag>(actual);
-                            break;
-                        }
+                        Test<IPropertyBag>(bag, name);
+                        break;
 
                     case "object[]":
-                        {
-                            Assert.IsTrue(bag.TryGet(name, out object[] actual));
-                            Assert.IsInstanceOf<object[]>(actual);
-                            break;
-                        }
+                        Test<object[]>(bag, name);
+                        break;
+#pragma warning restore SA1101 // Prefix local calls with this
 
                     default:
                         throw new InvalidOperationException($"Unknown data type '{type}'");
                 }
+
+                AssertChildValueIs(expected, type, actualAsObject);
+            }
+        }
+
+        private void AssertArrayContainsValues(object[] array, Table table)
+        {
+            Assert.AreEqual(table.Rows.Count, array.Length, "Array length");
+            for (int i = 0; i < array.Length; ++i)
+            {
+                TableRow row = table.Rows[i];
+                object actual = array[i];
+                row.TryGetValue("Value", out string expected);
+                row.TryGetValue("Type", out string type);
+
+                AssertChildValueIs(expected, type, actual);
             }
         }
 
@@ -511,46 +534,45 @@ namespace Corvus.Extensions.Json.Specs
                 row.TryGetValue("Property", out string name);
                 row.TryGetValue("Value", out string expected);
                 row.TryGetValue("Type", out string type);
-                switch (type)
-                {
-                    case "string":
-                        {
-                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
-                            Assert.AreEqual(expected, actual);
-                            break;
-                        }
+                Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
+                AssertChildValueIs(expected, type, actual);
+            }
+        }
 
-                    case "integer":
-                        {
-                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
-                            Assert.AreEqual(int.Parse(expected), actual);
-                            break;
-                        }
+        private static void AssertChildValueIs(string expected, string type, object? actual)
+        {
+            switch (type)
+            {
+                case "string":
+                    Assert.AreEqual(expected, actual);
+                    break;
 
-                    case "IPropertyBag":
-                        {
-                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
-                            Assert.IsInstanceOf<IPropertyBag>(actual);
-                            break;
-                        }
+                case "integer":
+                    Assert.AreEqual(int.Parse(expected), actual);
+                    break;
 
-                    case "object[]":
-                        {
-                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
-                            Assert.IsInstanceOf<object[]>(actual);
-                            break;
-                        }
+                case "datetime":
+                    Assert.AreEqual(DateTimeOffset.Parse(expected), actual);
+                    break;
 
-                    case "IReadOnlyDictionary<string, object>":
-                        {
-                            Assert.IsTrue(dictionary.TryGetValue(name, out object? actual));
-                            Assert.IsInstanceOf<IReadOnlyDictionary<string, object>>(actual);
-                            break;
-                        }
+                case "IPropertyBag":
+                    Assert.IsInstanceOf<IPropertyBag>(actual);
+                    break;
 
-                    default:
-                        throw new InvalidOperationException($"Unknown data type '{type}'");
-                }
+                case "object[]":
+                    Assert.IsInstanceOf<object[]>(actual);
+                    break;
+
+                case "IReadOnlyDictionary<string, object>":
+                    Assert.IsInstanceOf<IReadOnlyDictionary<string, object>>(actual);
+                    break;
+
+                case "null":
+                    Assert.IsNull(actual);
+                    break;
+
+                default:
+                    throw new InvalidOperationException($"Unknown data type '{type}'");
             }
         }
 
@@ -587,6 +609,7 @@ namespace Corvus.Extensions.Json.Specs
                 {
                     "string" => value,
                     "integer" => int.Parse(value),
+                    "fp" => double.Parse(value),
                     "datetime" => DateTimeOffset.Parse(value),
                     _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
                 },

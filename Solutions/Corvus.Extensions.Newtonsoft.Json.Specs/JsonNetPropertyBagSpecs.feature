@@ -27,6 +27,7 @@ Scenario: Get and set a badly serialized property
 Scenario: Convert to a JObject
 	Given the creation properties include "hello" with the value "world"
 	And the creation properties include "number" with the value 3
+	And the creation properties include "fpnumber" with the floating point value 3.14
 	And the creation properties include "date" with the date value "2020-04-17T07:06:10+01:00"
 	And I create the property bag from the creation properties
 	When I cast to a JObject
@@ -34,6 +35,7 @@ Scenario: Convert to a JObject
 	| Property | Value                     | Type     |
 	| hello    | world                     | string   |
 	| number   | 3                         | integer  |
+	| fpnumber | 3.14                      | fp       |
 	| date     | 2020-04-17T07:06:10+01:00 | datetime |
 
 Scenario: Retrieve an object property as an IPropertyBag
@@ -308,6 +310,34 @@ Scenario: Convert a PropertyBag containing an array of objects to a Dictionary
 	| objectArray |       | object[] |
 	And the array called "objectArray" should contain 5 entries
 	And the array called "objectArray" should contain items of type "IPropertyBag"
+
+Scenario: Convert a PropertyBag containing an array with a null entry to a Dictionary
+	Given I deserialize a property bag from the string
+		"""
+		{
+			"hello": "world",
+			"number": 3,
+			"objectArray": [
+				{ "prop": "val1" },
+				"Hello",
+				42,
+				null
+			]
+		}
+		"""
+	When I convert the PropertyBag to a Dictionary and call it "result"
+	And I get the key called "objectArray" from the dictionary called "result" as an array and call it "objectArray"
+	Then the dictionary called "result" should contain the properties
+	| Property    | Value | Type     |
+	| hello       | world | string   |
+	| number      | 3     | integer  |
+	| objectArray |       | object[] |
+	And the array called "objectArray" should contain
+	| Value | Type         |
+	|       | IPropertyBag |
+	| Hello | string       |
+	| 42    | integer      |
+	|       | null         |
 
 Scenario: Recursively convert a PropertyBag to a Dictionary
 	Given I deserialize a property bag from the string
