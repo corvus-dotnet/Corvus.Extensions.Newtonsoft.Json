@@ -37,7 +37,7 @@ namespace Corvus.Extensions.Json.Internal
                 Formatting = Formatting.None,
                 DateFormatHandling = DateFormatHandling.IsoDateFormat,
                 DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind,
-                DateParseHandling = DateParseHandling.DateTimeOffset,
+                DateParseHandling = DateParseHandling.None,
                 FloatParseHandling = FloatParseHandling.Double,
                 FloatFormatHandling = FloatFormatHandling.String,
                 StringEscapeHandling = StringEscapeHandling.Default,

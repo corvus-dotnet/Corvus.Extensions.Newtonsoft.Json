@@ -1,7 +1,5 @@
 ﻿@perFeatureContainer
 @setupContainerForJsonNetPropertyBag
-@setupContainerForJsonNetCultureInfoConversion
-@setupContainerForJsonNetDateTimeOffsetConversion
 
 Feature: JsonNetPropertyBagSpecs
 	In order to provide strongly typed, extensible properties for a class that serialize neatly as JSON
@@ -63,7 +61,7 @@ Scenario: Serialize a property bag
 	And the creation properties include "preciseDate" with the date value "2020-04-17T07:06:10.12345+01:00"
 	And I create the property bag from the creation properties
 	When I serialize the property bag
-	Then the result should be "{"hello":"world","number":3,"date":{"dateTimeOffset":"2020-04-17T07:06:10.0000000+03:00","unixTime":1587096370000},"preciseDate":{"dateTimeOffset":"2020-04-17T07:06:10.1234500+01:00","unixTime":1587103570123}}"
+	Then the result should be "{"hello":"world","number":3,"date":"2020-04-17T07:06:10+03:00","preciseDate":"2020-04-17T07:06:10.12345+01:00"}"
 
 Scenario: Deserialize a property bag
 	Given I deserialize a property bag from the string "{"hello":"world","number":3,"date":"2020-04-17T07:06:10+01:00"}"
@@ -249,6 +247,7 @@ Scenario: Convert a property bag containing nested objects to a dictionary
 		{
 			"hello": "world",
 			"number": 3,
+			"dateandtime": "2021-08-12T15:32:11.00000Z",
 			"nested": {
 				"nestedstring": "goodbye",
 				"nestednumber": 4
@@ -258,10 +257,11 @@ Scenario: Convert a property bag containing nested objects to a dictionary
 	When I convert the PropertyBag to a Dictionary and call it "result"
 	And I get the property called "nested" as an IPropertyBag and call it "nestedbag"
 	Then the dictionary called "result" should contain the properties
-	| Property | Value | Type         |
-	| hello    | world | string       |
-	| number   | 3     | integer      |
-	| nested   |       | IPropertyBag |
+	| Property    | Value                      | Type         |
+	| hello       | world                      | string       |
+	| number      | 3                          | integer      |
+	| dateandtime | 2021-08-12T15:32:11.00000Z | string       |
+	| nested      |                            | IPropertyBag |
 	Then the IPropertyBag called "nestedbag" should have the properties
 	| Property     | Value   | Type    |
 	| nestedstring | goodbye | string  |

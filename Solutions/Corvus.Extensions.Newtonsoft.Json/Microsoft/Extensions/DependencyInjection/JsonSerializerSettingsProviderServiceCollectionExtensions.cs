@@ -5,6 +5,7 @@
 namespace Microsoft.Extensions.DependencyInjection
 {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using Corvus.Extensions.Json;
@@ -66,8 +67,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Add the default JSON serialization settings provider.
         /// </summary>
         /// <param name="services">The target service collection.</param>
+        /// <param name="configurationCallback">Optional callback used to modify the <see cref="JsonSerializerSettings"/>.</param>
         /// <returns>The service collection.</returns>
-        public static IServiceCollection AddJsonNetSerializerSettingsProvider(this IServiceCollection services)
+        public static IServiceCollection AddJsonNetSerializerSettingsProvider(
+            this IServiceCollection services,
+            Action<IServiceProvider, JsonSerializerSettings>? configurationCallback = null)
         {
             if (services is null)
             {
@@ -76,7 +80,20 @@ namespace Microsoft.Extensions.DependencyInjection
 
             if (!services.Any(s => typeof(IJsonSerializerSettingsProvider).IsAssignableFrom(s.ServiceType)))
             {
-                services.AddSingleton<IJsonSerializerSettingsProvider, JsonSerializerSettingsProvider>();
+                services.AddSingleton<IJsonSerializerSettingsProvider>(
+                    sp =>
+                    {
+                        IEnumerable<JsonConverter> converters = sp.GetServices<JsonConverter>();
+                        var serializerSettingsProvider = new JsonSerializerSettingsProvider(converters);
+
+                        configurationCallback?.Invoke(sp, serializerSettingsProvider.Instance);
+
+                        return serializerSettingsProvider;
+                    });
+            }
+            else if (configurationCallback is not null)
+            {
+                throw new InvalidOperationException("Service configuration for IJsonSerializerSettingsProvider has already completed, so it is not possible to invoke the supplied configurationCallback");
             }
 
             return services;

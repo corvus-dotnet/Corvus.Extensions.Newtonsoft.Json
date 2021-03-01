@@ -136,7 +136,9 @@ namespace Corvus.Extensions.Json.Internal
                         JArray => PropertyBagEntryType.Array,
                         JObject => PropertyBagEntryType.Object,
 
-                        _ => throw new InvalidOperationException($"Unexpected element of type {kv.Value.GetType()} in property bag")
+                        // Anything else will have a string representation regardless of the type Json.NET has decided
+                        // to convert it to as a result of the <c>ToObject</c> call.
+                        _ => PropertyBagEntryType.String,
                     }))
                 .GetEnumerator();
         }

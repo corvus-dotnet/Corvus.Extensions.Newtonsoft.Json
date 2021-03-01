@@ -37,14 +37,21 @@ namespace Corvus.Extensions.Json.Internal
                 return null;
             }
 
-            if (reader.TokenType == JsonToken.Date)
+            var token = JToken.Load(reader);
+
+            if (token.Type == JTokenType.Object)
             {
-                return (DateTimeOffset)reader.Value;
+                token = token["dateTimeOffset"];
             }
 
-            var value = JObject.Load(reader);
+            JValue value = token as JValue ?? throw new InvalidOperationException($"DateTimeOffsetConverter could not deserialize token of type '{token.Type}' at '{reader.Path}'.");
 
-            return (DateTimeOffset)value["dateTimeOffset"];
+            return value.Value switch
+            {
+                DateTime => throw new InvalidOperationException("Cannot use the DateTimeOffsetConverter when JsonSerializerSettings.DateParseHandling is set to DateTime."),
+                string s => DateTimeOffset.Parse(s),
+                _ => (DateTimeOffset)value
+            };
         }
 
         /// <inheritdoc/>
