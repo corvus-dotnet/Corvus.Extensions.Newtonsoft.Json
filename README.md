@@ -16,25 +16,22 @@ In order to support this, we have an `IJsonSerializerSettingsProvider` service w
 
 We also supply a standard implementation of this service called `JsonSerializationSettingsProvider`.
 
-This is configured for enum serialization as strings, `camelCase` property names, no dictionary key mapping, and ignored null values. 
+This is configured for enum serialization as strings, `camelCase` property names, no dictionary key mapping, ignored null values, and no special-case DateTime handling. 
 
 [You can see the current defaults here.](https://github.com/corvus-dotnet/Corvus.Extensions.Newtonsoft.Json/blob/master/Solutions/Corvus.Extensions.Newtonsoft.Json/Corvus/Extensions/Json/Internal/JsonSerializerSettingsProvider.cs)
 
 One feature of this implementation is that it takes an enumerable of `JsonConverter` objects in its constructor. If you register it in the `Microsoft.Extensions.DependencyInjection` container using the `IServiceCollection` extension method called `AddJsonSerializerSettings()`, then you get the powerful feature that it will then have its converters configured from the container too. Components that wish to add their converters to the standard settings need only add them to the container.
 
-The default implementation adds the following converters
+The default implementation does not add any converters, but we provide several standard converters as part of the library. These can be individually added via `IServiceCollection` extension methods defined in `JsonSerializerSettingsProviderServiceCollectionExtensions`.
 
-```
-services.AddSingleton<JsonConverter, CultureInfoConverter>();
-services.AddSingleton<JsonConverter, DateTimeOffsetConverter>();
-services.AddSingleton<JsonConverter, PropertyBagConverter>();
-services.AddSingleton<JsonConverter>(new StringEnumConverter(true));
-```
-
-### Standard `JsonConverter`
+### Provided `JsonConverters`
  
 #### `DateTimeOffsetConverter`
 (Nullable) DateTimeOffset (which converts to/from json of the form `{"dateTimeOffset":"<Roundtrippable string format>", "unixTime": <long of unix milliseconds>}`, and from standard JSON date strings.
+
+This is useful when serializing `DateTimeOffset` instances to a store that provides indexing and querying functionality (e.g. CosmosDb). Standard serialization of `DateTimeOffset` uses ISO 8601 format, which includes the timezone offset in the resultant value. This makes it impossible to sort or perform range queries on the stored date/time values.
+
+When the `DateTimeOffsetConverter` is used, the contained `dateTimeOffset` value retains the original value (including timezone information) and the "unixTime" value contains a numeric representation of the date that can be used for sorting and filtering.
 
 #### `CultureInfoConverter`
 which converts to/from the culture name string e.g. `en-GB`, `fr-FR`
@@ -43,45 +40,47 @@ which converts to/from the culture name string e.g. `en-GB`, `fr-FR`
 
 A handy serializable property bag which converts to/from strongly typed key value pairs, internally stored in a JSON representation.
 
+PropertyBag support is enabled by using the `JsonSerializerSettingsProviderServiceCollectionExtensions.AddJsonNetPropertyBag` extension method as part of your DI configuration.
+
+`PropertyBag` instances are created via the `IPropertyBagFactory` implementation. The current implementation uses Json.Net for serialization/deserialization.
+
 You can construct an empty `PropertyBag`
 
-```
-var propertyBag = new PropertyBag();
-```
-
-Or from a `JObject`
-
-```
-JObject someJObject;
-var propertyBag = new PropertyBag(someJObject);
+```cs
+IPropertyBag propertyBag = propertyBagFactory.Create(PropertyBagValues.Empty);
 ```
 
 Or from an `IDictionary<string,object>`
 
-```
+```cs
 IDictionary<string,object> someDictionary;
-var propertyBag = new PropertyBag(someDictionary);
+IPropertyBag propertyBag = propertyBagFactory.Create(someDictionary);
 ```
 
-You can then set or retrieve strongly typed values from the property bag.
+If you need to create an `IPropertyBag` from an existing `JObject`, you must take a dependency on `IJsonNetPropertyBagFactory` instead of `IPropertyBagFactory`.
 
+```cs
+JObject someJObject;
+IPropertyBag propertyBag = jsonNetPropertyBagFactory.Create(someJObject);
 ```
+
+You can then retrieve strongly typed values from the property bag.
+
+```cs
 
 int myValue = 3;
 var myObject = new SomeType("Hello world", 134.6);
-
-propertyBag.Set("property1", myValue);
-propertyBag.Set("property2", myObject);
 
 propertyBag.TryGet("property1", out int myRetrievedValue); // returns true
 propertyBag.TryGet("property2", out SomeType myRetrievedObject); // returns true
 propertyBag.TryGet("property3", out double wontWork); // returns false 
 ```
 
-Internally, it stores the values using a JSON representation. This means that you can happily set as one type, and retrieve
-as another, as long as your serializer supports that conversion.
+Internally, it stores the values using a JSON representation. This means that you can happily set as one type, and retrieve as another, as long as your serializer supports that conversion.
 
-```
+This means that .NET types that don't have a direct JSON equivalent (e.g. DateTime) will be stored internally as strings and can be retrieved either as the native .NET type or as a string.
+
+```cs
 public class SomeType
 {
   public SomeType()
@@ -119,16 +118,46 @@ propertyBag.Set("key1", new SomeType("Hello", 3));
 propertyBag.TryGet("key1", out SomeSemanticallySimilarType myRetrievedObject); // returns true
 ```
 
-#### Conversions
+PropertyBags are immutable. Modified bags can be created using the `IPropertyBagFactory.CreateModified` method.
 
-You can implicitly convert the PropertyBag to and from a `JObject` (which can also be used for `dynamic` scenarios), and there is an `AsDictionary()` method which returns a `Dictionary<string,object>`. This can also be used to enumerate the underlying JToken values.
+```cs
+IPropertyBag someExistingPropertyBag;
+
+IDictionary<string,object> itemsToAddOrUpdate;
+IList<string> keysOfItemsToRemove;
+
+IPropertyBag propertyBag = propertyBagFactory.CreateModified(
+    someExistingPropertyBag,
+    itemsToAddOrUpdate,
+    keysOfItemsToRemove);
+```
+
+#### Dynamic discovery of items
+
+There are multiple ways in which the contents of a PropertyBag can be discovered at runtime.
+
+`IPropertyBag` instances are expected to implement `IEnumerable<(string Key, PropertyBagEntryType Type)>`. This allows you to enumerate an `IPropertyBag` to discover its members and their types. The `PropertyBagEntryType` enumeration lists the types supported in JSON, with the additional nuance that it differentiates between integer and floating point numbers.
+
+We also provide an extension method `AsDictionary()` on `IPropertyBag` which uses the enumeration to convert the property bag to a `IReadOnlyDictionary<string, object>`. Values in this dictionary will be .NET native types where possible:
+- Integers will be represented as `long`.
+- Floating point numbers will be represented as `double`.
+- Nested objects will be added to the dictionary as further `IPropertyBag` instances.
+- Arrays become `object[]`, with members converted according to the same rules.
+
+It is also possible to use the `AsDictionaryRecursive` extension method which follows the same rules as `AsDictionary()` with the exception that nested objects are also converted to `IReadOnlyDictionary<string, object>`.
+
+When using the Json.NET-based implementation of `IPropertyBagFactory` and `IPropertyBag`,  instances of `IPropertyBag` can be converted to a `JObject` (which can also be used for `dynamic` scenarios). This is done via the `IJsonNetPropertyBagFactory`:
+
+```cs
+IPropertyBag someExistingPropertyBag;
+JObject result = jsonNetPropertyBagFactory.AsJObject(someExistingPropertyBag);
+```
 
 ##### `JsonSerializerSettings`
-Internally, all the property values are stored as properties on a` JObject`, which requires serializion/deserialization. There are overloads for each constructor that allow you to set the` JsonSerializerSettings` to be used for conversions. It also has a constructor which takes the `IJsonSerializerSettingsProvider` described above.
 
-#### Microsoft.Extensions.DependencyInjection
+Internally, all the property values are stored as properties on a `JObject`, which requires serializion/deserialization. `IPropertyBag` instances are supplied their `JsonSerializerSettings` by the `IJsonNetPropertyBagFactory` implementation, which receives them from the service provider on creation via the `IJsonSerializerSettingsProvider`.
 
-While you can create instances of this type by hand, it is recommended that you use the container to obtain instances instead. If you use the `AddJsonSerializerSettings()` extension method, then `PropertyBag` is registered as a transient and will typically retrieve its serializer settings from the `IJsonSerializerSettingsProvider`.
+Note that if you modify the default serializer settings, this can have an impact on the behaviour of the `AsDictionary` and `AsDictionaryRecursive` extension methods. For example, if you set `DateParseHandling` to `DateParseHandling.DateTime` or `DateParseHandling.DateTimeOffset` and then convert a deserialized `IPropertyBag` instance to a dictionary, you may find that your date/time fields have been converted to strings using a non-standard format.
 
 ## Licenses
 
