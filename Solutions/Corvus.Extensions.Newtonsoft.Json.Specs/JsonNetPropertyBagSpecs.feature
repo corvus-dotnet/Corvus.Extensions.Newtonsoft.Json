@@ -30,11 +30,11 @@ Scenario: Convert to a JObject
 	And I create the property bag from the creation properties
 	When I cast to a JObject
 	Then the result should be the JObject
-	| Property | Value                     | Type     |
-	| hello    | world                     | string   |
-	| number   | 3                         | integer  |
-	| fpnumber | 3.14                      | fp       |
-	| date     | 2020-04-17T07:06:10+01:00 | datetime |
+	| Property | Value                     | Type    |
+	| hello    | world                     | string  |
+	| number   | 3                         | integer |
+	| fpnumber | 3.14                      | fp      |
+	| date     | 2020-04-17T07:06:10+01:00 | string  |
 
 Scenario: Retrieve an object property as an IPropertyBag
 	Given I deserialize a property bag from the string
@@ -240,6 +240,49 @@ Scenario: Add, modify, and remove properties
 	| Property | Value | Type    |
 	| hello    | bar   | string  |
 	| quux     | 4     | integer |
+
+Scenario: Create a property bag containing types that Json.NET applies special case type handling to and then convert to a dictionary
+	Given I create a Dictionary
+	| Property          | Value                                                                                                                                    | Type           |
+	| dateandtime       | 2021-08-12T15:32:11.00000Z                                                                                                               | datetime       |
+	| dateandtimeoffset | 2021-08-12T15:32:11.123+03:00                                                                                                            | datetimeoffset |
+	| timespan          | 01:02:03                                                                                                                                 | timespan       |
+	| bytes             | VGhpcyBzaG91bGQgYmUgdHJlYXRlZCBhcyBhbiBhcnJheSBvZiBieXRlcywgYW5kIHNob3VsZCBhcHBlYXIgaW4gdGhlIHNlcmlhbGl6ZWQgZGF0YSBCYXNlNjQgZW5jb2RlZA== | byte[]         |
+	| guid              | 5ed31f57-7439-46b4-b224-4fefe905a80e                                                                                                     | guid           |
+	| uri               | https://www.google.co.uk/search?q=json.net+special+case+type+handling&oq=json.net+special+case+type+handling                             | uri            |
+	And I create a PropertyBag from the Dictionary
+	When I convert the PropertyBag to a Dictionary and call it "result"
+	Then the dictionary called "result" should contain the properties
+	| Property          | Value                                                                                                                                    | Type   |
+	| dateandtime       | 2021-08-12T15:32:11+00:00                                                                                                                | string |
+	| dateandtimeoffset | 2021-08-12T15:32:11.123+03:00                                                                                                            | string |
+	| timespan          | 01:02:03                                                                                                                                 | string |
+	| bytes             | VGhpcyBzaG91bGQgYmUgdHJlYXRlZCBhcyBhbiBhcnJheSBvZiBieXRlcywgYW5kIHNob3VsZCBhcHBlYXIgaW4gdGhlIHNlcmlhbGl6ZWQgZGF0YSBCYXNlNjQgZW5jb2RlZA== | string |
+	| guid              | 5ed31f57-7439-46b4-b224-4fefe905a80e                                                                                                     | string |
+	| uri               | https://www.google.co.uk/search?q=json.net+special+case+type+handling&oq=json.net+special+case+type+handling                             | string |
+
+
+Scenario: Deserialize a property bag containing data that Json.NET applies special case type handling to and then convert to a dictionary
+	Given I deserialize a property bag from the string
+		"""
+		{
+			"dateandtime": "2021-08-12T15:32:11.00000Z",
+			"timespan": "01:02:03",
+			"duration": "P1Y3M2DT4H16M39S",
+			"bytes": "anNvbi5uZXQgc3BlY2lhbCBjYXNlIHR5cGUgaGFuZGxpbmc=",
+			"guid": "5ed31f57-7439-46b4-b224-4fefe905a80e",
+			"uri": "https://www.google.co.uk/search?q=json.net+special+case+type+handling&oq=json.net+special+case+type+handling"
+		}
+		"""
+	When I convert the PropertyBag to a Dictionary and call it "result"
+	Then the dictionary called "result" should contain the properties
+	| Property    | Value                                                                                                        | Type   |
+	| dateandtime | 2021-08-12T15:32:11.00000Z                                                                                   | string |
+	| timespan    | 01:02:03                                                                                                     | string |
+	| duration    | P1Y3M2DT4H16M39S                                                                                             | string |
+	| bytes       | anNvbi5uZXQgc3BlY2lhbCBjYXNlIHR5cGUgaGFuZGxpbmc=                                                             | string |
+	| guid        | 5ed31f57-7439-46b4-b224-4fefe905a80e                                                                         | string |
+	| uri         | https://www.google.co.uk/search?q=json.net+special+case+type+handling&oq=json.net+special+case+type+handling | string |
 
 Scenario: Convert a property bag containing nested objects to a dictionary
 	Given I deserialize a property bag from the string

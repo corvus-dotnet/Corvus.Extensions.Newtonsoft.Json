@@ -7,6 +7,7 @@ namespace Corvus.Extensions.Json.Specs
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Text;
     using Corvus.Extensions.Json.Specs.Samples;
     using Corvus.Json;
     using Corvus.Testing.SpecFlow;
@@ -582,7 +583,7 @@ namespace Corvus.Extensions.Json.Specs
             foreach (TableRow row in table.Rows)
             {
                 row.TryGetValue("Property", out string name);
-                expected[name] = this.GetRowValue(row);
+                expected[name] = this.GetRowValueAsJToken(row);
             }
 
             return expected;
@@ -594,26 +595,36 @@ namespace Corvus.Extensions.Json.Specs
             foreach (TableRow row in table.Rows)
             {
                 row.TryGetValue("Property", out string name);
-                expected[name] = this.GetRowValue(row);
+                expected[name] = this.GetRowValueAsDotNetType(row);
             }
 
             return expected;
         }
 
-        private JToken GetRowValue(TableRow row)
+        private JToken GetRowValueAsJToken(TableRow row)
+        {
+            return JToken.FromObject(
+                this.GetRowValueAsDotNetType(row),
+                JsonSerializer.Create(this.jsonSerializerSettingsProvider.Instance));
+        }
+
+        private object GetRowValueAsDotNetType(TableRow row)
         {
             row.TryGetValue("Value", out string value);
             row.TryGetValue("Type", out string type);
-            return JToken.FromObject(
-                type switch
+            return type switch
                 {
                     "string" => value,
                     "integer" => int.Parse(value),
                     "fp" => double.Parse(value),
                     "datetime" => DateTimeOffset.Parse(value),
+                    "datetimeoffset" => DateTimeOffset.Parse(value),
+                    "timespan" => TimeSpan.Parse(value),
+                    "byte[]" => Convert.FromBase64String(value),
+                    "guid" => Guid.Parse(value),
+                    "uri" => new Uri(value),
                     _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
-                },
-                JsonSerializer.Create(this.jsonSerializerSettingsProvider.Instance));
+                };
         }
 
         private IPropertyBag CreatePropertyBagFromTable(Table table)

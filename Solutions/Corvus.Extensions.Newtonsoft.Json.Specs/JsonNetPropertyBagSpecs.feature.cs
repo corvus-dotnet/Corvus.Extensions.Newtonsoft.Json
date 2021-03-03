@@ -268,7 +268,7 @@ this.ScenarioInitialize(scenarioInfo);
                 table1.AddRow(new string[] {
                             "date",
                             "2020-04-17T07:06:10+01:00",
-                            "datetime"});
+                            "string"});
 #line 32
  testRunner.Then("the result should be the JObject", ((string)(null)), table1, "Then ");
 #line hidden
@@ -1224,12 +1224,14 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Convert a property bag containing nested objects to a dictionary")]
-        public virtual void ConvertAPropertyBagContainingNestedObjectsToADictionary()
+        [NUnit.Framework.DescriptionAttribute("Create a property bag containing types that Json.NET applies special case type ha" +
+            "ndling to and then convert to a dictionary")]
+        public virtual void CreateAPropertyBagContainingTypesThatJson_NETAppliesSpecialCaseTypeHandlingToAndThenConvertToADictionary()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Convert a property bag containing nested objects to a dictionary", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a property bag containing types that Json.NET applies special case type ha" +
+                    "ndling to and then convert to a dictionary", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 244
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -1250,66 +1252,92 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 245
- testRunner.Given("I deserialize a property bag from the string", "{\r\n\t\"hello\": \"world\",\r\n\t\"number\": 3,\r\n\t\"dateandtime\": \"2021-08-12T15:32:11.00000Z" +
-                        "\",\r\n\t\"nested\": {\r\n\t\t\"nestedstring\": \"goodbye\",\r\n\t\t\"nestednumber\": 4\r\n\t}\r\n}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 257
- testRunner.When("I convert the PropertyBag to a Dictionary and call it \"result\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 258
- testRunner.And("I get the property called \"nested\" as an IPropertyBag and call it \"nestedbag\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
                 TechTalk.SpecFlow.Table table26 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
                             "Value",
                             "Type"});
                 table26.AddRow(new string[] {
-                            "hello",
-                            "world",
-                            "string"});
-                table26.AddRow(new string[] {
-                            "number",
-                            "3",
-                            "integer"});
-                table26.AddRow(new string[] {
                             "dateandtime",
                             "2021-08-12T15:32:11.00000Z",
-                            "string"});
+                            "datetime"});
                 table26.AddRow(new string[] {
-                            "nested",
-                            "",
-                            "IPropertyBag"});
-#line 259
- testRunner.Then("the dictionary called \"result\" should contain the properties", ((string)(null)), table26, "Then ");
+                            "dateandtimeoffset",
+                            "2021-08-12T15:32:11.123+03:00",
+                            "datetimeoffset"});
+                table26.AddRow(new string[] {
+                            "timespan",
+                            "01:02:03",
+                            "timespan"});
+                table26.AddRow(new string[] {
+                            "bytes",
+                            "VGhpcyBzaG91bGQgYmUgdHJlYXRlZCBhcyBhbiBhcnJheSBvZiBieXRlcywgYW5kIHNob3VsZCBhcHBlY" +
+                                "XIgaW4gdGhlIHNlcmlhbGl6ZWQgZGF0YSBCYXNlNjQgZW5jb2RlZA==",
+                            "byte[]"});
+                table26.AddRow(new string[] {
+                            "guid",
+                            "5ed31f57-7439-46b4-b224-4fefe905a80e",
+                            "guid"});
+                table26.AddRow(new string[] {
+                            "uri",
+                            "https://www.google.co.uk/search?q=json.net+special+case+type+handling&oq=json.net" +
+                                "+special+case+type+handling",
+                            "uri"});
+#line 245
+ testRunner.Given("I create a Dictionary", ((string)(null)), table26, "Given ");
+#line hidden
+#line 253
+ testRunner.And("I create a PropertyBag from the Dictionary", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 254
+ testRunner.When("I convert the PropertyBag to a Dictionary and call it \"result\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
                 TechTalk.SpecFlow.Table table27 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
                             "Value",
                             "Type"});
                 table27.AddRow(new string[] {
-                            "nestedstring",
-                            "goodbye",
+                            "dateandtime",
+                            "2021-08-12T15:32:11+00:00",
                             "string"});
                 table27.AddRow(new string[] {
-                            "nestednumber",
-                            "4",
-                            "integer"});
-#line 265
- testRunner.Then("the IPropertyBag called \"nestedbag\" should have the properties", ((string)(null)), table27, "Then ");
+                            "dateandtimeoffset",
+                            "2021-08-12T15:32:11.123+03:00",
+                            "string"});
+                table27.AddRow(new string[] {
+                            "timespan",
+                            "01:02:03",
+                            "string"});
+                table27.AddRow(new string[] {
+                            "bytes",
+                            "VGhpcyBzaG91bGQgYmUgdHJlYXRlZCBhcyBhbiBhcnJheSBvZiBieXRlcywgYW5kIHNob3VsZCBhcHBlY" +
+                                "XIgaW4gdGhlIHNlcmlhbGl6ZWQgZGF0YSBCYXNlNjQgZW5jb2RlZA==",
+                            "string"});
+                table27.AddRow(new string[] {
+                            "guid",
+                            "5ed31f57-7439-46b4-b224-4fefe905a80e",
+                            "string"});
+                table27.AddRow(new string[] {
+                            "uri",
+                            "https://www.google.co.uk/search?q=json.net+special+case+type+handling&oq=json.net" +
+                                "+special+case+type+handling",
+                            "string"});
+#line 255
+ testRunner.Then("the dictionary called \"result\" should contain the properties", ((string)(null)), table27, "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Convert a PropertyBag containing an array of a scalar type to a Dictionary")]
-        public virtual void ConvertAPropertyBagContainingAnArrayOfAScalarTypeToADictionary()
+        [NUnit.Framework.DescriptionAttribute("Deserialize a property bag containing data that Json.NET applies special case typ" +
+            "e handling to and then convert to a dictionary")]
+        public virtual void DeserializeAPropertyBagContainingDataThatJson_NETAppliesSpecialCaseTypeHandlingToAndThenConvertToADictionary()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Convert a PropertyBag containing an array of a scalar type to a Dictionary", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 270
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Deserialize a property bag containing data that Json.NET applies special case typ" +
+                    "e handling to and then convert to a dictionary", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 265
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -1329,53 +1357,63 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 271
- testRunner.Given("I deserialize a property bag from the string", "{\r\n\t\"hello\": \"world\",\r\n\t\"number\": 3,\r\n\t\"scalarArray\": [1, 2, 3 ,4]\r\n}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 266
+ testRunner.Given("I deserialize a property bag from the string", @"{
+	""dateandtime"": ""2021-08-12T15:32:11.00000Z"",
+	""timespan"": ""01:02:03"",
+	""duration"": ""P1Y3M2DT4H16M39S"",
+	""bytes"": ""anNvbi5uZXQgc3BlY2lhbCBjYXNlIHR5cGUgaGFuZGxpbmc="",
+	""guid"": ""5ed31f57-7439-46b4-b224-4fefe905a80e"",
+	""uri"": ""https://www.google.co.uk/search?q=json.net+special+case+type+handling&oq=json.net+special+case+type+handling""
+}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 279
+#line 277
  testRunner.When("I convert the PropertyBag to a Dictionary and call it \"result\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 280
- testRunner.And("I get the key called \"scalarArray\" from the dictionary called \"result\" as an arra" +
-                        "y and call it \"scalarArray\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table28 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
                             "Value",
                             "Type"});
                 table28.AddRow(new string[] {
-                            "hello",
-                            "world",
+                            "dateandtime",
+                            "2021-08-12T15:32:11.00000Z",
                             "string"});
                 table28.AddRow(new string[] {
-                            "number",
-                            "3",
-                            "integer"});
+                            "timespan",
+                            "01:02:03",
+                            "string"});
                 table28.AddRow(new string[] {
-                            "scalarArray",
-                            "",
-                            "object[]"});
-#line 281
+                            "duration",
+                            "P1Y3M2DT4H16M39S",
+                            "string"});
+                table28.AddRow(new string[] {
+                            "bytes",
+                            "anNvbi5uZXQgc3BlY2lhbCBjYXNlIHR5cGUgaGFuZGxpbmc=",
+                            "string"});
+                table28.AddRow(new string[] {
+                            "guid",
+                            "5ed31f57-7439-46b4-b224-4fefe905a80e",
+                            "string"});
+                table28.AddRow(new string[] {
+                            "uri",
+                            "https://www.google.co.uk/search?q=json.net+special+case+type+handling&oq=json.net" +
+                                "+special+case+type+handling",
+                            "string"});
+#line 278
  testRunner.Then("the dictionary called \"result\" should contain the properties", ((string)(null)), table28, "Then ");
-#line hidden
-#line 286
- testRunner.And("the array called \"scalarArray\" should contain 4 entries", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 287
- testRunner.And("the array called \"scalarArray\" should contain items of type \"long\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Convert a PropertyBag containing an array of objects to a Dictionary")]
-        public virtual void ConvertAPropertyBagContainingAnArrayOfObjectsToADictionary()
+        [NUnit.Framework.DescriptionAttribute("Convert a property bag containing nested objects to a dictionary")]
+        public virtual void ConvertAPropertyBagContainingNestedObjectsToADictionary()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Convert a PropertyBag containing an array of objects to a Dictionary", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 289
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Convert a property bag containing nested objects to a dictionary", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 287
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -1395,17 +1433,15 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 290
- testRunner.Given("I deserialize a property bag from the string", "{\r\n\t\"hello\": \"world\",\r\n\t\"number\": 3,\r\n\t\"objectArray\": [\r\n\t\t{ \"prop\": \"val1\" },\r\n\t" +
-                        "\t{ \"prop\": \"val2\" },\r\n\t\t{ \"prop\": \"val3\" },\r\n\t\t{ \"prop\": \"val4\" },\r\n\t\t{ \"prop\": " +
-                        "\"val5\" }\r\n\t]\r\n}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 288
+ testRunner.Given("I deserialize a property bag from the string", "{\r\n\t\"hello\": \"world\",\r\n\t\"number\": 3,\r\n\t\"dateandtime\": \"2021-08-12T15:32:11.00000Z" +
+                        "\",\r\n\t\"nested\": {\r\n\t\t\"nestedstring\": \"goodbye\",\r\n\t\t\"nestednumber\": 4\r\n\t}\r\n}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 304
+#line 300
  testRunner.When("I convert the PropertyBag to a Dictionary and call it \"result\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 305
- testRunner.And("I get the key called \"objectArray\" from the dictionary called \"result\" as an arra" +
-                        "y and call it \"objectArray\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 301
+ testRunner.And("I get the property called \"nested\" as an IPropertyBag and call it \"nestedbag\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table29 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
@@ -1420,16 +1456,163 @@ this.ScenarioInitialize(scenarioInfo);
                             "3",
                             "integer"});
                 table29.AddRow(new string[] {
+                            "dateandtime",
+                            "2021-08-12T15:32:11.00000Z",
+                            "string"});
+                table29.AddRow(new string[] {
+                            "nested",
+                            "",
+                            "IPropertyBag"});
+#line 302
+ testRunner.Then("the dictionary called \"result\" should contain the properties", ((string)(null)), table29, "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table30 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Property",
+                            "Value",
+                            "Type"});
+                table30.AddRow(new string[] {
+                            "nestedstring",
+                            "goodbye",
+                            "string"});
+                table30.AddRow(new string[] {
+                            "nestednumber",
+                            "4",
+                            "integer"});
+#line 308
+ testRunner.Then("the IPropertyBag called \"nestedbag\" should have the properties", ((string)(null)), table30, "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Convert a PropertyBag containing an array of a scalar type to a Dictionary")]
+        public virtual void ConvertAPropertyBagContainingAnArrayOfAScalarTypeToADictionary()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Convert a PropertyBag containing an array of a scalar type to a Dictionary", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 313
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 314
+ testRunner.Given("I deserialize a property bag from the string", "{\r\n\t\"hello\": \"world\",\r\n\t\"number\": 3,\r\n\t\"scalarArray\": [1, 2, 3 ,4]\r\n}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 322
+ testRunner.When("I convert the PropertyBag to a Dictionary and call it \"result\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 323
+ testRunner.And("I get the key called \"scalarArray\" from the dictionary called \"result\" as an arra" +
+                        "y and call it \"scalarArray\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table31 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Property",
+                            "Value",
+                            "Type"});
+                table31.AddRow(new string[] {
+                            "hello",
+                            "world",
+                            "string"});
+                table31.AddRow(new string[] {
+                            "number",
+                            "3",
+                            "integer"});
+                table31.AddRow(new string[] {
+                            "scalarArray",
+                            "",
+                            "object[]"});
+#line 324
+ testRunner.Then("the dictionary called \"result\" should contain the properties", ((string)(null)), table31, "Then ");
+#line hidden
+#line 329
+ testRunner.And("the array called \"scalarArray\" should contain 4 entries", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 330
+ testRunner.And("the array called \"scalarArray\" should contain items of type \"long\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Convert a PropertyBag containing an array of objects to a Dictionary")]
+        public virtual void ConvertAPropertyBagContainingAnArrayOfObjectsToADictionary()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Convert a PropertyBag containing an array of objects to a Dictionary", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 332
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 333
+ testRunner.Given("I deserialize a property bag from the string", "{\r\n\t\"hello\": \"world\",\r\n\t\"number\": 3,\r\n\t\"objectArray\": [\r\n\t\t{ \"prop\": \"val1\" },\r\n\t" +
+                        "\t{ \"prop\": \"val2\" },\r\n\t\t{ \"prop\": \"val3\" },\r\n\t\t{ \"prop\": \"val4\" },\r\n\t\t{ \"prop\": " +
+                        "\"val5\" }\r\n\t]\r\n}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 347
+ testRunner.When("I convert the PropertyBag to a Dictionary and call it \"result\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 348
+ testRunner.And("I get the key called \"objectArray\" from the dictionary called \"result\" as an arra" +
+                        "y and call it \"objectArray\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table32 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Property",
+                            "Value",
+                            "Type"});
+                table32.AddRow(new string[] {
+                            "hello",
+                            "world",
+                            "string"});
+                table32.AddRow(new string[] {
+                            "number",
+                            "3",
+                            "integer"});
+                table32.AddRow(new string[] {
                             "objectArray",
                             "",
                             "object[]"});
-#line 306
- testRunner.Then("the dictionary called \"result\" should contain the properties", ((string)(null)), table29, "Then ");
+#line 349
+ testRunner.Then("the dictionary called \"result\" should contain the properties", ((string)(null)), table32, "Then ");
 #line hidden
-#line 311
+#line 354
  testRunner.And("the array called \"objectArray\" should contain 5 entries", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 312
+#line 355
  testRunner.And("the array called \"objectArray\" should contain items of type \"IPropertyBag\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -1443,7 +1626,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Convert a PropertyBag containing an array with a null entry to a Dictionary", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 314
+#line 357
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -1463,53 +1646,53 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 315
+#line 358
  testRunner.Given("I deserialize a property bag from the string", "{\r\n\t\"hello\": \"world\",\r\n\t\"number\": 3,\r\n\t\"objectArray\": [\r\n\t\t{ \"prop\": \"val1\" },\r\n\t" +
                         "\t\"Hello\",\r\n\t\t42,\r\n\t\tnull\r\n\t]\r\n}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 328
+#line 371
  testRunner.When("I convert the PropertyBag to a Dictionary and call it \"result\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 329
+#line 372
  testRunner.And("I get the key called \"objectArray\" from the dictionary called \"result\" as an arra" +
                         "y and call it \"objectArray\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table30 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table33 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
                             "Value",
                             "Type"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "hello",
                             "world",
                             "string"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "number",
                             "3",
                             "integer"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "objectArray",
                             "",
                             "object[]"});
-#line 330
- testRunner.Then("the dictionary called \"result\" should contain the properties", ((string)(null)), table30, "Then ");
+#line 373
+ testRunner.Then("the dictionary called \"result\" should contain the properties", ((string)(null)), table33, "Then ");
 #line hidden
-                TechTalk.SpecFlow.Table table31 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table34 = new TechTalk.SpecFlow.Table(new string[] {
                             "Value",
                             "Type"});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "",
                             "IPropertyBag"});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "Hello",
                             "string"});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "42",
                             "integer"});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "",
                             "null"});
-#line 335
- testRunner.And("the array called \"objectArray\" should contain", ((string)(null)), table31, "And ");
+#line 378
+ testRunner.And("the array called \"objectArray\" should contain", ((string)(null)), table34, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -1522,7 +1705,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Recursively convert a PropertyBag to a Dictionary", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 342
+#line 385
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -1542,7 +1725,7 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 343
+#line 386
  testRunner.Given("I deserialize a property bag from the string", @"{
 	""hello"": ""world"",
 	""number"": 3,
@@ -1563,94 +1746,94 @@ this.ScenarioInitialize(scenarioInfo);
 	}
 }", ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 365
+#line 408
  testRunner.When("I recursively convert the PropertyBag to a Dictionary and call it \"result\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 366
+#line 409
  testRunner.And("I get the key called \"nested\" from the dictionary called \"result\" as an IReadOnly" +
                         "Dictionary<string, object> and call it \"nested\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 367
+#line 410
  testRunner.And("I get the key called \"scalarArray\" from the dictionary called \"result\" as an arra" +
                         "y and call it \"scalarArray\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 368
+#line 411
  testRunner.And("I get the key called \"objectArray\" from the dictionary called \"result\" as an arra" +
                         "y and call it \"objectArray\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table32 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table35 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
                             "Value",
                             "Type"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "hello",
                             "world",
                             "string"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "number",
                             "3",
                             "integer"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "nested",
                             "",
                             "IReadOnlyDictionary<string, object>"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "scalarArray",
                             "",
                             "object[]"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "objectArray",
                             "",
                             "object[]"});
-#line 369
- testRunner.Then("the dictionary called \"result\" should contain the properties", ((string)(null)), table32, "Then ");
+#line 412
+ testRunner.Then("the dictionary called \"result\" should contain the properties", ((string)(null)), table35, "Then ");
 #line hidden
-#line 376
+#line 419
  testRunner.And("the array called \"scalarArray\" should contain items of type \"long\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 377
+#line 420
  testRunner.And("the array called \"objectArray\" should contain items of type \"IReadOnlyDictionary<" +
                         "string, object>\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table33 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table36 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
                             "Value",
                             "Type"});
-                table33.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "nestedstring",
                             "goodbye",
                             "string"});
-                table33.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "nestednumber",
                             "4",
                             "integer"});
-                table33.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "nestedobject",
                             "",
                             "IReadOnlyDictionary<string, object>"});
-                table33.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "nestedscalararray",
                             "",
                             "object[]"});
-#line 378
+#line 421
  testRunner.And("the nested dictionary with key \"nested\" contained in the dictionary called \"resul" +
-                        "t\" should contain the properties", ((string)(null)), table33, "And ");
+                        "t\" should contain the properties", ((string)(null)), table36, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table34 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table37 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
                             "Value",
                             "Type"});
-                table34.AddRow(new string[] {
+                table37.AddRow(new string[] {
                             "nestedstring",
                             "hello again",
                             "string"});
-                table34.AddRow(new string[] {
+                table37.AddRow(new string[] {
                             "nestednumber",
                             "5",
                             "integer"});
-#line 384
+#line 427
  testRunner.And("the nested dictionary with key \"nested.nestedobject\" contained in the dictionary " +
-                        "called \"result\" should contain the properties", ((string)(null)), table34, "And ");
+                        "called \"result\" should contain the properties", ((string)(null)), table37, "And ");
 #line hidden
             }
             this.ScenarioCleanup();

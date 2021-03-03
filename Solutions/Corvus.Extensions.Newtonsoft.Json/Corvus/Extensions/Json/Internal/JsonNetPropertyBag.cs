@@ -9,6 +9,7 @@ namespace Corvus.Extensions.Json.Internal
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
+    using System.IO;
     using System.Linq;
     using Corvus.Json;
     using Newtonsoft.Json;
@@ -164,7 +165,15 @@ namespace Corvus.Extensions.Json.Internal
                 return jt.DeepClone();
             }
 
-            return JToken.FromObject(value, JsonSerializer.Create(this.serializerSettings));
+            // Serialize the value to bypass any of the special-case handling JTokens layer over .NET types.
+            // If we just use JToken.FromObject to create the new JToken, Json.NET will impose its own special cases
+            // for DateTimes (and DateTimeOffsets), Uris, Guids and byte arrays. This means that any code which
+            // immediately uses those values (e.g. via conversion to dictionary) will end up with different behaviour
+            // than would be seen if the PropertyBag was first serialized and then deserialized. This approach,
+            // while more cumbersome, ensures that the resulting JToken is the same as would be seen if it were
+            // created by deserializing an entire JsonNetPropertyBag.
+            string json = JsonConvert.SerializeObject(value, this.serializerSettings);
+            return JsonConvert.DeserializeObject<JToken>(json, this.serializerSettings);
         }
     }
 }
