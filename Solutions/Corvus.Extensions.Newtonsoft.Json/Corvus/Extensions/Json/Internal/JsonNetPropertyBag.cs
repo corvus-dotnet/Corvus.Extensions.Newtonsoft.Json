@@ -7,11 +7,11 @@ namespace Corvus.Extensions.Json.Internal
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
-    using System.IO;
     using System.Linq;
+
     using Corvus.Json;
+
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
@@ -110,7 +110,7 @@ namespace Corvus.Extensions.Json.Internal
             try
             {
                 using JsonReader reader = jtoken.CreateReader();
-                result = JsonSerializer.Create(this.serializerSettings).Deserialize<T>(reader) !;
+                result = JsonSerializer.Create(this.serializerSettings).Deserialize<T>(reader)!;
                 return true;
             }
             catch (JsonSerializationException ex)
