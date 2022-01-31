@@ -42,7 +42,7 @@ namespace Corvus.Extensions.Json.Specs.Samples
         /// <inheritdoc />
         public bool Equals(CultureInfoPocObject? other)
         {
-            return other is CultureInfoPocObject && this.SomeCulture?.Name == other.SomeCulture?.Name;
+            return other is not null && this.SomeCulture?.Name == other.SomeCulture?.Name;
         }
 
         /// <inheritdoc />

@@ -7,14 +7,18 @@ namespace Corvus.Extensions.Json.Specs
     using System;
     using System.Collections.Generic;
     using System.Globalization;
-    using System.Text;
+
     using Corvus.Extensions.Json.Specs.Samples;
     using Corvus.Json;
     using Corvus.Testing.SpecFlow;
+
     using Microsoft.Extensions.DependencyInjection;
+
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+
     using NUnit.Framework;
+
     using TechTalk.SpecFlow;
 
     [Binding]
@@ -25,7 +29,7 @@ namespace Corvus.Extensions.Json.Specs
         private readonly IPropertyBagFactory propertyBagFactory;
         private readonly IJsonNetPropertyBagFactory jnetPropertyBagFactory;
         private readonly IJsonSerializerSettingsProvider jsonSerializerSettingsProvider;
-        private Dictionary<string, object> creationProperties = new Dictionary<string, object>();
+        private Dictionary<string, object> creationProperties = new();
         private IPropertyBag? propertyBag;
         private SerializationException? exception;
 
@@ -304,7 +308,7 @@ namespace Corvus.Extensions.Json.Specs
                         {
                             "string" => value,
                             "integer" => int.Parse(value),
-                            _ => throw new InvalidOperationException($"Unknown data type '{type}'")
+                            _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
                         };
                         propertiesToSetOrAdd.Add(propertyName, actualValue);
                         break;
@@ -484,7 +488,6 @@ namespace Corvus.Extensions.Json.Specs
 
                 switch (type)
                 {
-#pragma warning disable SA1101 // Prefix local calls with this - StyleCop appears not to understand local methods
                     case "string":
                         Test<string?>(bag, name);
                         break;
@@ -504,7 +507,6 @@ namespace Corvus.Extensions.Json.Specs
                     case "object[]":
                         Test<object[]>(bag, name);
                         break;
-#pragma warning restore SA1101 // Prefix local calls with this
 
                     default:
                         throw new InvalidOperationException($"Unknown data type '{type}'");

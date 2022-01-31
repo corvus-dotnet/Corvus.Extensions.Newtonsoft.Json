@@ -50,7 +50,7 @@ namespace Corvus.Extensions.Json.Internal
             {
                 DateTime => throw new InvalidOperationException("Cannot use the DateTimeOffsetConverter when JsonSerializerSettings.DateParseHandling is set to DateTime."),
                 string s => DateTimeOffset.Parse(s),
-                _ => (DateTimeOffset)value
+                _ => (DateTimeOffset)value,
             };
         }
 

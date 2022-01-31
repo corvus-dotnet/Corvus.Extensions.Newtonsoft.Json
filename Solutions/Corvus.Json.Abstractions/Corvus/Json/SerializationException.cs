@@ -11,7 +11,6 @@ namespace Corvus.Json
     /// Thrown when a failure occurs while attempting to serailize or deserialize data.
     /// </summary>
     [Serializable]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "RCS1194:Implement exception constructors.", Justification = "No default constructor, because this should never be thrown without either a message or an inner exception.")]
     public class SerializationException : Exception
     {
         /// <summary>

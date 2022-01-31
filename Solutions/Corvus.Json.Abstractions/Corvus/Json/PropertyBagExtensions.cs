@@ -5,7 +5,6 @@
 namespace Corvus.Json
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -93,9 +92,9 @@ namespace Corvus.Json
         /// </remarks>
         public static IReadOnlyDictionary<string, object> AsDictionary(this IPropertyBag propertyBag)
         {
-            if (propertyBag is not IEnumerable<(string key, PropertyBagEntryType type)> items)
+            if (propertyBag is not IEnumerable<(string Key, PropertyBagEntryType Type)> items)
             {
-                throw new ArgumentException($"Only property bags that implement {nameof(IEnumerable<(string key, PropertyBagEntryType type)>)} can be converted to dictionaries");
+                throw new ArgumentException($"Only property bags that implement {nameof(IEnumerable<(string Key, PropertyBagEntryType Type)>)} can be converted to dictionaries");
             }
 
             var dictionary = new Dictionary<string, object>();

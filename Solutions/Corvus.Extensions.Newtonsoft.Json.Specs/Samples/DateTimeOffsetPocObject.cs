@@ -46,7 +46,7 @@ namespace Corvus.Extensions.Json.Specs.Samples
         /// <inheritdoc />
         public bool Equals(DateTimeOffsetPocObject? other)
         {
-            return other is DateTimeOffsetPocObject && this.GetDefiningTuple() == other.GetDefiningTuple();
+            return other is not null && this.GetDefiningTuple() == other.GetDefiningTuple();
         }
 
         /// <inheritdoc />
