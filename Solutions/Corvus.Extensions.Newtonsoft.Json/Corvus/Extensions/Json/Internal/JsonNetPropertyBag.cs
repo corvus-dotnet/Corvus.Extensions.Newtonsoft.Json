@@ -85,7 +85,7 @@ namespace Corvus.Extensions.Json.Internal
         /// <returns>True if the object was found.</returns>
         public bool TryGet<T>(string key, [NotNullWhen(true)] out T result)
         {
-            JToken jtoken = this.properties[key];
+            JToken? jtoken = this.properties[key];
             if (jtoken == null || jtoken.Type == JTokenType.Null)
             {
                 result = default!;
@@ -153,7 +153,7 @@ namespace Corvus.Extensions.Json.Internal
             {
                 JArray jarray => jarray.Select(x => this.ConvertFromJToken(x)).ToArray(),
                 JObject jobject => new JsonNetPropertyBag(jobject, this.serializerSettings),
-                JValue jvalue => jvalue.ToObject<object>(),
+                JValue jvalue => jvalue.ToObject<object>()!,
                 _ => throw new InvalidOperationException($"Underlying JObject contains unexpected JToken type: {value.GetType().Name}"),
             };
         }
@@ -173,7 +173,7 @@ namespace Corvus.Extensions.Json.Internal
             // while more cumbersome, ensures that the resulting JToken is the same as would be seen if it were
             // created by deserializing an entire JsonNetPropertyBag.
             string json = JsonConvert.SerializeObject(value, this.serializerSettings);
-            return JsonConvert.DeserializeObject<JToken>(json, this.serializerSettings);
+            return JsonConvert.DeserializeObject<JToken>(json, this.serializerSettings)!;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Corvus.Extensions.Json.Internal
         /// </summary>
         public StandardContractResolver()
         {
-            this.NamingStrategy.ProcessDictionaryKeys = false;
+            this.NamingStrategy!.ProcessDictionaryKeys = false;
         }
 
         /// <summary>

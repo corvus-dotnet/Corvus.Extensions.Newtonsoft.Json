@@ -25,7 +25,7 @@ namespace Corvus.Extensions.Json.Internal
         }
 
         /// <inheritdoc/>
-        public override object? ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             if (reader is null)
             {
@@ -44,7 +44,7 @@ namespace Corvus.Extensions.Json.Internal
                 token = token["dateTimeOffset"];
             }
 
-            JValue value = token as JValue ?? throw new InvalidOperationException($"DateTimeOffsetConverter could not deserialize token of type '{token.Type}' at '{reader.Path}'.");
+            JValue value = token as JValue ?? throw new InvalidOperationException($"DateTimeOffsetConverter could not deserialize token of type '{token?.Type.ToString() ?? "null"}' at '{reader.Path}'.");
 
             return value.Value switch
             {
@@ -63,7 +63,7 @@ namespace Corvus.Extensions.Json.Internal
         /// ![<![CDATA[ { "dateTimeOffset": "2009-06-15T13:45:30.0000000-07:00", "unixTime": 1245098730000]]>
         /// </code>
         /// </remarks>
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             if (writer is null)
             {
