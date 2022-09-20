@@ -25,7 +25,7 @@ namespace Corvus.Extensions.Json.Internal
         }
 
         /// <inheritdoc/>
-        public override object? ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             if (reader is null)
             {
@@ -37,7 +37,7 @@ namespace Corvus.Extensions.Json.Internal
                 throw new ArgumentNullException(nameof(serializer));
             }
 
-            string value = (string)reader.Value;
+            string? value = (string?)reader.Value;
             if (value != null)
             {
                 return new CultureInfo(value);
@@ -47,7 +47,7 @@ namespace Corvus.Extensions.Json.Internal
         }
 
         /// <inheritdoc/>
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             if (writer is null)
             {
