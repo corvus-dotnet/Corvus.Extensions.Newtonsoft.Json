@@ -335,3 +335,8 @@ coverage.cobertura.xml
 # VS Code config files
 /.vscode
 *.feature.cs
+
+# Scripted build migration 
+*.sbom.*
+_codeCoverage/
+_packages/
