@@ -81,7 +81,7 @@ namespace Corvus.Json
         /// Retrieves the properties as a dictionary.
         /// </summary>
         /// <param name="propertyBag">The property bag.</param>
-        /// <returns>A dictionary containing all of the properties in the bag.</returns>
+        /// <returns>A dictionary containing all the properties in the bag.</returns>
         /// <remarks>
         /// <para>
         /// The types of the individual entries will either be .NET primitive types (e.g. int, string, etc) or further
@@ -132,7 +132,7 @@ namespace Corvus.Json
         /// Retrieves the properties as a dictionary.
         /// </summary>
         /// <param name="propertyBag">The <see cref="IPropertyBag"/> to convert.</param>
-        /// <returns>A dictionary containing all of the properties in the bag.</returns>
+        /// <returns>A dictionary containing all the properties in the bag.</returns>
         /// <remarks>
         /// <para>
         /// This method extends the <see cref="AsDictionary"/> method by recursively processing the

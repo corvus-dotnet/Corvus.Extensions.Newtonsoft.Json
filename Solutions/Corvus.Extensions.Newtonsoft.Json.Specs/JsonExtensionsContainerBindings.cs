@@ -4,9 +4,11 @@
 
 namespace Corvus.Extensions.Json.Specs
 {
-    using Corvus.Testing.SpecFlow;
+    using Corvus.Testing.ReqnRoll;
+
     using Microsoft.Extensions.DependencyInjection;
-    using TechTalk.SpecFlow;
+
+    using Reqnroll;
 
     /// <summary>
     /// Provides Specflow bindings for Endjin Composition.
@@ -15,7 +17,7 @@ namespace Corvus.Extensions.Json.Specs
     public static class JsonExtensionsContainerBindings
     {
         /// <summary>
-        /// Setup the endjin container for a feature.
+        /// Set up the endjin container for a feature.
         /// </summary>
         /// <remarks>We expect features run in parallel to be executing in separate app domains.</remarks>
         /// <param name="featureContext">The SpecFlow test context.</param>
@@ -32,7 +34,7 @@ namespace Corvus.Extensions.Json.Specs
         }
 
         /// <summary>
-        /// Setup the endjin container for a feature.
+        /// Set up the endjin container for a feature.
         /// </summary>
         /// <remarks>We expect features run in parallel to be executing in separate app domains.</remarks>
         /// <param name="featureContext">The SpecFlow test context.</param>
@@ -49,7 +51,7 @@ namespace Corvus.Extensions.Json.Specs
         }
 
         /// <summary>
-        /// Setup the endjin container for a feature.
+        /// Set up the endjin container for a feature.
         /// </summary>
         /// <remarks>We expect features run in parallel to be executing in separate app domains.</remarks>
         /// <param name="featureContext">The SpecFlow test context.</param>

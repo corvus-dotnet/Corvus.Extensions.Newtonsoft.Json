@@ -69,9 +69,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services">The target service collection.</param>
         /// <param name="configurationCallback">Optional callback used to modify the <see cref="JsonSerializerSettings"/>.</param>
         /// <returns>The service collection.</returns>
-        public static IServiceCollection AddJsonNetSerializerSettingsProvider(
-            this IServiceCollection services,
-            Action<IServiceProvider, JsonSerializerSettings>? configurationCallback = null)
+        public static IServiceCollection AddJsonNetSerializerSettingsProvider(this IServiceCollection services, Action<IServiceProvider, JsonSerializerSettings>? configurationCallback = null)
         {
             if (services is null)
             {
@@ -84,7 +82,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     sp =>
                     {
                         IEnumerable<JsonConverter> converters = sp.GetServices<JsonConverter>();
-                        var serializerSettingsProvider = new JsonSerializerSettingsProvider(converters);
+                        JsonSerializerSettingsProvider serializerSettingsProvider = new(converters);
 
                         configurationCallback?.Invoke(sp, serializerSettingsProvider.Instance);
 
@@ -115,7 +113,6 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 services.AddSingleton<IJsonNetPropertyBagFactory, JsonNetPropertyBagFactory>();
                 services.AddSingleton<IPropertyBagFactory>(sp => sp.GetRequiredService<IJsonNetPropertyBagFactory>());
-
                 services.AddSingleton<JsonConverter, PropertyBagConverter>();
             }
 
@@ -150,7 +147,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(services));
             }
 
-            if (!services.Any(s => s.ImplementationType == typeof(DateTimeOffsetConverter)))
+            if (services.All(s => s.ImplementationType != typeof(DateTimeOffsetConverter)))
             {
                 services.AddSingleton<JsonConverter, DateTimeOffsetConverter>();
             }
@@ -171,7 +168,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(services));
             }
 
-            if (!services.Any(s => s.ImplementationType == typeof(CultureInfoConverter)))
+            if (services.All(s => s.ImplementationType != typeof(CultureInfoConverter)))
             {
                 services.AddSingleton<JsonConverter, CultureInfoConverter>();
             }
