@@ -37,14 +37,12 @@ namespace Corvus.Extensions.Json.Specs
         {
             this.featureContext = featureContext;
             this.scenarioContext = scenarioContext;
-            this.propertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetService<IPropertyBagFactory>()!;
-            this.jnetPropertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetService<IJsonNetPropertyBagFactory>()!;
+            this.propertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<IPropertyBagFactory>();
+            this.jnetPropertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<IJsonNetPropertyBagFactory>();
             this.jsonSerializerSettingsProvider = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
         }
 
-        private IPropertyBag Bag => this.propertyBag ??
-                                    throw new InvalidOperationException(
-                                        "The test is trying to use property bag before it has been created");
+        private IPropertyBag Bag => this.propertyBag ?? throw new InvalidOperationException("The test is trying to use property bag before it has been created");
 
         [Given(@"the creation properties include ""(.*)"" with the value ""(.*)""")]
         public void TheCreationPropertiesInclude(string propertyName, string value)
@@ -100,7 +98,7 @@ namespace Corvus.Extensions.Json.Specs
         {
             CultureInfoPocObject poco = MakeCultureInfoPoco(culture);
 
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
             this.scenarioContext.Set(JsonConvert.SerializeObject(poco, settingsProvider.Instance), "Result");
         }
 
@@ -109,7 +107,7 @@ namespace Corvus.Extensions.Json.Specs
         {
             DateTimeOffsetPocObject poco = MakeDateTimeOffsetPoco(time, nullableTime);
 
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
             this.scenarioContext.Set(JsonConvert.SerializeObject(poco, settingsProvider.Instance), "Result");
         }
 
@@ -170,21 +168,21 @@ namespace Corvus.Extensions.Json.Specs
         [Given(@"I deserialize a property bag from the string ""(.*)""")]
         public void GivenIDeserializeAPropertyBagFromTheString(string json)
         {
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
             this.propertyBag = JsonConvert.DeserializeObject<IPropertyBag>(json, settingsProvider.Instance);
         }
 
         [Given("I deserialize a property bag from the string")]
         public void GivenIDeserializeAPropertyBagFromTheMultilineString(string multiLineJson)
         {
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
             this.propertyBag = JsonConvert.DeserializeObject<IPropertyBag>(multiLineJson, settingsProvider.Instance);
         }
 
         [When("I serialize the property bag")]
         public void GivenISerializeThePropertyBag()
         {
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
 
             this.scenarioContext.Set(JsonConvert.SerializeObject(this.Bag, settingsProvider.Instance), "Result");
         }
@@ -193,14 +191,14 @@ namespace Corvus.Extensions.Json.Specs
         public void WhenIDeserializeTheSerializedPropertyBag()
         {
             string serializedBag = this.scenarioContext.Get<string>("Result");
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
             this.propertyBag = JsonConvert.DeserializeObject<IPropertyBag>(serializedBag, settingsProvider.Instance);
         }
 
         [Given(@"I deserialize a CultureInfo POCO with the json string ""(.*)""")]
         public void GivenIDeserializeACultureInfoPOCOWithTheJsonString(string json)
         {
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
             this.scenarioContext.Set(
                 JsonConvert.DeserializeObject<CultureInfoPocObject>(json, settingsProvider.Instance), "Result");
         }
@@ -208,7 +206,7 @@ namespace Corvus.Extensions.Json.Specs
         [Given(@"I deserialize a DateTimeOffset POCO with the json string ""(.*)""")]
         public void GivenIDeserializeADateTimeOffsetPOCOWithTheJsonString(string json)
         {
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
             this.scenarioContext.Set(
                 JsonConvert.DeserializeObject<DateTimeOffsetPocObject>(json, settingsProvider.Instance), "Result");
         }
