@@ -10,7 +10,7 @@ namespace Corvus.Extensions.Json.Specs
 
     using Corvus.Extensions.Json.Specs.Samples;
     using Corvus.Json;
-    using Corvus.Testing.SpecFlow;
+    using Corvus.Testing.ReqnRoll;
 
     using Microsoft.Extensions.DependencyInjection;
 
@@ -19,7 +19,7 @@ namespace Corvus.Extensions.Json.Specs
 
     using NUnit.Framework;
 
-    using TechTalk.SpecFlow;
+    using Reqnroll;
 
     [Binding]
     public class JsonExtensionsSpecsSteps
@@ -37,12 +37,14 @@ namespace Corvus.Extensions.Json.Specs
         {
             this.featureContext = featureContext;
             this.scenarioContext = scenarioContext;
-            this.propertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetService<IPropertyBagFactory>();
-            this.jnetPropertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetService<IJsonNetPropertyBagFactory>();
+            this.propertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetService<IPropertyBagFactory>()!;
+            this.jnetPropertyBagFactory = ContainerBindings.GetServiceProvider(featureContext).GetService<IJsonNetPropertyBagFactory>()!;
             this.jsonSerializerSettingsProvider = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
         }
 
-        private IPropertyBag Bag => this.propertyBag ?? throw new InvalidOperationException("The test is trying to use property bag before it has been created");
+        private IPropertyBag Bag => this.propertyBag ??
+                                    throw new InvalidOperationException(
+                                        "The test is trying to use property bag before it has been created");
 
         [Given(@"the creation properties include ""(.*)"" with the value ""(.*)""")]
         public void TheCreationPropertiesInclude(string propertyName, string value)
@@ -81,9 +83,9 @@ namespace Corvus.Extensions.Json.Specs
         {
             if (!string.IsNullOrEmpty(culture))
             {
-            CultureInfoPocObject poco = MakeCultureInfoPoco(culture);
+                CultureInfoPocObject poco = MakeCultureInfoPoco(culture);
 
-            this.creationProperties.Add(name, poco);
+                this.creationProperties.Add(name, poco);
             }
         }
 
@@ -98,7 +100,7 @@ namespace Corvus.Extensions.Json.Specs
         {
             CultureInfoPocObject poco = MakeCultureInfoPoco(culture);
 
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
             this.scenarioContext.Set(JsonConvert.SerializeObject(poco, settingsProvider.Instance), "Result");
         }
 
@@ -107,7 +109,7 @@ namespace Corvus.Extensions.Json.Specs
         {
             DateTimeOffsetPocObject poco = MakeDateTimeOffsetPoco(time, nullableTime);
 
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
             this.scenarioContext.Set(JsonConvert.SerializeObject(poco, settingsProvider.Instance), "Result");
         }
 
@@ -168,21 +170,21 @@ namespace Corvus.Extensions.Json.Specs
         [Given(@"I deserialize a property bag from the string ""(.*)""")]
         public void GivenIDeserializeAPropertyBagFromTheString(string json)
         {
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
             this.propertyBag = JsonConvert.DeserializeObject<IPropertyBag>(json, settingsProvider.Instance);
         }
 
         [Given("I deserialize a property bag from the string")]
         public void GivenIDeserializeAPropertyBagFromTheMultilineString(string multiLineJson)
         {
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
             this.propertyBag = JsonConvert.DeserializeObject<IPropertyBag>(multiLineJson, settingsProvider.Instance);
         }
 
         [When("I serialize the property bag")]
         public void GivenISerializeThePropertyBag()
         {
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
 
             this.scenarioContext.Set(JsonConvert.SerializeObject(this.Bag, settingsProvider.Instance), "Result");
         }
@@ -191,22 +193,24 @@ namespace Corvus.Extensions.Json.Specs
         public void WhenIDeserializeTheSerializedPropertyBag()
         {
             string serializedBag = this.scenarioContext.Get<string>("Result");
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
             this.propertyBag = JsonConvert.DeserializeObject<IPropertyBag>(serializedBag, settingsProvider.Instance);
         }
 
         [Given(@"I deserialize a CultureInfo POCO with the json string ""(.*)""")]
         public void GivenIDeserializeACultureInfoPOCOWithTheJsonString(string json)
         {
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
-            this.scenarioContext.Set(JsonConvert.DeserializeObject<CultureInfoPocObject>(json, settingsProvider.Instance), "Result");
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
+            this.scenarioContext.Set(
+                JsonConvert.DeserializeObject<CultureInfoPocObject>(json, settingsProvider.Instance), "Result");
         }
 
         [Given(@"I deserialize a DateTimeOffset POCO with the json string ""(.*)""")]
         public void GivenIDeserializeADateTimeOffsetPOCOWithTheJsonString(string json)
         {
-            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>();
-            this.scenarioContext.Set(JsonConvert.DeserializeObject<DateTimeOffsetPocObject>(json, settingsProvider.Instance), "Result");
+            IJsonSerializerSettingsProvider settingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IJsonSerializerSettingsProvider>()!;
+            this.scenarioContext.Set(
+                JsonConvert.DeserializeObject<DateTimeOffsetPocObject>(json, settingsProvider.Instance), "Result");
         }
 
         [Then(@"the result should have a DateTime POCO named ""(.*)"" with values ""(.*)"" ""(.*)""")]
@@ -292,7 +296,7 @@ namespace Corvus.Extensions.Json.Specs
         {
             var propertiesToRemove = new List<string>();
             var propertiesToSetOrAdd = new Dictionary<string, object>();
-            foreach (TableRow row in table.Rows)
+            foreach (DataTableRow row in table.Rows)
             {
                 string propertyName = row["Property"];
                 switch (row["Action"])
@@ -359,22 +363,26 @@ namespace Corvus.Extensions.Json.Specs
             this.AssertArrayContainsValues(array, table);
         }
 
-        [When(@"I get the key called ""(.*)"" from the dictionary called ""(.*)"" as an IReadOnlyDictionary<string, object> and call it ""(.*)""")]
+        [When(
+            @"I get the key called ""(.*)"" from the dictionary called ""(.*)"" as an IReadOnlyDictionary<string, object> and call it ""(.*)""")]
         public void WhenIGetTheKeyCalledFromTheDictionaryCalledAsAnIDictionaryAndCallIt(string key, string dictionaryName, string name)
         {
-            IReadOnlyDictionary<string, object> dictionary = this.scenarioContext.Get<IReadOnlyDictionary<string, object>>(dictionaryName);
+            IReadOnlyDictionary<string, object> dictionary =
+                this.scenarioContext.Get<IReadOnlyDictionary<string, object>>(dictionaryName);
             Assert.IsTrue(dictionary.TryGetValue(key, out object? result));
             var dictionaryResult = result as IReadOnlyDictionary<string, object>;
             Assert.IsNotNull(dictionaryResult);
             this.scenarioContext.Set(dictionaryResult, name);
         }
 
-        [Then(@"the nested dictionary with key ""(.*)"" contained in the dictionary called ""(.*)"" should contain the properties")]
-        public void ThenTheNestedDictionaryCalledShuldContainTheProperties(string key, string dictionaryName, Table table)
+        [Then(
+            @"the nested dictionary with key ""(.*)"" contained in the dictionary called ""(.*)"" should contain the properties")]
+        public void ThenTheNestedDictionaryCalledShouldContainTheProperties(string key, string dictionaryName, Table table)
         {
             string[] keySegments = key.Split('.');
 
-            IReadOnlyDictionary<string, object>? dictionary = this.scenarioContext.Get<IReadOnlyDictionary<string, object>>(dictionaryName);
+            IReadOnlyDictionary<string, object>? dictionary =
+                this.scenarioContext.Get<IReadOnlyDictionary<string, object>>(dictionaryName);
 
             foreach (string keySegment in keySegments)
             {
@@ -416,7 +424,7 @@ namespace Corvus.Extensions.Json.Specs
 
             foreach (object current in array)
             {
-                Assert.IsTrue(targetType.IsAssignableFrom(current.GetType()), $"Expected {targetType}, was {current.GetType()}");
+                Assert.IsTrue(targetType.IsInstanceOfType(current), $"Expected {targetType}, was {current.GetType()}");
             }
         }
 
@@ -465,7 +473,7 @@ namespace Corvus.Extensions.Json.Specs
 
         private void AssertPropertyBagDoesNotHaveProperties(IPropertyBag bag, Table table)
         {
-            foreach (TableRow row in table.Rows)
+            foreach (DataTableRow row in table.Rows)
             {
                 row.TryGetValue("Property", out string name);
                 Assert.IsFalse(bag.TryGet(name, out object? _));
@@ -474,12 +482,13 @@ namespace Corvus.Extensions.Json.Specs
 
         private void AssertPropertyBagHasProperties(IPropertyBag bag, Table table)
         {
-            foreach (TableRow row in table.Rows)
+            foreach (DataTableRow row in table.Rows)
             {
                 row.TryGetValue("Property", out string name);
                 row.TryGetValue("Value", out string expected);
                 row.TryGetValue("Type", out string type);
                 object? actualAsObject;
+
                 void Test<T>(IPropertyBag bag, string name)
                 {
                     Assert.IsTrue(bag.TryGet(name, out T actual));
@@ -521,7 +530,7 @@ namespace Corvus.Extensions.Json.Specs
             Assert.AreEqual(table.Rows.Count, array.Length, "Array length");
             for (int i = 0; i < array.Length; ++i)
             {
-                TableRow row = table.Rows[i];
+                DataTableRow row = table.Rows[i];
                 object actual = array[i];
                 row.TryGetValue("Value", out string expected);
                 row.TryGetValue("Type", out string type);
@@ -532,7 +541,7 @@ namespace Corvus.Extensions.Json.Specs
 
         private void AssertDictionaryContainsProperties(IReadOnlyDictionary<string, object> dictionary, Table table)
         {
-            foreach (TableRow row in table.Rows)
+            foreach (DataTableRow row in table.Rows)
             {
                 row.TryGetValue("Property", out string name);
                 row.TryGetValue("Value", out string expected);
@@ -582,7 +591,7 @@ namespace Corvus.Extensions.Json.Specs
         private JObject CreateJObjectFromTable(Table table)
         {
             var expected = new JObject();
-            foreach (TableRow row in table.Rows)
+            foreach (DataTableRow row in table.Rows)
             {
                 row.TryGetValue("Property", out string name);
                 expected[name] = this.GetRowValueAsJToken(row);
@@ -594,7 +603,7 @@ namespace Corvus.Extensions.Json.Specs
         private Dictionary<string, object> CreateDictionaryFromTable(Table table)
         {
             var expected = new Dictionary<string, object>();
-            foreach (TableRow row in table.Rows)
+            foreach (DataTableRow row in table.Rows)
             {
                 row.TryGetValue("Property", out string name);
                 expected[name] = this.GetRowValueAsDotNetType(row);
@@ -603,30 +612,30 @@ namespace Corvus.Extensions.Json.Specs
             return expected;
         }
 
-        private JToken GetRowValueAsJToken(TableRow row)
+        private JToken GetRowValueAsJToken(DataTableRow row)
         {
             return JToken.FromObject(
                 this.GetRowValueAsDotNetType(row),
                 JsonSerializer.Create(this.jsonSerializerSettingsProvider.Instance));
         }
 
-        private object GetRowValueAsDotNetType(TableRow row)
+        private object GetRowValueAsDotNetType(DataTableRow row)
         {
             row.TryGetValue("Value", out string value);
             row.TryGetValue("Type", out string type);
             return type switch
-                {
-                    "string" => value,
-                    "integer" => int.Parse(value),
-                    "fp" => double.Parse(value),
-                    "datetime" => DateTimeOffset.Parse(value),
-                    "datetimeoffset" => DateTimeOffset.Parse(value),
-                    "timespan" => TimeSpan.Parse(value),
-                    "byte[]" => Convert.FromBase64String(value),
-                    "guid" => Guid.Parse(value),
-                    "uri" => new Uri(value),
-                    _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
-                };
+            {
+                "string" => value,
+                "integer" => int.Parse(value),
+                "fp" => double.Parse(value),
+                "datetime" => DateTimeOffset.Parse(value),
+                "datetimeoffset" => DateTimeOffset.Parse(value),
+                "timespan" => TimeSpan.Parse(value),
+                "byte[]" => Convert.FromBase64String(value),
+                "guid" => Guid.Parse(value),
+                "uri" => new Uri(value),
+                _ => throw new InvalidOperationException($"Unknown data type '{type}'"),
+            };
         }
 
         private IPropertyBag CreatePropertyBagFromTable(Table table)
@@ -647,7 +656,9 @@ namespace Corvus.Extensions.Json.Specs
             return new DateTimeOffsetPocObject()
             {
                 SomeDateTime = DateTimeOffset.Parse(time),
-                SomeNullableDateTime = string.IsNullOrEmpty(nullableTime) ? null : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime),
+                SomeNullableDateTime = string.IsNullOrEmpty(nullableTime)
+                    ? null
+                    : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime),
             };
         }
 
@@ -666,7 +677,9 @@ namespace Corvus.Extensions.Json.Specs
             var expected = new DateTimeOffsetPocObject()
             {
                 SomeDateTime = DateTimeOffset.Parse(time),
-                SomeNullableDateTime = string.IsNullOrEmpty(nullableTime) ? null : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime),
+                SomeNullableDateTime = string.IsNullOrEmpty(nullableTime)
+                    ? null
+                    : (DateTimeOffset?)DateTimeOffset.Parse(nullableTime),
             };
 
             Assert.AreEqual(expected, poc);
